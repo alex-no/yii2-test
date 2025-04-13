@@ -1,9 +1,5 @@
 <?php
-$alias = require __DIR__ . '/aliases.php';
-foreach ($alias as $name => $path) {
-    Yii::setAlias($name, $path);
-}
-
+$aliases = require __DIR__ . '/aliases.php';
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -14,6 +10,7 @@ return yii\helpers\ArrayHelper::merge(
         'controllerNamespace' => 'console\controllers',
         'basePath' => dirname(__DIR__),
         'bootstrap' => ['log'],
+        'aliases' => $aliases,
         'components' => [
             'log' => [
                 'targets' => [
