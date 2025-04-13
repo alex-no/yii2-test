@@ -3,8 +3,8 @@
 return [
     '@app' => dirname(__DIR__),
     '@web' => '/',
-    '@webroot' => dirname(__DIR__) . '/web',
-    '@apiroot' => dirname(__DIR__) . '/api',
+    '@webroot' => dirname(__DIR__) . '/web/public',
+    '@apiroot' => dirname(__DIR__) . '/api/public',
     '@console' => dirname(__DIR__) . '/console',
     '@runtime' => dirname(__DIR__) . '/runtime',
     '@vendor' => dirname(__DIR__) . '/vendor',
