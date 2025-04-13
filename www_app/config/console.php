@@ -1,5 +1,9 @@
 <?php
 $alias = require __DIR__ . '/aliases.php';
+foreach ($alias as $name => $path) {
+    Yii::setAlias($name, $path);
+}
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 

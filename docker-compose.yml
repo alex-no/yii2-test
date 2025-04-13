@@ -9,6 +9,7 @@ services:
     working_dir: /var/www/html
     ports:
       - "80:80"
+      - "9003:9003"
     volumes:
       - ./www_app:/var/www/html
     depends_on:
