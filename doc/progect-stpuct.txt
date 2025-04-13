@@ -1,0 +1,58 @@
+www_app/
+├── common/                     ← Общие компоненты, модели и конфиги
+│   ├── components/
+│   └── helpers/
+│
+├── web/                        ← Веб-приложение (HTML-сайт)
+│   ├── public/                    ← Корневая директория сайта (public)
+│   │   └── index.php
+│   ├── assets/
+│   ├── config/
+│   │   ├── main.php
+│   │   ├── main-local.php
+│   │   └── params.php
+│   ├── controllers/
+│   │   └── SiteController.php
+│   ├── views/
+│   │   ├── site/
+│   │   └── layouts/
+│   ├── css/
+│   ├── js/
+│   └── widgets
+│
+├── api/                        ← REST API приложение
+│   ├── public/
+│   │   └── index.php
+│   ├── config/
+│   │   ├── main.php
+│   │   ├── main-local.php
+│   │   └── params.php
+│   └── modules/               ← Модули API (например, v1, v2)
+│       └── v1/
+│           ├── controllers/
+│           │   └── UserController.php
+│           └── Module.php
+│
+├── console/                    ← Консольное приложение
+│   ├── config/
+│   │   ├── main.php
+│   │   ├── main-local.php
+│   │   └── params.php
+│   └── controllers/
+│       └── HelloController.php
+│
+├── config/
+│   ├── aliases.php
+│   ├── web.php
+│   ├── api.php
+│   ├── console.php
+│   └── params.php
+├── mail/
+├── tests/
+├── vagrant/
+├── runtime/
+├── vendor/                     ← Composer-зависимости
+├── composer.json
+├── composer.lock
+├── README.md
+└── yii                     ← Консольный entry-point

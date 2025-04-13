@@ -6,12 +6,12 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: yii2_app
-    working_dir: /var/www/html
+    working_dir: /var/www
     ports:
       - "80:80"
-      - "9003:9003"
+#      - "9003:9003"
     volumes:
-      - ./www_app:/var/www/html
+      - ./www_app:/var/www
     depends_on:
       - db
 
