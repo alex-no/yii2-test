@@ -3,6 +3,10 @@
 $aliases = [
     '@app' => dirname(__DIR__),
     '@web' => '/',
+    '@api' => '/api',
+    '@console' => '/console',
+
+    '@common' => '@app/common',
 
     '@webmain' => '@app/web/',
     '@apimain' => '@app/api/',

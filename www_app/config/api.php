@@ -1,12 +1,12 @@
 <?php
-$params = require __DIR__ . '/params.php';
-require __DIR__ . '/aliases.php';
+$common = require __DIR__ . '/common.php';
+$rules = require Yii::getAlias('@apimain') . '/config/route.php';
 
+// This is the main API application configuration
 return yii\helpers\ArrayHelper::merge(
-    require __DIR__ . '/common.php',
+    $common,
     [
         'id' => 'api-app',
-        'params' => $params,
         'components' => [
             'request' => [
                 'parsers' => [
@@ -21,11 +21,7 @@ return yii\helpers\ArrayHelper::merge(
                 'enablePrettyUrl' => true,
                 'enableStrictParsing' => true,
                 'showScriptName' => false,
-                'rules' => [
-                    'GET v1/user/<id:\d+>' => 'user/view',
-                    'POST v1/user' => 'user/create',
-                    // и т.д.
-                ],
+                'rules' => $rules,
             ],
         ],
     ]
