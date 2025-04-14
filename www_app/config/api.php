@@ -7,6 +7,11 @@ return yii\helpers\ArrayHelper::merge(
     $common,
     [
         'id' => 'api-app',
+        'modules' => [
+            'v1' => [
+                'class' => app\api\modules\v1\Module::class,
+            ],
+        ],
         'components' => [
             'request' => [
                 'parsers' => [
