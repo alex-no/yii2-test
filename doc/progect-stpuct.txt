@@ -6,7 +6,6 @@ www_app/
 ├── web/                        ← Веб-приложение (HTML-сайт)
 │   ├── public/                    ← Корневая директория сайта (public)
 │   │   └── index.php
-│   ├── assets/
 │   ├── config/
 │   │   ├── main.php
 │   │   ├── main-local.php
@@ -47,6 +46,7 @@ www_app/
 │   ├── api.php
 │   ├── console.php
 │   └── params.php
+├── assets/
 ├── mail/
 ├── tests/
 ├── vagrant/

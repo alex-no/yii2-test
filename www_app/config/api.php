@@ -1,11 +1,12 @@
 <?php
-$aliases = require __DIR__ . '/aliases.php';
+$params = require __DIR__ . '/params.php';
+require __DIR__ . '/aliases.php';
 
 return yii\helpers\ArrayHelper::merge(
     require __DIR__ . '/common.php',
     [
         'id' => 'api-app',
-        'aliases' => $aliases,
+        'params' => $params,
         'components' => [
             'request' => [
                 'parsers' => [
