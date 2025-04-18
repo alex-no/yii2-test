@@ -36,7 +36,7 @@ class SiteController extends Controller
      *         description="Information about version, language, and timezone",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="projectName", type="string"),
      *             @OA\Property(property="version", type="string"),
      *             @OA\Property(property="language", type="string"),
      *             @OA\Property(property="timeZone", type="string"),
@@ -46,8 +46,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $app = Yii::$app;
-
+        $app = app();
         return [
             'api' => 'Test API',
             'projectName' => $app->name,
