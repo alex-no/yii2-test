@@ -6,7 +6,10 @@ return yii\helpers\ArrayHelper::merge(
     [
         'id' => 'console-app',
         'controllerNamespace' => 'console\controllers',
-        // 'components' => [
-        // ],
+        'components' => [
+            'cache' => [
+                'class' => 'yii\caching\FileCache',
+            ],
+        ],
     ]
 );

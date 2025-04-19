@@ -30,7 +30,7 @@ class ExtendedModelGenerator extends Generator
             'generateChildClass' => 'If checked, an empty child class will be created for your logic.',
         ]);
     }
-    
+
     public function stickyAttributes()
     {
         return array_merge(parent::stickyAttributes(), ['generateChildClass']);
@@ -71,4 +71,14 @@ class ExtendedModelGenerator extends Generator
         }
         return basename(str_replace('\\', '/', $this->modelClass));
     }
+
+    public function requiredTemplates()
+    {
+        return ['model.php', 'model-child.php'];
+    }
+    
+    public function formView()
+    {
+        return '@app/app/gii/form.php';
+    }    
 }
