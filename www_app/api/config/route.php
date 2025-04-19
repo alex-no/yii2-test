@@ -6,6 +6,8 @@ return [
 
     'GET v1/user/<id:\d+>' => 'user/view',
     'POST v1/user' => 'user/create',
+
+    'GET languages' => 'v1/language/index',
     
     'swagger/json' => 'v1/swagger/json',
     'swagger/ui' => 'v1/swagger/ui',

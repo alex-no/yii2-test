@@ -28,12 +28,37 @@ use yii\db\ActiveRecord;
  */
 class <?= $className ?>Base extends ActiveRecord
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function tableName()
     {
         return '<?= $tableName ?>';
     }
 
-<?= implode("\n\n", $rules) ?>
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+<?= empty($rules) ? '' : '            ' . implode(",\n            ", $rules) . ",\n" ?>
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+<?= empty($labels) ? '' : '            ' . implode(",\n            ", array_map(
+    fn($name, $label) => "'$name' => " . var_export($label, true),
+    array_keys($labels),
+    $labels
+)) . ",\n" ?>
+        ];
+    }
 
 <?php if (!empty($relations)): ?>
 

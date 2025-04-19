@@ -21,12 +21,30 @@ return yii\helpers\ArrayHelper::merge(
             ],
             'response' => [
                 'format' => yii\web\Response::FORMAT_JSON,
+                'charset' => 'UTF-8',
+                'formatters' => [
+                    yii\web\Response::FORMAT_JSON => [
+                        'class' => yii\web\JsonResponseFormatter::class,
+                        'prettyPrint' => YII_DEBUG, // true in debug mode
+                        'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+                    ],
+                ],
+                // Force JSON regardless of Accept header
+                'on beforeSend' => function ($event) {
+                    $response = $event->sender;
+                    $response->format = yii\web\Response::FORMAT_JSON;
+                },
             ],
             'urlManager' => [
                 'enablePrettyUrl' => true,
                 'enableStrictParsing' => true,
                 'showScriptName' => false,
                 'rules' => $rules,
+            ],
+            'user' => [
+                'identityClass' => 'app\models\User',
+                'enableSession' => false,
+                'loginUrl' => null,
             ],
         ],
     ]
