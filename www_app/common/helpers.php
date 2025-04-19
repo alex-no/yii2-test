@@ -54,9 +54,18 @@ function is_guest(): bool
 }
 
 /**
+ * Path by alias
+ * @param string $path Path to the alias
+ */
+function alias($path = ''): string
+{
+    return Yii::getAlias($path);
+}
+
+/**
  * Path to the web (public) directory
  */
-function webroot($path = '')
+function webroot($path = ''): string
 {
     return Yii::getAlias('@webroot') . ($path ? DIRECTORY_SEPARATOR . $path : '');
 }
@@ -64,7 +73,7 @@ function webroot($path = '')
 /**
  * Path to the web URL
  */
-function weburl($path = '')
+function weburl($path = ''): string
 {
     return Yii::getAlias('@web') . ($path ? '/' . ltrim($path, '/') : '');
 }

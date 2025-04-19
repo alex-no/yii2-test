@@ -3,7 +3,7 @@ $common = require __DIR__ . '/common.php';
 $rules = require Yii::getAlias('@webmain') . '/config/route.php';
 
 // This is the main Web application configuration
-return yii\helpers\ArrayHelper::merge(
+$config = yii\helpers\ArrayHelper::merge(
     $common,
     [
         'id' => 'web-app',
@@ -31,3 +31,28 @@ return yii\helpers\ArrayHelper::merge(
         ],
     ],
 );
+
+if (YII_ENV_DEV) {
+    // configuration adjustments for 'dev' environment
+    $config['bootstrap'][] = 'debug';
+    $config['modules']['debug'] = [
+        'class' => 'yii\debug\Module',
+        'allowedIPs' => ['127.0.0.1', '::1', '172.20.0.1'],
+    ];
+
+    $config['bootstrap'][] = 'gii';
+    $config['modules']['gii'] = [
+        'class' => 'yii\gii\Module',
+        'allowedIPs' => ['127.0.0.1', '::1', '172.20.0.1'],
+        'generators' => [
+            'model' => [
+                'class' => 'app\gii\ExtendedModelGenerator', // path to the custom generator
+                'templates' => [
+                    'Extended Model' => '@app/app/gii/templates/model/extended', // path to the template
+                ],
+            ],
+        ],
+    ];
+}
+
+return $config;
