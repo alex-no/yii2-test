@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * [Brief description of the file or class/module]
+ *
+ * @author [Oleksandr Mosov]
+ * @copyright [2025] [Oleksandr Mosov]
+ * @license [License Type, GPL]
+ * @version [Version Number, 1.0.0]
+ *
+ * [Advanced Model Generator]
+ */
 namespace app\gii;
 
 use Yii;
