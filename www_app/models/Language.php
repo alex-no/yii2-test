@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\models\base\LanguageBase;
+use app\models\base\Language as LanguageBase;
 
 /**
  * Class Language — extend your logic here.

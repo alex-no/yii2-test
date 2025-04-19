@@ -14,7 +14,7 @@ use yii\db\ActiveRecord;
  * @property int $is_enabled
  * @property int $order
  */
-class LanguageBase extends ActiveRecord
+class Language extends ActiveRecord
 {
     /**
      * {@inheritdoc}
