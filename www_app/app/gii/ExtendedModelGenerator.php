@@ -80,4 +80,9 @@ class ExtendedModelGenerator extends Generator
     {
         return '@app/app/gii/views/model/form.php';
     }
+
+    public function getName()
+    {
+        return 'Advanced Model Generator';
+    }
 }

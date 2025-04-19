@@ -63,7 +63,18 @@ class <?= $className ?> extends ActiveRecord
 <?php if (!empty($relations)): ?>
 
     // Relations
-<?= implode("\n\n", $relations) ?>
+<?php foreach ($relations as $name => $relation): ?>
+    /**
+     * Gets query for [[<?= $name ?>]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function get<?= $name ?>()
+    {
+        <?= $relation[0] ?>
+
+    }
+<?php endforeach; ?>
 
 <?php endif; ?>
 }

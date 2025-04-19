@@ -54,4 +54,16 @@ class Language extends ActiveRecord
         ];
     }
 
+
+    // Relations
+    /**
+     * Gets query for [[Users]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsers()
+    {
+        return $this->hasMany(User::class, ['language_code' => 'code']);
+    }
+
 }

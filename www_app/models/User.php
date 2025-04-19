@@ -2,6 +2,12 @@
 
 namespace app\models;
 
+// use app\models\base\User as UserBase;
+
+/**
+ * Class User — extend your logic here.
+ */
+// class User extends UserBase
 class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
 {
     public $id;
