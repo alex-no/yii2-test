@@ -4,6 +4,7 @@ namespace app\gii;
 
 use Yii;
 use yii\gii\generators\model\Generator;
+use yii\gii\CodeFile;
 
 class ExtendedModelGenerator extends Generator
 {
@@ -19,10 +20,17 @@ class ExtendedModelGenerator extends Generator
     public function attributeLabels()
     {
         return array_merge(parent::attributeLabels(), [
-            'generateChildClass' => 'Generate child model (for custom logic)',
+            'generateChildClass' => 'Generate child model',
         ]);
     }
 
+    public function hints()
+    {
+        return array_merge(parent::hints(), [
+            'generateChildClass' => 'If checked, an empty child class will be created for your logic.',
+        ]);
+    }
+    
     public function stickyAttributes()
     {
         return array_merge(parent::stickyAttributes(), ['generateChildClass']);
@@ -31,27 +39,28 @@ class ExtendedModelGenerator extends Generator
     public function generate()
     {
         $files = parent::generate();
-
+        $modelClass = $this->getModelClass();
+        $baseFileName = $modelClass . '.php';
+    
+        foreach ($files as $i => $file) {
+            if (str_ends_with($file->path, $baseFileName)) {
+                $files[$i]->path = dirname($file->path) . '/TopModels/' . $modelClass . 'Base.php';
+                break;
+            }
+        }
+    
         if ($this->generateChildClass) {
-            $class = $this->getModelClass();
-            $childPath = Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $class . '.php';
+            $childPath = Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $modelClass . '.php';
             if (!file_exists($childPath)) {
-                $files[] = new \yii\gii\CodeFile(
+                $files[] = new CodeFile(
                     $childPath,
                     $this->render('model-child.php', [
-                        'className' => $class,
+                        'className' => $modelClass,
                     ])
                 );
             }
         }
-
-        // Override the path for the base model
-        foreach ($files as $file) {
-            if (str_ends_with($file->path, "{$this->getModelClass()}.php")) {
-                $file->path = dirname($file->path) . '/TopModels/' . $this->getModelClass() . 'Base.php';
-            }
-        }
-
+    
         return $files;
     }
     public function getModelClass()
