@@ -36,19 +36,23 @@ class ExtendedModelGenerator extends Generator
         return array_merge(parent::stickyAttributes(), ['generateChildClass']);
     }
 
+    //  Generate the model files
     public function generate()
     {
         $files = parent::generate();
         $modelClass = $this->getModelClass();
         $baseFileName = $modelClass . '.php';
-    
+
         foreach ($files as $i => $file) {
             if (str_ends_with($file->path, $baseFileName)) {
                 $files[$i]->path = dirname($file->path) . '/base/' . $modelClass . '.php';
+                if (file_exists($files[$i]->path) && $files[$i]->operation === CodeFile::OP_CREATE) {
+                    $files[$i]->operation = CodeFile::OP_OVERWRITE;
+                }
                 break;
             }
         }
-    
+
         if ($this->generateChildClass) {
             $childPath = Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $modelClass . '.php';
             if (!file_exists($childPath)) {
@@ -60,7 +64,7 @@ class ExtendedModelGenerator extends Generator
                 );
             }
         }
-    
+
         return $files;
     }
     public function getModelClass()
@@ -72,13 +76,8 @@ class ExtendedModelGenerator extends Generator
         return basename(str_replace('\\', '/', $this->modelClass));
     }
 
-    // public function requiredTemplates()
-    // {
-    //     return ['model.php', 'model-child.php'];
-    // }
-    
     public function formView()
     {
         return '@app/app/gii/views/model/form.php';
-    }    
+    }
 }
