@@ -44,7 +44,7 @@ class ExtendedModelGenerator extends Generator
     
         foreach ($files as $i => $file) {
             if (str_ends_with($file->path, $baseFileName)) {
-                $files[$i]->path = dirname($file->path) . '/base/' . $modelClass . 'Base.php';
+                $files[$i]->path = dirname($file->path) . '/base/' . $modelClass . '.php';
                 break;
             }
         }

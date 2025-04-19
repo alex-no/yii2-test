@@ -26,7 +26,7 @@ use yii\db\ActiveRecord;
  * @property <?= $property['type'] . ' $' . $property['name'] . "\n" ?>
 <?php endforeach; ?>
  */
-class <?= $className ?>Base extends ActiveRecord
+class <?= $className ?> extends ActiveRecord
 {
     /**
      * {@inheritdoc}

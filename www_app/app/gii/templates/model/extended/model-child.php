@@ -4,7 +4,7 @@ echo "<?php\n";
 
 namespace <?= $generator->ns ?>;
 
-use <?= $generator->ns ?>\base\<?= $className ?>Base;
+use <?= $generator->ns ?>\base\<?= $className ?> as <?= $className ?>Base;
 
 /**
  * Class <?= $className ?> — extend your logic here.
