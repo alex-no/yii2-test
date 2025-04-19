@@ -44,7 +44,7 @@ class ExtendedModelGenerator extends Generator
     
         foreach ($files as $i => $file) {
             if (str_ends_with($file->path, $baseFileName)) {
-                $files[$i]->path = dirname($file->path) . '/TopModels/' . $modelClass . 'Base.php';
+                $files[$i]->path = dirname($file->path) . '/base/' . $modelClass . 'Base.php';
                 break;
             }
         }
@@ -72,13 +72,13 @@ class ExtendedModelGenerator extends Generator
         return basename(str_replace('\\', '/', $this->modelClass));
     }
 
-    public function requiredTemplates()
-    {
-        return ['model.php', 'model-child.php'];
-    }
+    // public function requiredTemplates()
+    // {
+    //     return ['model.php', 'model-child.php'];
+    // }
     
     public function formView()
     {
-        return '@app/app/gii/form.php';
+        return '@app/app/gii/views/model/form.php';
     }    
 }

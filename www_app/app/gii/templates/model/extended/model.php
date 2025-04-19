@@ -14,7 +14,7 @@
 echo "<?php\n";
 ?>
 
-namespace <?= $generator->ns ?>\TopModels;
+namespace <?= $generator->ns ?>\base;
 
 use Yii;
 use yii\db\ActiveRecord;
