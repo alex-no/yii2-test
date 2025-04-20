@@ -68,6 +68,36 @@ class AuthController extends Controller
         throw new BadRequestHttpException(json_encode($user->getErrors()));
     }
 
+    /**
+     * @OA\Post(
+     *     path="/auth/login",
+     *     summary="User login",
+     *     description="Login a user and return access token",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"username", "password"},
+     *             @OA\Property(property="username", type="string", example="johndoe"),
+     *             @OA\Property(property="password", type="string", example="securepassword")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Access token returned",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="access_token", type="string", example="your_access_token_here")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Invalid username or password")
+     *         )
+     *     )
+     * )
+     */
     public function actionLogin()
     {
         $body = Yii::$app->request->bodyParams;
