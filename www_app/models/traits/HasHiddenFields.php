@@ -22,6 +22,6 @@ trait HasHiddenFields
     public function getHiddenFields(): array
     {
         $default = param('hiddenFields', []);
-        return array_unique(array_merge($default, $this->hiddenFields));
+        return array_unique(array_merge($default[static::class] ?? [], $this->hiddenFields));
     }
 }
