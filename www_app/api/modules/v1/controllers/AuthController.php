@@ -16,6 +16,38 @@ class AuthController extends Controller
         return $behaviors;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/auth/register",
+     *     summary="User registration",
+     *     description="Register a new user",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"username", "email", "password"},
+     *             @OA\Property(property="username", type="string", example="johndoe"),
+     *             @OA\Property(property="email", type="string", example="johndoe@example.com"),
+     *             @OA\Property(property="phone", type="string", example="+1234567890"),
+     *             @OA\Property(property="password", type="string", example="securepassword")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User successfully registered",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Validation errors")
+     *         )
+     *     )
+     * )
+     */
     public function actionRegister()
     {
         $body = Yii::$app->request->bodyParams;
