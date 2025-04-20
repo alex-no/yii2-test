@@ -19,7 +19,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/auth/register",
+     *     path="/api/auth/register",
      *     summary="User registration",
      *     description="Register a new user",
      *     tags={"Auth"},
@@ -59,11 +59,9 @@ class AuthController extends Controller
         $user->phone = $body['phone'] ?? null;
         $user->setPassword($body['password'] ?? '');
         $user->generateAuthData();
-        $user->created_at = time();
-        $user->updated_at = time();
 
         if ($user->save()) {
-            return ['success' => true];
+            return $user->toPublicArray();
         }
 
         throw new BadRequestHttpException(json_encode($user->getErrors()));
@@ -71,7 +69,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/auth/login",
+     *     path="/api/auth/login",
      *     summary="User login",
      *     description="Login a user and return access token",
      *     tags={"Auth"},

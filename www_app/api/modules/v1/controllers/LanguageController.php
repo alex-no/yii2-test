@@ -18,7 +18,7 @@ class LanguageController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/languages",
+     *     path="/api/languages",
      *     summary="Get list of languages",
      *     description="Returns a list of all available languages",
      *     tags={"Languages"},

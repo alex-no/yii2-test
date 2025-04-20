@@ -27,7 +27,7 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/user/profile",
+     *     path="/api/user/profile",
      *     summary="Get user profile",
      *     description="Returns the profile of the authenticated user",
      *     tags={"User"},
@@ -59,7 +59,7 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/user/logout",
+     *     path="/api/user/logout",
      *     summary="User logout",
      *     description="Logs out the authenticated user",
      *     tags={"User"},

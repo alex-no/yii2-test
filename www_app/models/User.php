@@ -4,13 +4,35 @@ namespace app\models;
 
 use Yii;
 use app\models\base\User as UserBase;
+// use app\components\JwtHelper;
+// use app\components\JwtAuth;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 use yii\web\IdentityInterface;
+use app\models\traits\HasHiddenFields;
+use app\models\traits\HasHiddenFieldsInterface;
+
 
 /**
  * Class User — extend your logic here.
  */
-class User extends UserBase implements IdentityInterface
+class User extends UserBase implements IdentityInterface, HasHiddenFieldsInterface
 {
+    use HasHiddenFields;
+    
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    self::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    self::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
 
     /**
      * {@inheritdoc}
@@ -81,7 +103,7 @@ class User extends UserBase implements IdentityInterface
     public function generateAuthData(): void
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
-        $this->access_token = Yii::$app->security->generateRandomString(64);
+        //$this->access_token = Yii::$app->security->generateRandomString(64);
     }
 
     /**
@@ -89,6 +111,6 @@ class User extends UserBase implements IdentityInterface
      */
     public function setPassword(string $password): void
     {
-        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+        $this->password = Yii::$app->security->generatePasswordHash($password);
     }
 }
