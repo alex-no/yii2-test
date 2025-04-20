@@ -6,6 +6,7 @@ use yii\rest\Controller;
 use yii\web\Response;
 use app\models\User;
 use yii\web\BadRequestHttpException;
+use app\components\JwtHelper;
 
 class AuthController extends Controller
 {
@@ -104,7 +105,8 @@ class AuthController extends Controller
         $user = User::findByUsername($body['username'] ?? '');
 
         if ($user && $user->validatePassword($body['password'] ?? '')) {
-            return ['access_token' => $user->access_token];
+            $token = JwtHelper::generateToken($user);
+            return ['access_token' => $token];
         }
 
         throw new BadRequestHttpException('Invalid username or password');

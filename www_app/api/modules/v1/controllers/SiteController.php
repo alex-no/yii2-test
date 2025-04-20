@@ -30,7 +30,7 @@ class SiteController extends Controller
      * @OA\Get(
      *     path="/api",
      *     summary="API Root Info",
-     *     tags={"system"},
+     *     tags={"About system"},
      *     @OA\Response(
      *         response="200",
      *         description="Information about version, language, and timezone",
@@ -60,6 +60,7 @@ class SiteController extends Controller
      * @OA\Get(
      *     path="/api/db-tables",
      *     summary="List database tables",
+     *     tags={"Test"},
      *     @OA\Response(
      *         response="200",
      *         description="Returns list of table names",

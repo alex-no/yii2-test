@@ -2,7 +2,7 @@
 
 return [
     '' => 'v1/site/index',
-    
+
     'POST auth/register' => 'v1/auth/register',
     'POST auth/login' => 'v1/auth/login',
     'POST user/logout' => 'v1/user/logout',
