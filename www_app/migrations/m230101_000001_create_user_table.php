@@ -11,7 +11,7 @@ class m230101_000001_create_user_table extends Migration
         $this->createTable('{{%user}}', [
             'id' => $this->bigPrimaryKey()->unsigned(),
             'language_code' => $this->string(2)->defaultValue(null),
-            'name' => $this->string(191)->notNull(),
+            'username' => $this->string(191)->notNull(),
             'email' => $this->string(191)->notNull(),
             'email_verified_at' => $this->timestamp()->defaultValue(null),
             'password' => $this->string(191)->notNull(),
@@ -22,11 +22,11 @@ class m230101_000001_create_user_table extends Migration
             'updated_at' => $this->timestamp()->defaultValue(null),
         ], $tableOptions);
 
-        // Индексы
+        // Indexes
         $this->createIndex('user_email_unique', '{{%user}}', 'email', true);
         $this->createIndex('user_language_code_foreign', '{{%user}}', 'language_code');
 
-        // Внешний ключ
+        // Foreign key
         $this->addForeignKey(
             'user_language_code_foreign',
             '{{%user}}',

@@ -27,7 +27,7 @@ class User extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'user';
+        return '{{%user}}'; // Use the correct table name
     }
 
     /**
@@ -37,15 +37,20 @@ class User extends ActiveRecord
     {
         return [
             [['language_code', 'email_verified_at', 'phone', 'remember_token', 'created_at', 'updated_at'], 'default', 'value' => null],
-            [['name', 'email', 'password', 'auth_key'], 'required'],
+            [['username', 'email', 'password', 'auth_key'], 'required'],
             [['email_verified_at', 'created_at', 'updated_at'], 'safe'],
             [['language_code'], 'string', 'max' => 2],
-            [['name', 'email', 'password'], 'string', 'max' => 191],
+            [['username', 'email', 'password'], 'string', 'max' => 191],
             [['auth_key'], 'string', 'max' => 32],
             [['phone'], 'string', 'max' => 16],
             [['remember_token'], 'string', 'max' => 100],
             [['email'], 'unique'],
-            [['language_code'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['language_code' => 'code']],
+            [['email'], 'email'], // check if email is valid
+            [['language_code'], 'exist',
+            'skipOnError' => true,
+            'targetClass' => Language::class,
+            'targetAttribute' => ['language_code' => 'code']
+            ],
         ];
     }
 
@@ -57,7 +62,7 @@ class User extends ActiveRecord
         return [
             'id' => 'ID',
             'language_code' => 'Language Code',
-            'name' => 'Name',
+            'username' => 'Name',
             'email' => 'Email',
             'email_verified_at' => 'Email Verified At',
             'password' => 'Password',
