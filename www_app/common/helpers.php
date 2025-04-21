@@ -2,6 +2,7 @@
 use yii\helpers\ArrayHelper;
 //use yii\helpers\StringHelper;
 use yii\helpers\Html;
+use yii\web\Response;
 
 /**
  * Returns the application instance
@@ -116,4 +117,14 @@ function e($string)
 function js_var($name, $value)
 {
     return "<script>var {$name} = " . json_encode($value) . ";</script>";
+}
+
+function dd2($data, $exit = true)
+{
+    app()->response->format = Response::FORMAT_JSON;
+    app()->response->data = ['debug' => $data];
+
+    if ($exit) {
+        app()->end();
+    }
 }

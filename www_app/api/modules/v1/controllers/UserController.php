@@ -2,11 +2,10 @@
 
 namespace app\api\modules\v1\controllers;
 
+use Yii;
 use yii\rest\Controller;
-use yii\filters\auth\HttpBearerAuth;
 use yii\web\Response;
 use app\components\JwtAuth;
-use Yii;
 
 class UserController extends Controller
 {
@@ -16,7 +15,6 @@ class UserController extends Controller
         $behaviors = parent::behaviors();
 
         $behaviors['authenticator'] = [
-            //'class' => HttpBearerAuth::class,
             'class' => JwtAuth::class,
         ];
 
@@ -29,7 +27,7 @@ class UserController extends Controller
      * @OA\Get(
      *     path="/api/user/profile",
      *     summary="Get user profile",
-     *     description="Returns the profile of the authenticated user",
+     *     description="Returns the profile of the authenticated user. You must include a valid token in the Authorization header.",
      *     tags={"User"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Response(
@@ -44,7 +42,7 @@ class UserController extends Controller
      *     ),
      *     @OA\Response(
      *         response=401,
-     *         description="Unauthorized",
+     *         description="Unauthorized - Token is missing or invalid",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="message", type="string", example="Unauthorized")
@@ -54,7 +52,7 @@ class UserController extends Controller
      */
     public function actionProfile()
     {
-        return Yii::$app->user->identity;
+        return Yii::$app->user->identity->toPublicArray(); // Assuming the User model has a method to return public attributes
     }
 
     /**

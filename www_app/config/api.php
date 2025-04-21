@@ -43,7 +43,9 @@ return yii\helpers\ArrayHelper::merge(
             ],
             'user' => [
                 'identityClass' => 'app\models\User',
+                'enableAutoLogin' => false,
                 'enableSession' => false,
+                'identityCookie' => ['name' => '_identity', 'httpOnly' => true],
                 'loginUrl' => null,
             ],
         ],
