@@ -9,7 +9,7 @@
  *
  * [Advanced Model Generator]
  */
-namespace app\gii;
+namespace app\gii\extendedModel;
 
 use Yii;
 use yii\gii\generators\model\Generator;
@@ -18,6 +18,16 @@ use yii\gii\CodeFile;
 class ExtendedModelGenerator extends Generator
 {
     public $generateChildClass = true;
+
+    public function getName()
+    {
+        return 'Advanced Model Generator';
+    }
+
+    public function getDescription()
+    {
+        return 'Generates a pair of classes - parent and child. The parent class will contain standard model-procedures, while the child class will include your own methods and properties.';
+    }
 
     public function rules()
     {
@@ -87,11 +97,7 @@ class ExtendedModelGenerator extends Generator
 
     public function formView()
     {
-        return '@app/app/gii/views/model/form.php';
+        return '@app/app/gii/extendedModel/views/form.php';
     }
 
-    public function getName()
-    {
-        return 'Advanced Model Generator';
-    }
 }

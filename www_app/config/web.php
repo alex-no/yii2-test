@@ -46,10 +46,13 @@ if (YII_ENV_DEV) {
         'allowedIPs' => ['127.0.0.1', '::1', '172.20.0.1'],
         'generators' => [
             'model' => [
-                'class' => 'app\gii\ExtendedModelGenerator', // path to the custom generator
+                'class' => 'app\gii\extendedModel\ExtendedModelGenerator', // path to the custom generator
                 'templates' => [
-                    'Extended Model' => '@app/app/gii/templates/model/extended', // path to the template
+                    'Extended Model' => '@app/app/gii/extendedModel/templates/extended', // path to the template
                 ],
+            ],
+            'route-viewer' => [
+                'class' => 'app\gii\routeViewer\RouteViewerGenerator',
             ],
         ],
     ];
