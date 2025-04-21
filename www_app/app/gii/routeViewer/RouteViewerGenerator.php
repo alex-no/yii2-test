@@ -72,24 +72,55 @@ class RouteViewerGenerator extends Generator
         return $urlManager;
     }
 
-    protected function validateRules($rules)
+    protected function validateRules($rules): array
     {
         $results = [];
 
         foreach ($rules as $rule) {
             $route = $rule->route ?? null;
-
             $isValid = true;
+            $error = null;
 
-            // Attempting to create a controller
             if (is_string($route)) {
-                try {
-                    [$controller, $action] = Yii::$app->createController($route);
-                    if (!$controller) {
-                        $isValid = false;
-                    }
-                } catch (\Throwable $e) {
+                // Example: v1/user/view
+                $segments = explode('/', $route);
+                if (count($segments) < 2) {
                     $isValid = false;
+                    $error = 'Invalid route format';
+                } else {
+                    // Parsing: module/controller/action or controller/action
+                    $action = array_pop($segments);
+                    $controllerId = array_pop($segments);
+                    $modulePath = implode('/', $segments);
+
+                    $namespaceBase = 'app\\' . $this->appContext;
+                    $namespace = $namespaceBase . '\\controllers';
+
+                    $controllerClass = $namespace . '\\' . $this->idToCamel($controllerId) . 'Controller';
+
+                    // Consider nested modules, if any
+                    if ($modulePath) {
+                        $namespace = $namespaceBase . '\\modules\\' . str_replace('/', '\\modules\\', $modulePath) . '\\controllers';
+                        $controllerClass = $namespace . '\\' . $this->idToCamel($controllerId) . 'Controller';
+                    }
+
+                    if (!class_exists($controllerClass)) {
+                        $isValid = false;
+                        $error = "Class {$controllerClass} not found";
+                    } else {
+                        // Check if the action exists
+                        try {
+                            $controller = Yii::createObject($controllerClass, ['id' => $controllerId, 'module' => Yii::$app->controller->module]);
+                            $actionMethod = 'action' . ucfirst($action);
+                            if (!method_exists($controller, $actionMethod)) {
+                                $isValid = false;
+                                $error = "Method {$actionMethod}() not found in {$controllerClass}";
+                            }
+                        } catch (\Throwable $e) {
+                            $isValid = false;
+                            $error = "Error creating controller: " . $e->getMessage();
+                        }
+                    }
                 }
             }
 
@@ -98,9 +129,15 @@ class RouteViewerGenerator extends Generator
                 'route' => $route,
                 'class' => get_class($rule),
                 'valid' => $isValid,
+                'error' => $error,
             ];
         }
 
         return $results;
+    }
+
+    protected function idToCamel($id)
+    {
+        return str_replace(' ', '', ucwords(str_replace('-', ' ', $id)));
     }
 }

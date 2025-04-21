@@ -7,22 +7,30 @@ use yii\helpers\Html;
 <h3>Registered Routes</h3>
 <table class="table table-striped table-bordered">
     <thead>
-        <tr>
-            <th>#</th>
-            <th>Pattern</th>
-            <th>Route</th>
-            <th>Class</th>
-        </tr>
+    <tr>
+        <th>#</th>
+        <th>Pattern</th>
+        <th>Route</th>
+        <th>Class</th>
+        <th>Status</th>
+    </tr>
     </thead>
     <tbody>
-        <?php $i = 1; foreach ($routes as $route): ?>
-            <tr<?= !$route['valid'] ? ' class="table-danger"' : '' ?>>
-                <td><?= $i++ ?></td>
-                <td><?= Html::encode($route['pattern']) ?></td>
-                <td><?= Html::encode($route['route']) ?></td>
-                <td><?= Html::encode($route['class']) ?></td>
-            </tr>
-        <?php endforeach; ?>
+    <?php $i = 1; foreach ($routes as $route): ?>
+        <tr<?= !$route['valid'] ? ' class="table-danger"' : '' ?>>
+            <td><?= $i++ ?></td>
+            <td><?= Html::encode($route['pattern']) ?></td>
+            <td><?= Html::encode($route['route']) ?></td>
+            <td><?= Html::encode($route['class']) ?></td>
+            <td>
+                <?php if (!$route['valid']): ?>
+                    ❌ <?= Html::encode($route['error']) ?>
+                <?php else: ?>
+                    ✅ OK
+                <?php endif; ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
     </tbody>
 </table>
 <p>Total routes: <?= count($routes) ?></p>
