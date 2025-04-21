@@ -83,47 +83,60 @@ class RouteViewerGenerator extends Generator
             $methods = $rule->verb ?? ['GET', 'POST'];
 
             if (is_string($route)) {
-                // Example: v1/user/view
-                $segments = explode('/', $route);
-                if (count($segments) < 2) {
-                    $isValid = false;
-                    $error = 'Invalid route format';
+                if (preg_match('/<\w+/', $route)) {
+                    // dynamic pattern like <controller>/<action>
+                    $isValid = null; // neutral
+                    $error = 'Dynamic route pattern – cannot resolve';
                 } else {
-                    // Parsing: module/controller/action or controller/action
-                    $action = array_pop($segments);
-                    $controllerId = array_pop($segments);
-                    $modulePath = implode('/', $segments);
-
-                    $namespaceBase = 'app\\' . $this->appContext;
-                    $namespace = $namespaceBase . '\\controllers';
-
-                    $controllerClass = $namespace . '\\' . $this->idToCamel($controllerId) . 'Controller';
-
-                    // Consider nested modules, if any
-                    if ($modulePath) {
-                        $namespace = $namespaceBase . '\\modules\\' . str_replace('/', '\\modules\\', $modulePath) . '\\controllers';
-                        $controllerClass = $namespace . '\\' . $this->idToCamel($controllerId) . 'Controller';
-                    }
-
-                    if (!class_exists($controllerClass)) {
+                    $segments = explode('/', $route);
+                    if (count($segments) < 2) {
                         $isValid = false;
-                        $error = "Class {$controllerClass} not found";
+                        $error = 'Invalid route format';
                     } else {
-                        // Check if the action exists
-                        try {
-                            $controller = Yii::createObject($controllerClass, ['id' => $controllerId, 'module' => Yii::$app->controller->module]);
-                            $actionMethod = 'action' . ucfirst($action);
-                            if (!method_exists($controller, $actionMethod)) {
+                        $action = array_pop($segments);
+                        $controllerId = array_pop($segments);
+                        $modulePath = implode('/', $segments);
+
+                        $namespaceBase = 'app\\' . $this->appContext;
+                        $namespace = $namespaceBase . '\\controllers';
+                        $controllerClass = $namespace . '\\' . $this->idToCamel($controllerId) . 'Controller';
+
+                        if ($modulePath) {
+                            try {
+                                $module = Yii::$app->getModule($modulePath);
+                                if ($module && isset($module->controllerNamespace)) {
+                                    $controllerClass = $module->controllerNamespace . '\\' . $this->idToCamel($controllerId) . 'Controller';
+                                } else {
+                                    $namespace = $namespaceBase . '\\modules\\' . str_replace('/', '\\modules\\', $modulePath) . '\\controllers';
+                                    $controllerClass = $namespace . '\\' . $this->idToCamel($controllerId) . 'Controller';
+                                }
+                            } catch (\Throwable $e) {
                                 $isValid = false;
-                                $error = "Method {$actionMethod}() not found in {$controllerClass}";
+                                $error = "Module `$modulePath` not found";
                             }
-                        } catch (\Throwable $e) {
+                        }
+
+                        if ($isValid !== false && !class_exists($controllerClass)) {
                             $isValid = false;
-                            $error = "Error creating controller: " . $e->getMessage();
+                            $error = "Class {$controllerClass} not found";
+                        } elseif ($isValid !== false) {
+                            try {
+                                $controller = Yii::createObject($controllerClass, ['id' => $controllerId, 'module' => Yii::$app->controller->module]);
+                                $actionMethod = 'action' . ucfirst($action);
+                                if (!method_exists($controller, $actionMethod)) {
+                                    $isValid = false;
+                                    $error = "Method {$actionMethod}() not found in {$controllerClass}";
+                                }
+                            } catch (\Throwable $e) {
+                                $isValid = false;
+                                $error = "Error creating controller: " . $e->getMessage();
+                            }
                         }
                     }
                 }
             }
+
+            $status = $this->formatStatus($isValid, $error);
 
             $results[] = [
                 'methods' => implode(', ', $methods), // Methods (GET, POST etc.)
@@ -132,6 +145,8 @@ class RouteViewerGenerator extends Generator
                 'class' => get_class($rule),
                 'valid' => $isValid,
                 'error' => $error,
+                'status_short' => $status['short'],
+                'status_hint' => $status['hint'],
             ];
         }
 
@@ -141,5 +156,29 @@ class RouteViewerGenerator extends Generator
     protected function idToCamel($id)
     {
         return str_replace(' ', '', ucwords(str_replace('-', ' ', $id)));
+    }
+
+    protected function formatStatus(?bool $isValid, ?string $error): array
+    {
+        if ($isValid === true) {
+            return ['short' => '✅ OK', 'hint' => ''];
+        }
+
+        if ($error === null) {
+            return ['short' => '⚠️ unknown', 'hint' => 'Unknown issue'];
+        }
+
+        $short = '❌';
+        $errorLower = strtolower($error);
+
+        if (str_contains($errorLower, 'dynamic route')) {
+            $short = '⚠️ cannot resolve';
+        } elseif (str_contains($errorLower, 'not found')) {
+            $short = '❌ not found';
+        } elseif (str_contains($errorLower, 'invalid route')) {
+            $short = '❌ invalid format';
+        }
+
+        return ['short' => $short, 'hint' => $error];
     }
 }

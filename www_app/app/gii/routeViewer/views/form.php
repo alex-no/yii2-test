@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
 /** @var app\gii\routeViewer\RouteViewerGenerator $generator */
+$this->registerCss("#form-fields { max-width: 100% !important; flex: 0 0 100% !important; }");
 
 $form = ActiveForm::begin();
 echo $form->field($generator, 'appContext')->dropDownList([
