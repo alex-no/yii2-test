@@ -9,9 +9,17 @@ use yii\web\UnauthorizedHttpException;
 
 class JwtHelper
 {
-    private static string $secret = param('JwtSecret');
+    private static string $secret = '';
     private static string $algo = 'HS256';
     private static int $ttl = 3600; // 1 hour
+
+    public static function getSecret()
+    {
+        if (self::$secret === '') {
+            self::$secret = param('JwtSecret');  // Получаем значение из конфигурации
+        }
+        return self::$secret;
+    }
 
     public static function generateToken($user)
     {
@@ -24,12 +32,12 @@ class JwtHelper
             'iat' => $issuedAt,
             'exp' => $expire,
             'uid' => $user->id,
-        ], self::$secret, self::$algo);
+        ], self::getSecret(), self::$algo);
     }
 
     public static function decodeToken($token)
     {
-        return JWT::decode($token, new Key(self::$secret, self::$algo));
+        return JWT::decode($token, new Key(self::getSecret(), self::$algo));
     }
 
     public static function getUserFromToken($token)
