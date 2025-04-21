@@ -7,7 +7,7 @@ use yii\web\Response;
 
 /**
  * @OA\Info(
- *     title="My Yii2 API",
+ *     title="Yii2 API-test",
  *     version="0.1",
  *     description="API documentation for the Yii2-test project"
  * )

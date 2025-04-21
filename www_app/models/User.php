@@ -19,7 +19,7 @@ use app\models\traits\HasHiddenFieldsInterface;
 class User extends UserBase implements IdentityInterface, HasHiddenFieldsInterface
 {
     use HasHiddenFields;
-    
+
     public function behaviors()
     {
         return [
@@ -94,7 +94,7 @@ class User extends UserBase implements IdentityInterface, HasHiddenFieldsInterfa
      */
     public function validatePassword(string $password): bool
     {
-        return Yii::$app->security->validatePassword($password, $this->password_hash);
+        return Yii::$app->security->validatePassword($password, $this->password);
     }
 
     /**

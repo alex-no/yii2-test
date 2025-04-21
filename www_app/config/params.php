@@ -12,7 +12,7 @@ return [
             'remember_token',
         ],
         // \app\models\Admin::class => [
-        //     'password_hash',
+        //     'password',
         // ],
     ],
 ];
