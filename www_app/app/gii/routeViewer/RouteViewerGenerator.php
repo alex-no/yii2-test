@@ -80,6 +80,7 @@ class RouteViewerGenerator extends Generator
             $route = $rule->route ?? null;
             $isValid = true;
             $error = null;
+            $methods = $rule->verb ?? ['GET', 'POST'];
 
             if (is_string($route)) {
                 // Example: v1/user/view
@@ -125,6 +126,7 @@ class RouteViewerGenerator extends Generator
             }
 
             $results[] = [
+                'methods' => implode(', ', $methods), // Methods (GET, POST etc.)
                 'pattern' => $rule->name ?? '',
                 'route' => $route,
                 'class' => get_class($rule),

@@ -9,6 +9,7 @@ use yii\helpers\Html;
     <thead>
     <tr>
         <th>#</th>
+        <th>Method</th>
         <th>Pattern</th>
         <th>Route</th>
         <th>Class</th>
@@ -19,6 +20,7 @@ use yii\helpers\Html;
     <?php $i = 1; foreach ($routes as $route): ?>
         <tr<?= !$route['valid'] ? ' class="table-danger"' : '' ?>>
             <td><?= $i++ ?></td>
+            <td><?= Html::encode($route['methods']) ?></td>
             <td><?= Html::encode($route['pattern']) ?></td>
             <td><?= Html::encode($route['route']) ?></td>
             <td><?= Html::encode($route['class']) ?></td>
