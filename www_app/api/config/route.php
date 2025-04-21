@@ -7,9 +7,9 @@ return [
     'POST auth/login' => 'v1/auth/login',
     'POST user/logout' => 'v1/user/logout',
 
-    'POST user' => 'user/create',
-    'GET user/<id:\d+>' => 'user/view',
-    'PUT user/<id:\d+>' => 'user/update',
+    'POST user' => 'v1/user/create',
+    'GET user/<id:\d+>' => 'v1/user/view',
+    'PUT user/<id:\d+>' => 'v1/user/update',
     'GET user/profile' => 'v1/user/profile',
 
     'GET languages' => 'v1/language/index',

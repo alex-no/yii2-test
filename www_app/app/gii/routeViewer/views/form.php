@@ -1,13 +1,22 @@
 <?php
 
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
 /** @var app\gii\routeViewer\RouteViewerGenerator $generator */
 
+$form = ActiveForm::begin();
+echo $form->field($generator, 'appContext')->dropDownList([
+    'web' => 'Web',
+    'api' => 'API',
+]);
+echo Html::submitButton('Refresh', ['class' => 'btn btn-primary']);
+ActiveForm::end();
+
 echo Html::tag('h3', 'Registered Routes', ['style' => 'margin-top:20px;']);
 
-$rules = Yii::$app->urlManager->rules;
+$rules = $generator->getRoutes();
 
 echo "<table class='table table-bordered table-striped'>";
 echo "<thead><tr><th>#</th><th>Pattern</th><th>Route</th><th>Class</th></tr></thead><tbody>";

@@ -3,9 +3,13 @@ namespace app\gii\routeViewer;
 
 use Yii;
 use yii\gii\Generator;
+use yii\web\Application;
+use yii\web\UrlManager;
 
 class RouteViewerGenerator extends Generator
 {
+    public $appContext = 'api'; // Default context
+
     public function getName()
     {
         return 'Route Viewer';
@@ -23,28 +27,33 @@ class RouteViewerGenerator extends Generator
 
     public function formView()
     {
-        return '@app/app/gii/routeViewer/views/form.php';
+        return '@gii/routeViewer/views/form.php';
     }
 
-    // public function getTemplates()
-    // {
-    //     return [
-    //         'default' => '@app/gii/routeViewer/templates/default',
-    //     ];
-    // }
+    public function rules()
+    {
+        return [
+            [['appContext'], 'in', 'range' => ['web', 'api']],
+        ];
+    }
 
-    // public function rules()
-    // {
-    //     return [
-    //         [['name'], 'string'],
-    //         [['name'], 'required'],
-    //     ];
-    // }
+    public function getRoutes()
+    {
+        if ($this->appContext === 'api') {
+            // Manually include the API configuration
+            $config = require(Yii::getAlias('@app/config/api.php'));
 
-    // public function attributeLabels()
-    // {
-    //     return [
-    //         'name' => 'Name',
-    //     ];
-    // }
+            // Set the URL manager to the API context
+            $urlManagerConfig = $config['components']['urlManager'] ?? [];
+            $urlManager = Yii::createObject(array_merge(
+                ['class' => UrlManager::class],
+                $urlManagerConfig
+            ));
+            return $urlManager->rules;
+        }
+
+        // By default — the current application
+        return Yii::$app->urlManager->rules;
+    }
+
 }

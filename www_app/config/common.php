@@ -2,7 +2,9 @@
 // This is the common configuration for both Web and Console applications
 require __DIR__ . '/aliases.php';
 
-require Yii::getAlias('@common') . '/helpers.php';;
+if (!function_exists('app')) {
+    require Yii::getAlias('@common') . '/helpers.php';;
+}
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';

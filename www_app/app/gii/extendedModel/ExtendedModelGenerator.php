@@ -97,7 +97,7 @@ class ExtendedModelGenerator extends Generator
 
     public function formView()
     {
-        return '@app/app/gii/extendedModel/views/form.php';
+        return '@gii/extendedModel/views/form.php';
     }
 
 }
