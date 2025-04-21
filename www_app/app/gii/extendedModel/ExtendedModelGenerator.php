@@ -55,6 +55,28 @@ class ExtendedModelGenerator extends Generator
         return array_merge(parent::stickyAttributes(), ['generateChildClass']);
     }
 
+    public function generateRules($table)
+    {
+        $rules = parent::generateRules($table);
+
+        $emailFields = [];
+
+        foreach ($table->columns as $column) {
+            $name = strtolower($column->name);
+
+            // Searching for "mail" or "email", but excluding those containing "mail_"
+            if ((str_contains($name, 'mail') || str_contains($name, 'email')) && !str_contains($name, 'mail_')) {
+                $emailFields[] = $column->name;
+            }
+        }
+
+        if (!empty($emailFields)) {
+            $rules[] = "[['" . implode("', '", $emailFields) . "'], 'email']";
+        }
+
+        return $rules;
+    }
+
     //  Generate the model files
     public function generate()
     {

@@ -10,7 +10,7 @@ use yii\db\ActiveRecord;
  *
  * @property int $id
  * @property string|null $language_code
- * @property string $name
+ * @property string $username
  * @property string $email
  * @property string|null $email_verified_at
  * @property string $password
@@ -27,7 +27,7 @@ class User extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%user}}'; // Use the correct table name
+        return '{{%user}}';
     }
 
     /**
@@ -45,12 +45,8 @@ class User extends ActiveRecord
             [['phone'], 'string', 'max' => 16],
             [['remember_token'], 'string', 'max' => 100],
             [['email'], 'unique'],
-            [['email'], 'email'], // check if email is valid
-            [['language_code'], 'exist',
-            'skipOnError' => true,
-            'targetClass' => Language::class,
-            'targetAttribute' => ['language_code' => 'code']
-            ],
+            [['language_code'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['language_code' => 'code']],
+            [['email'], 'email'],
         ];
     }
 
@@ -62,7 +58,7 @@ class User extends ActiveRecord
         return [
             'id' => 'ID',
             'language_code' => 'Language Code',
-            'username' => 'Name',
+            'username' => 'Username',
             'email' => 'Email',
             'email_verified_at' => 'Email Verified At',
             'password' => 'Password',

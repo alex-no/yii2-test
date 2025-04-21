@@ -33,7 +33,7 @@ class <?= $className ?> extends ActiveRecord
      */
     public static function tableName()
     {
-        return '<?= $tableName ?>';
+        return '{{%<?= $tableName ?>}}';
     }
 
     /**

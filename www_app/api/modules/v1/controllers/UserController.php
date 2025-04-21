@@ -59,7 +59,7 @@ class UserController extends Controller
      * @OA\Post(
      *     path="/api/user/logout",
      *     summary="User logout",
-     *     description="Logs out the authenticated user",
+     *     description="Logs out the authenticated user. You must include a valid token in the Authorization header.",
      *     tags={"User"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Response(
@@ -70,6 +70,14 @@ class UserController extends Controller
      *             @OA\Property(property="message", type="string", example="Logged out")
      *         )
      *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized - Token is missing or invalid",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     )
      * )
      */
     public function actionLogout()
