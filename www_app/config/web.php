@@ -53,6 +53,14 @@ if (YII_ENV_DEV) {
             ],
             'route-viewer' => [
                 'class' => 'app\gii\routeViewer\RouteViewerGenerator',
+                'configData' => [
+                    'contexts' => [
+                        'web' => 'Web',
+                        'api' => 'API',
+                    ],
+                    'defaultContext' => 'api',
+                    'currentUrlManager' => 'web',
+                ]
             ],
         ],
     ];

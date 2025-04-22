@@ -11,6 +11,8 @@ class RouteViewerGenerator extends Generator
     public $appContext = 'api'; // Default context
     public $filter = ''; // Filter for route patterns
 
+    public $configData = [];
+
     public function getName()
     {
         return 'Route Viewer';
@@ -33,17 +35,21 @@ class RouteViewerGenerator extends Generator
 
     public function rules()
     {
+        $contexts = $this->getConfig('contexts', [
+            'web' => 'Web',
+            'api' => 'API',
+        ]);
         return [
             [['appContext', 'filter'], 'safe'], // "safe" — for mass assignment
-            [['appContext'], 'in', 'range' => ['web', 'api']],
+            [['appContext'], 'in', 'range' => array_keys($contexts)],
         ];
     }
 
     public function getRoutes()
     {
-        $urlManager = $this->appContext === 'api'
-        ? $this->loadUrlManagerFromApi()
-        : Yii::$app->urlManager;
+        $urlManager = $this->appContext === $this->getConfig('currentUrlManager', 'web')
+        ? Yii::$app->urlManager
+        : $this->loadUrlManagerFromApi();
 
         $rules = $urlManager->rules;
 
@@ -180,5 +186,10 @@ class RouteViewerGenerator extends Generator
         }
 
         return ['short' => $short, 'hint' => $error];
+    }
+
+    public function getConfig($key, $default = [])
+    {
+        return $this->configData[$key] ?? $default;
     }
 }
