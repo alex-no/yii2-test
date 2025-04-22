@@ -37,7 +37,7 @@ class m250414_224926_language extends Migration
             'order' => 2,
         ]);
         $this->insert('language', [
-            'code' => 'fr',
+            'code' => 'ru',
             'short_name' => 'Рус',
             'full_name' => 'Русский',
             'is_enabled' => 1,

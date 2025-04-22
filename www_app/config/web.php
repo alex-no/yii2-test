@@ -9,7 +9,14 @@ $config = yii\helpers\ArrayHelper::merge(
         'id' => 'web-app',
         'controllerNamespace' => 'app\web\controllers',
         'viewPath' => '@webmain/views',
+        'bootstrap' => [
+            'setLanguage',
+        ],
         'components' => [
+            'setLanguage' => [
+                'class' => 'app\components\SetLanguageBootstrap',
+                'isApi' => false,
+            ],
             'request' => [
                 'cookieValidationKey' => 'secret-key-web',
             ],
