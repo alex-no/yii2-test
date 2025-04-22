@@ -26,7 +26,7 @@ class JwtAuth extends AuthMethod
      * @return \yii\web\IdentityInterface|null
      * @throws UnauthorizedHttpException
      */
-    public function authenticate($user, $request, $response)
+    public function authenticate($user, $request, $response = null)
     {
         $header = $request->getHeaders()->get($this->authHeader);
 
@@ -57,19 +57,6 @@ class JwtAuth extends AuthMethod
 
         throw new UnauthorizedHttpException('Missing or invalid Authorization header.');
     }
-    // public function authenticate($user, $request, $response)
-    // {
-    //     $authHeader = $request->getHeaders()->get('Authorization');
-    //     if ($authHeader && preg_match('/^Bearer\s+(.*?)$/', $authHeader, $matches)) {
-    //         $token = $matches[1];
-    //         $identity = JwtHelper::getUserFromToken($token);
-    //         if ($identity) {
-    //             return $identity;
-    //         }
-    //     }
-
-    //     throw new UnauthorizedHttpException('Invalid or missing JWT token');
-    // }
 
     public function encode(array $payload, string $key): string
     {

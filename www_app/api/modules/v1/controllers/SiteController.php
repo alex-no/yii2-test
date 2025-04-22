@@ -4,6 +4,7 @@ namespace app\api\modules\v1\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
+use app\components\JwtAuth;
 
 /**
  * @OA\Info(
@@ -16,14 +17,19 @@ class SiteController extends Controller
 {
     public function behaviors()
     {
-        return [
-            'contentNegotiator' => [
-                'class' => \yii\filters\ContentNegotiator::class,
-                'formats' => [
-                    'application/json' => Response::FORMAT_JSON,
-                ],
+        $behaviors = parent::behaviors();
+
+        $behaviors['authenticator'] = [
+            'class' => JwtAuth::class,
+        ];
+        $behaviors['contentNegotiator'] = [
+            'class' => \yii\filters\ContentNegotiator::class,
+            'formats' => [
+                'application/json' => Response::FORMAT_JSON,
             ],
         ];
+
+        return $behaviors;
     }
 
     /**

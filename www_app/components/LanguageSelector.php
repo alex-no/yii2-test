@@ -42,7 +42,7 @@ class LanguageSelector extends Component
         }
 
         // 3. User profile
-        if (!Yii::$app->user->isGuest) {
+        if (!$this->checkGuest()) {
             $lang = $this->extractValidLang(Yii::$app->user->identity->{$this->userAttribute} ?? null);
             if (!is_null($lang)) {
                 return $this->finalize($lang, $isApi);
@@ -92,7 +92,7 @@ class LanguageSelector extends Component
         }
 
         // save to user profile if authorized
-        if (!Yii::$app->user->isGuest) {
+        if (!$this->checkGuest()) {
             $user = Yii::$app->user->identity;
             if ($user->{$this->userAttribute} !== $lang) {
                 $user->{$this->userAttribute} = $lang;
@@ -149,6 +149,20 @@ class LanguageSelector extends Component
         }
 
         return null;
+    }
+
+    private function checkGuest(): bool
+    {
+        $user = Yii::$app->user;
+        if ($user->isGuest) {
+            $auth = new JwtAuth();
+            $identity = $auth->authenticate(Yii::$app->user, Yii::$app->request);
+
+            if ($identity) {
+                $user->login($identity);
+            }
+        }
+        return $user->isGuest;
     }
 
     /**
