@@ -27,54 +27,23 @@ class LanguageSelector extends Component
         }
 
         $param = $this->paramName;
-        $lang = null;
+        $request = Yii::$app->request;
 
-        // 1. POST
-        $lang = $this->extractValidLang(Yii::$app->request->post($param));
-        if (!is_null($lang)) {
-            return $this->finalize($lang, $isApi);
-        }
-
-        // 2. GET
-        $lang = $this->extractValidLang(Yii::$app->request->get($param));
-        if (!is_null($lang)) {
-            return $this->finalize($lang, $isApi);
-        }
-
-        // 3. User profile
-        if (!$this->checkGuest()) {
-            $lang = $this->extractValidLang(Yii::$app->user->identity->{$this->userAttribute} ?? null);
-            if (!is_null($lang)) {
+        foreach ([
+            fn() => $this->extractValidLang($request->post($param)), // 1. POST
+            fn() => $this->extractValidLang($request->get($param)), // 2. GET
+            fn() => !$this->checkGuest() ? $this->extractValidLang(Yii::$app->user->identity->{$this->userAttribute} ?? null) : null, // 3. User profile
+            fn() => !$isApi && Yii::$app->has('session') ? $this->extractValidLang(Yii::$app->session->get($param)) : null, // 4. Session (only for web)
+            fn() => !$isApi && $request->cookies->has($param) ? $this->extractValidLang($request->cookies->getValue($param)) : null, // 5. Cookies (only for web)
+            fn() => $request->headers->has('Accept-Language') ? $this->extractValidLang($request->headers->get('Accept-Language')) : null, // 6. Accept-Language header
+        ] as $resolver) {
+            $lang = $resolver();
+            if ($lang) {
                 return $this->finalize($lang, $isApi);
             }
         }
 
-        // 4. Session (only for web)
-        if (!$isApi && Yii::$app->has('session')) {
-            $lang = $this->extractValidLang(Yii::$app->session->get($param));
-            if (!is_null($lang)) {
-                return $this->finalize($lang, $isApi);
-            }
-        }
-
-        // 5. Cookies (only for web)
-        if (!$isApi && Yii::$app->request->cookies->has($param)) {
-            $lang = $this->extractValidLang(Yii::$app->request->cookies->getValue($param));
-            if (!is_null($lang)) {
-                return $this->finalize($lang, $isApi);
-            }
-        }
-
-        // 6. Accept-Language HTTP header
-        if (Yii::$app->request->headers->has('Accept-Language')) {
-            $lang = $this->extractValidLang(Yii::$app->request->headers->get('Accept-Language'));
-            if (!is_null($lang)) {
-                return $this->finalize($lang, $isApi);
-            }
-        }
-
-        // 7. Fallback to default
-        return $lang ?? $this->default;
+        return $this->default; // 7. Default language
     }
 
     protected function finalize(string $lang, bool $isApi): ?string
@@ -110,7 +79,9 @@ class LanguageSelector extends Component
     {
         $prioritized = [];
 
-        if (is_array($input)) {
+        if (empty($input)) {
+            return null;
+        } elseif (is_array($input)) {
             foreach ($input as $lang) {
                 $prioritized[$lang] = 1.0;
             }
@@ -154,7 +125,7 @@ class LanguageSelector extends Component
     private function checkGuest(): bool
     {
         $user = Yii::$app->user;
-        if ($user->isGuest) {
+        if ($user->isGuest && Yii::$app->request->headers->has('Authorization')) {
             $auth = new JwtAuth();
             $identity = $auth->authenticate(Yii::$app->user, Yii::$app->request);
 
