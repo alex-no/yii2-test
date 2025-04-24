@@ -47,7 +47,7 @@ trait LocalizedAttributeTrait
 
         $localized = "{$baseName}_{$lang}";
 
-        if (!$this->hasAttribute($localized)) {
+        if (method_exists($this, 'hasAttribute') && !$this->hasAttribute($localized)) {
             throw new MissingLocalizedAttributeException($localized);
         }
 
