@@ -13,6 +13,10 @@ trait LocalizedAttributeTrait
      */
     public string $localizedPrefixes = '@@';
 
+    public bool $isStrict = true;
+
+    public string $defaultLanguage = 'en';
+
     public function init()
     {
         if (is_callable('parent::init')) {
@@ -20,8 +24,8 @@ trait LocalizedAttributeTrait
         }
 
         // Key by class name
-        $class = static::class;
-        $class2 = self::class;
+        $class = isset($this->modelClass) ? $this->modelClass : static::class; // Model class name
+        $class2 = self::class; // Base class name AdvActiveRecord or AdvActiveQuery
         $globalConfig = Yii::$app->params['advActive'] ?? [];
         $config = $globalConfig[$class] ?? ($globalConfig[$class2] ?? []);
 
@@ -48,7 +52,10 @@ trait LocalizedAttributeTrait
         $localized = "{$baseName}_{$lang}";
 
         if (method_exists($this, 'hasAttribute') && !$this->hasAttribute($localized)) {
-            throw new MissingLocalizedAttributeException($localized);
+            if ($this->isStrict) {
+                throw new MissingLocalizedAttributeException($localized);
+            }
+            $localized = "{$baseName}_{$this->defaultLanguage}";
         }
 
         return $localized;

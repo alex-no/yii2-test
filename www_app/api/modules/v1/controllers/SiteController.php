@@ -88,17 +88,26 @@ class SiteController extends Controller
 
     public function actionTest()
     {
-        $id = Yii::$app->request->get('id', 1); // Retrieve id from GET request, default is 1
-        $petType = PetType::findOne($id);
-
-        if ($petType === null) {
-            $name = "PetType with id={$id} not found";
-        } else {
-            $name = $petType->{'##name'};
-        }
+        $types = PetType::find()
+            ->select(['id', '##name'])
+            ->where(['##name' => 'Собака'])
+            ->all();
 
         return [
-            'name' => $name,
+            'types' => $types,
         ];
+
+        // $id = Yii::$app->request->get('id', 1); // Retrieve id from GET request, default is 1
+        // $petType = PetType::findOne($id);
+
+        // if ($petType === null) {
+        //     $name = "PetType with id={$id} not found";
+        // } else {
+        //     $name = $petType->{'##name'};
+        // }
+
+        // return [
+        //     'name' => $name,
+        // ];
     }
 }

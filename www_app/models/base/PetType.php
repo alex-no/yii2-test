@@ -4,6 +4,7 @@ namespace app\models\base;
 
 use Yii;
 use app\components\i18n\AdvActiveRecord;
+use app\components\i18n\AdvActiveQuery;
 
 /**
  * This is the base model class for table "pet_type".
@@ -23,6 +24,14 @@ class PetType extends AdvActiveRecord
     public static function tableName()
     {
         return '{{%pet_type}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function find(): AdvActiveQuery
+    {
+        return new AdvActiveQuery(static::class);
     }
 
     /**

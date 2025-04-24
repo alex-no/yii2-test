@@ -7,12 +7,6 @@ class AdvActiveQuery extends ActiveQuery
 {
     use LocalizedAttributeTrait;
 
-    public function init()
-    {
-        parent::init();
-        $this->initLocalizedTrait(); // вручную инициализируем трейт
-    }
-
     public function select($columns, $option = null)
     {
         return parent::select($this->localizeColumns($columns), $option);
