@@ -27,9 +27,43 @@ class AdvActiveQuery extends ActiveQuery
         return parent::orWhere($this->localizeCondition($condition), $params);
     }
 
-    // — можно добавить еще аналогичные методы, например: filterWhere, orderBy, groupBy и т.д.
+    public function filterWhere($condition)
+    {
+        return parent::filterWhere($this->localizeCondition($condition));
+    }
 
-    protected function localizeColumns($columns)
+    public function andFilterWhere($condition)
+    {
+        return parent::andFilterWhere($this->localizeCondition($condition));
+    }
+
+    public function orFilterWhere($condition)
+    {
+        return parent::orFilterWhere($this->localizeCondition($condition));
+    }
+
+    public function orderBy($columns)
+    {
+        return parent::orderBy($this->localizeColumns($columns, true));
+    }
+
+    public function addOrderBy($columns)
+    {
+        return parent::addOrderBy($this->localizeColumns($columns, true));
+    }
+
+    public function groupBy($columns)
+    {
+        return parent::groupBy($this->localizeColumns($columns));
+    }
+
+    public function addGroupBy($columns)
+    {
+        return parent::addGroupBy($this->localizeColumns($columns));
+    }
+
+    // Converts strings/arrays of columns into localized names
+    protected function localizeColumns($columns, $isOrderBy = false)
     {
         if (is_string($columns)) {
             $columns = preg_split('/\s*,\s*/', $columns);
@@ -43,6 +77,9 @@ class AdvActiveQuery extends ActiveQuery
         foreach ($columns as $key => $col) {
             if (is_string($key)) {
                 $result[$this->getLocalizedAttributeName($key)] = $col;
+            } elseif ($isOrderBy) {
+                $col = preg_split('/\s+/', $col);
+                $result[$this->getLocalizedAttributeName($col[0])] = isset($col[1]) && strtoupper($col[1]) === 'DESC' ? SORT_DESC : SORT_ASC;
             } else {
                 $result[] = $this->getLocalizedAttributeName($col);
             }
@@ -51,15 +88,19 @@ class AdvActiveQuery extends ActiveQuery
         return $result;
     }
 
+    // Converts a condition (in the format ['@@name' => 'Cat']) into a localized one
     protected function localizeCondition($condition)
     {
         if (is_array($condition)) {
             $localized = [];
+
             foreach ($condition as $key => $value) {
                 if (is_string($key)) {
                     $localized[$this->getLocalizedAttributeName($key)] = $value;
-                } else {
+                } elseif (is_array($value)) {
                     $localized[$key] = $this->localizeCondition($value);
+                } else {
+                    $localized[$key] = $value;
                 }
             }
             return $localized;
