@@ -81,5 +81,14 @@ class User extends ActiveRecord
     {
         return $this->hasOne(Language::class, ['code' => 'language_code']);
     }
+    /**
+     * Gets query for [[PetOwners]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPetOwners()
+    {
+        return $this->hasMany(PetOwner::class, ['user_id' => 'id']);
+    }
 
 }
