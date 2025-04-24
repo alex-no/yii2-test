@@ -16,6 +16,7 @@ return [
     'GET languages/<id:\d+>' => 'v1/language/view',
 
     'GET db-tables' => 'v1/site/db-tables',
+    'GET test' => 'v1/site/test',
 
     'swagger/json' => 'v1/swagger/json',
     'swagger/ui' => 'v1/swagger/ui',
