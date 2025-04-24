@@ -1,11 +1,10 @@
-use Exception;
-
 <?php
 
 namespace app\components\i18n;
 
+use Exception;
 
-class MissingLocalizedAttributeException extends \Exception
+class MissingLocalizedAttributeException extends Exception
 {
     /**
      * MissingLocalizedAttributeException constructor.

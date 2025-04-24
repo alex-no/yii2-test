@@ -4,7 +4,6 @@ namespace app\api\modules\v1\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
-// use app\components\JwtAuth;
 use app\models\PetType;
 
 /**
@@ -20,9 +19,6 @@ class SiteController extends Controller
     {
         $behaviors = parent::behaviors();
 
-        // $behaviors['authenticator'] = [
-        //     'class' => JwtAuth::class,
-        // ];
         $behaviors['contentNegotiator'] = [
             'class' => \yii\filters\ContentNegotiator::class,
             'formats' => [
@@ -92,13 +88,13 @@ class SiteController extends Controller
 
     public function actionTest()
     {
-        $id = Yii::$app->request->get('id', 1); // Получаем id из GET-запроса, по умолчанию 1
+        $id = Yii::$app->request->get('id', 1); // Retrieve id from GET request, default is 1
         $petType = PetType::findOne($id);
 
         if ($petType === null) {
-            $name = "PetType с id={$id} не найден";
+            $name = "PetType with id={$id} not found";
         } else {
-            $name = $petType->{'@@name'};
+            $name = $petType->{'##name'};
         }
 
         return [

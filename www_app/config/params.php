@@ -15,4 +15,12 @@ return [
         //     'password',
         // ],
     ],
+    'advActive' => [
+        \app\components\i18n\AdvActiveRecord::class => [
+            'localizedPrefixes' => '@@',
+        ],
+        \app\models\PetType::class => [
+            'localizedPrefixes' => '##',
+        ],
+    ],
 ];

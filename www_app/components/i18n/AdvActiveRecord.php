@@ -16,7 +16,6 @@ class AdvActiveRecord extends ActiveRecord
     public function __set($name, $value)
     {
         $localized = $this->getLocalizedAttributeName($name);
-
         return parent::__set($localized, $value);
     }
 }
