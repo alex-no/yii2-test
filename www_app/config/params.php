@@ -16,13 +16,16 @@ return [
         // ],
     ],
     'advActive' => [
+        // Common AdvActiveRecord config
         \app\components\i18n\AdvActiveRecord::class => [
             'localizedPrefixes' => '@@',
             'isStrict' => true,
         ],
+        // Common AdvActiveQuery config
         \app\components\i18n\AdvActiveQuery::class => [
             'localizedPrefixes' => '@@',
         ],
+        // Personal Model PetType config
         \app\models\PetType::class => [
             'localizedPrefixes' => '##',
         ],
