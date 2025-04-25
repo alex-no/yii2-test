@@ -4,6 +4,7 @@ namespace app\models\base;
 
 use Yii;
 use app\components\i18n\AdvActiveRecord;
+use app\components\i18n\AdvActiveQuery;
 
 /**
  * This is the base model class for table "pet_owner".
@@ -32,6 +33,14 @@ class PetOwner extends AdvActiveRecord
     /**
      * {@inheritdoc}
      */
+    public static function find(): AdvActiveQuery
+    {
+        return new AdvActiveQuery(static::class);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function rules()
     {
         return [
@@ -52,16 +61,16 @@ class PetOwner extends AdvActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'user_id' => 'User ID',
-            'pet_type_id' => 'Pet Type ID',
-            'pet_breed_id' => 'Pet Breed ID',
-            'nickname_uk' => 'Nickname Uk',
-            'nickname_en' => 'Nickname En',
-            'nickname_ru' => 'Nickname Ru',
-            'year_of_birth' => 'Year Of Birth',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'id' => Yii::t('app', 'ID'),
+            'user_id' => Yii::t('app', 'User ID'),
+            'pet_type_id' => Yii::t('app', 'Pet Type ID'),
+            'pet_breed_id' => Yii::t('app', 'Pet Breed ID'),
+            'nickname_uk' => Yii::t('app', 'Nickname Uk'),
+            'nickname_en' => Yii::t('app', 'Nickname En'),
+            'nickname_ru' => Yii::t('app', 'Nickname Ru'),
+            'year_of_birth' => Yii::t('app', 'Year Of Birth'),
+            'created_at' => Yii::t('app', 'Created At'),
+            'updated_at' => Yii::t('app', 'Updated At'),
         ];
     }
 

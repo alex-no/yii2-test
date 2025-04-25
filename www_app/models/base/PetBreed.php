@@ -4,6 +4,7 @@ namespace app\models\base;
 
 use Yii;
 use app\components\i18n\AdvActiveRecord;
+use app\components\i18n\AdvActiveQuery;
 
 /**
  * This is the base model class for table "pet_breed".
@@ -29,6 +30,14 @@ class PetBreed extends AdvActiveRecord
     /**
      * {@inheritdoc}
      */
+    public static function find(): AdvActiveQuery
+    {
+        return new AdvActiveQuery(static::class);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function rules()
     {
         return [
@@ -47,13 +56,13 @@ class PetBreed extends AdvActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'pet_type_id' => 'Pet Type ID',
-            'name_uk' => 'Name Uk',
-            'name_en' => 'Name En',
-            'name_ru' => 'Name Ru',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'id' => Yii::t('app', 'ID'),
+            'pet_type_id' => Yii::t('app', 'Pet Type ID'),
+            'name_uk' => Yii::t('app', 'Name Uk'),
+            'name_en' => Yii::t('app', 'Name En'),
+            'name_ru' => Yii::t('app', 'Name Ru'),
+            'created_at' => Yii::t('app', 'Created At'),
+            'updated_at' => Yii::t('app', 'Updated At'),
         ];
     }
 
