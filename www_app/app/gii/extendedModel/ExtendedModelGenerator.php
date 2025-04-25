@@ -122,4 +122,12 @@ class ExtendedModelGenerator extends Generator
         return '@gii/extendedModel/views/form.php';
     }
 
+    public function generateLabels($table)
+    {
+        $labels = parent::generateLabels($table);
+        foreach ($labels as &$label) {
+            $label = $this->enableI18N ? 'Yii::t(\'app\', \'' . $label . '\')' : '\'' . $label . '\'';
+        }
+        return $labels;
+    }
 }

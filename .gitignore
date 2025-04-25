@@ -9,3 +9,5 @@ node_modules
 /www_app/web/public/pi.php
 /doc/~*.xlsx
 bak
+/doc/PetType1.php
+/doc/PetType2.php

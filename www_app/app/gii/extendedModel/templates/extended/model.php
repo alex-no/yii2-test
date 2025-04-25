@@ -11,13 +11,19 @@
 /* @var $rules string[] */
 /* @var $relations array */
 
+$baseClassArr = explode('\\', $generator->baseClass);
+$queryBaseClassArr = explode('\\', $generator->queryBaseClass);
+$isAdvActiveQuery = end($queryBaseClassArr) === 'AdvActiveQuery';
+
 echo "<?php\n";
 ?>
 
 namespace <?= $generator->ns ?>\base;
 
 use Yii;
-use yii\db\ActiveRecord;
+use <?= $generator->baseClass ?>;
+<?= $isAdvActiveQuery ? 'use ' . $generator->queryBaseClass . ';' : '' ?>
+
 
 /**
  * This is the base model class for table "<?= $tableName ?>".
@@ -26,7 +32,7 @@ use yii\db\ActiveRecord;
  * @property <?= $property['type'] . ' $' . $property['name'] . "\n" ?>
 <?php endforeach; ?>
  */
-class <?= $className ?> extends ActiveRecord
+class <?= $className ?> extends <?= end($baseClassArr) . "\n" ?>
 {
     /**
      * {@inheritdoc}
@@ -35,6 +41,16 @@ class <?= $className ?> extends ActiveRecord
     {
         return '{{%<?= $tableName ?>}}';
     }
+<?php if ($isAdvActiveQuery): ?>
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function find(): <?= end($queryBaseClassArr) . "\n" ?>
+    {
+        return new <?= end($queryBaseClassArr) ?>(static::class);
+    }
+<?php endif; ?>
 
     /**
      * {@inheritdoc}
@@ -53,7 +69,7 @@ class <?= $className ?> extends ActiveRecord
     {
         return [
 <?= empty($labels) ? '' : '            ' . implode(",\n            ", array_map(
-    fn($name, $label) => "'$name' => " . var_export($label, true),
+    fn($name, $label) => "'$name' => " . $label,
     array_keys($labels),
     $labels
 )) . ",\n" ?>
