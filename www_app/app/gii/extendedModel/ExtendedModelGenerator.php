@@ -19,6 +19,31 @@ class ExtendedModelGenerator extends Generator
 {
     public $generateChildClass = true;
 
+    public $baseClassOptions = [
+        'yii\db\ActiveRecord',
+        'app\components\i18n\AdvActiveRecord',
+    ];
+
+    public $queryBaseClassOptions = [
+        'yii\db\ActiveQuery',
+        'app\components\i18n\AdvActiveQuery',
+    ];
+
+    public function init()
+    {
+        parent::init();
+
+        $config = Yii::$app->getModule('gii')->generators['model'] ?? [];
+
+        if (!empty($config['baseClassOptions']) && is_array($config['baseClassOptions'])) {
+            $this->baseClassOptions = array_unique(array_merge($this->baseClassOptions, $config['baseClassOptions']));
+        }
+
+        if (!empty($config['queryBaseClassOptions']) && is_array($config['queryBaseClassOptions'])) {
+            $this->queryBaseClassOptions = array_unique(array_merge($this->queryBaseClassOptions, $config['queryBaseClassOptions']));
+        }
+    }
+
     public function getName()
     {
         return 'Advanced Model Generator';
@@ -129,5 +154,35 @@ class ExtendedModelGenerator extends Generator
             $label = $this->enableI18N ? 'Yii::t(\'app\', \'' . $label . '\')' : '\'' . $label . '\'';
         }
         return $labels;
+    }
+    // Set the default base class and query base class
+    public function load($data, $formName = null)
+    {
+        $loaded = parent::load($data, $formName);
+
+        if ($loaded && isset($this->modelClass) && $this->modelClass !== '') {
+            $path = Yii::getAlias('@app/models/base/' . str_replace('\\', '/', $this->modelClass)) . '.php';
+            if (is_file($path)) {
+                $content = file_get_contents($path);
+
+                // Find baseClass by "extends"
+                if (preg_match('/class\s+\w+\s+extends\s+([\\\\\w]+)/', $content, $matches)) {
+                    $this->baseClass = $matches[1];
+                }
+
+                // Find by queryClass
+                if ($this->queryClass !== '') {
+                    $queryPath = Yii::getAlias('@app/models/base/' . str_replace('\\', '/', $this->queryClass)) . '.php';
+                    if (is_file($queryPath)) {
+                        $queryContent = file_get_contents($queryPath);
+                        if (preg_match('/public\s+static\s+function\s+find\s*\(\)\s*:\s*([\\\\\w]+)/', $queryContent, $matches)) {
+                            $this->queryBaseClass = $matches[1];
+                        }
+                    }
+                }
+            }
+        }
+
+        return $loaded;
     }
 }

@@ -2,6 +2,8 @@
 
 use yii\gii\generators\model\Generator;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var yii\widgets\ActiveForm $form */
@@ -21,7 +23,14 @@ echo $form->field($generator, 'standardizeCapitals')->checkbox();
 echo $form->field($generator, 'singularize')->checkbox();
 echo $form->field($generator, 'modelClass');
 echo $form->field($generator, 'ns');
-echo $form->field($generator, 'baseClass');
+//echo $form->field($generator, 'baseClass');
+echo $form->field($generator, 'baseClass')->textInput([
+    'list' => 'base-class-options',
+    'autocomplete' => 'off',
+]);
+echo Html::tag('datalist', implode("\n", array_map(fn($c) => Html::tag('option', '', ['value' => $c]), $generator->baseClassOptions)), [
+    'id' => 'base-class-options',
+]);
 echo $form->field($generator, 'generateRelations')->dropDownList([
     Generator::RELATIONS_NONE => 'No relations',
     Generator::RELATIONS_ALL => 'All relations',
@@ -38,7 +47,14 @@ echo $form->field($generator, 'generateLabelsFromComments')->checkbox();
 echo $form->field($generator, 'generateQuery')->checkbox();
 echo $form->field($generator, 'queryNs');
 echo $form->field($generator, 'queryClass');
-echo $form->field($generator, 'queryBaseClass');
+//echo $form->field($generator, 'queryBaseClass');
+echo $form->field($generator, 'queryBaseClass')->textInput([
+    'list' => 'query-base-class-options',
+    'autocomplete' => 'off',
+]);
+echo Html::tag('datalist', implode("\n", array_map(fn($c) => Html::tag('option', '', ['value' => $c]), $generator->queryBaseClassOptions)), [
+    'id' => 'query-base-class-options',
+]);
 echo $form->field($generator, 'enableI18N')->checkbox();
 echo $form->field($generator, 'messageCategory');
 echo $form->field($generator, 'generateChildClass')->checkbox();

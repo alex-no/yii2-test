@@ -57,6 +57,16 @@ if (YII_ENV_DEV) {
                 'templates' => [
                     'Extended Model' => '@app/app/gii/extendedModel/templates/extended', // path to the template
                 ],
+                'baseClassOptions' => [
+                    'yii\db\ActiveRecord',
+                    'app\components\i18n\AdvActiveRecord',
+                    //'app\models\MyCustomActiveRecord',
+                ],
+                'queryBaseClassOptions' => [
+                    'yii\db\ActiveQuery',
+                    'app\components\i18n\AdvActiveQuery',
+                    //'app\models\MyCustomQuery',
+                ],
             ],
             'route-viewer' => [
                 'class' => 'app\gii\routeViewer\RouteViewerGenerator',
