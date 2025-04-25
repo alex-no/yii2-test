@@ -90,7 +90,7 @@ class SiteController extends Controller
     {
         $types = PetType::find()
             ->select(['id', '##name'])
-            ->orderBy('##name')
+            ->orderBy('##name DESC')
             ->all();
 
         return [
