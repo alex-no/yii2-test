@@ -13,7 +13,7 @@ class PetType extends PetTypeBase
     // {
     //     return [
     //         'id',
-    //         '@@name',
+    //         'name' => '@@name',
     //     ];
     // }
 }
