@@ -5,6 +5,9 @@ namespace app\components\i18n;
 use Yii;
 use app\components\i18n\MissingLocalizedAttributeException;
 
+/**
+ * Trait for working with localized attributes.
+ */
 trait LocalizedAttributeTrait
 {
     /**
