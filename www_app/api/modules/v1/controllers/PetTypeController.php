@@ -34,13 +34,29 @@ class PetTypeController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/pet-type",
-     *     summary="List all Pet Types",
-     *     tags={"PetType"},
+     *     path="/api/pet-types",
+     *     summary="Get list of Pet Types",
+     *     tags={"PetTypes"},
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/PetType"))
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example="1"),
+     *                 @OA\Property(property="name", type="string", example="собака"),
+     *                 @OA\Property(property="updated_at", type="datetime", example="2025-03-12T20:08:04.566Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not Found"
      *     )
      * )
      *
@@ -84,22 +100,65 @@ class PetTypeController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/pet-type/{id}",
-     *     summary="View a Pet Type",
-     *     tags={"PetType"},
+     *     path="/api/pet-types/{id}",
+     *     summary="Retrieve a specific resource by ID",
+     *     tags={"PetTypes"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="Pet Type ID",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         description="ID of the Pet Type to retrieve",
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/PetType")
+     *         description="Successful retrieval of the resource",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="id",
+     *                 type="integer",
+     *                 example="1",
+     *                 description="ID of the requested Pet Type"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_uk",
+     *                 type="string",
+     *                 example="собака",
+     *                 description="Name of the requested Pet Type in Ukrainian"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_en",
+     *                 type="string",
+     *                 example="dog",
+     *                 description="Name of the requested Pet Type in English"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_ru",
+     *                 type="string",
+     *                 example="собака",
+     *                 description="Name of the requested Pet Type in Russian"
+     *             ),
+     *             @OA\Property(
+     *                 property="updated_at",
+     *                 type="datetime",
+     *                 example="2025-03-12T20:08:04.566Z",
+     *                 description="Date and time of the last update"
+     *             ),
+     *             @OA\Property(
+     *                 property="created_at",
+     *                 type="datetime",
+     *                 example="2025-03-12T20:08:04.566Z",
+     *                 description="Date and time of the creation"
+     *             )
+     *         )
      *     ),
-     *     @OA\Response(response=404, description="Pet Type not found")
+     *     @OA\Response(
+     *         response=404,
+     *         description="Resource not found"
+     *     )
      * )
      *
      * Displays a single PetType model.
@@ -111,19 +170,87 @@ class PetTypeController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/pet-type",
-     *     summary="Create a new Pet Type",
-     *     tags={"PetType"},
+     *     path="/api/pet-types",
+     *     summary="Store a new Pet Type",
+     *     description="Creates a new Pet Type and stores it in the database.",
+     *     operationId="storePetTypes",
+     *     tags={"PetTypes"},
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/PetType")
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"name_uk", "name_en", "name_ru"},
+     *             @OA\Property(
+     *                 property="name_uk",
+     *                 type="string",
+     *                 example="собака",
+     *                 description="Name of the created Pet Type in Ukrainian"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_en",
+     *                 type="string",
+     *                 example="dog",
+     *                 description="Name of the created Pet Type in English"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_ru",
+     *                 type="string",
+     *                 example="собака",
+     *                 description="Name of the created Pet Type in Russian"
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Pet Type created",
-     *         @OA\JsonContent(ref="#/components/schemas/PetType")
+     *         description="Pet Type created successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="id",
+     *                 type="integer",
+     *                 example="1",
+     *                 description="ID of the created Pet Type"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_uk",
+     *                 type="string",
+     *                 example="собака",
+     *                 description="Name of the created Pet Type in Ukrainian"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_en",
+     *                 type="string",
+     *                 example="dog",
+     *                 description="Name of the created Pet Type in English"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_ru",
+     *                 type="string",
+     *                 example="собака",
+     *                 description="Name of the created Pet Type in Russian"
+     *             ),
+     *             @OA\Property(
+     *                 property="updated_at",
+     *                 type="datetime",
+     *                 example="2025-03-12T20:08:04.566Z",
+     *                 description="Date and time of the last update"
+     *             ),
+     *             @OA\Property(
+     *                 property="created_at",
+     *                 type="datetime",
+     *                 example="2025-03-12T20:08:04.566Z",
+     *                 description="Date and time of the creation"
+     *             )
+     *         )
      *     ),
-     *     @OA\Response(response=400, description="Invalid input")
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
      * )
      *
      * Creates a new PetType model.
@@ -145,26 +272,109 @@ class PetTypeController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/pet-type/{id}",
+     *     path="/api/pet-types/{id}",
      *     summary="Update an existing Pet Type",
-     *     tags={"PetType"},
+     *     description="Updates the details of an existing Pet Type by its ID.",
+     *     operationId="updatePetType",
+     *     tags={"PetTypes"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="Pet Type ID",
+     *         description="ID of the Pet Type to update",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/PetType")
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="name_uk",
+     *                 type="string",
+     *                 example="собака",
+     *                 description="Name of the updated Pet Type in Ukrainian"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_en",
+     *                 type="string",
+     *                 example="dog",
+     *                 description="Name of the updated Pet Type in English"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_ru",
+     *                 type="string",
+     *                 example="собака",
+     *                 description="Name of the updated Pet Type in Russian"
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Pet Type updated",
-     *         @OA\JsonContent(ref="#/components/schemas/PetType")
+     *         description="Resource updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="id",
+     *                 type="integer",
+     *                 example="1",
+     *                 description="ID of the updated Pet Type"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_uk",
+     *                 type="string",
+     *                 example="собака",
+     *                 description="Name of the updated Pet Type in Ukrainian"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_en",
+     *                 type="string",
+     *                 example="dog",
+     *                 description="Name of the updated Pet Type in English"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_ru",
+     *                 type="string",
+     *                 example="собака",
+     *                 description="Name of the updated Pet Type in Russian"
+     *             ),
+     *             @OA\Property(
+     *                 property="updated_at",
+     *                 type="datetime",
+     *                 example="2025-03-12T20:08:04.566Z",
+     *                 description="Date and time of the last update"
+     *             ),
+     *             @OA\Property(
+     *                 property="created_at",
+     *                 type="datetime",
+     *                 example="2025-03-12T20:08:04.566Z",
+     *                 description="Date and time of the creation"
+     *             )
+     *         )
      *     ),
-     *     @OA\Response(response=404, description="Pet Type not found")
+     *     @OA\Response(
+     *         response=404,
+     *         description="Resource not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid input",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string"
+     *             )
+     *         )
+     *     )
      * )
      *
      * Updates an existing PetType model.
@@ -182,18 +392,53 @@ class PetTypeController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/pet-type/{id}",
+     *     path="/api/pet-types/{id}",
      *     summary="Delete a Pet Type",
-     *     tags={"PetType"},
+     *     description="Deletes a PetType by its ID",
+     *     operationId="destroyPetType",
+     *     tags={"PetTypes"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="Pet Type ID",
+     *         description="ID of the Pet Type to delete",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
      *     ),
-     *     @OA\Response(response=204, description="Pet Type deleted"),
-     *     @OA\Response(response=404, description="Pet Type not found")
+     *     @OA\Response(
+     *         response=200,
+     *         description="Pet Type deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Pet Type deleted successfully"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Resource not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="Resource not found"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="Internal server error"
+     *             )
+     *         )
+     *     )
      * )
      *
      * Deletes an existing PetType model.
