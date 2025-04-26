@@ -2,6 +2,7 @@
 
 namespace app\api\modules\v1\controllers;
 
+use Yii;
 use app\models\PetType;
 use yii\data\ActiveDataProvider;
 use yii\rest\Controller;
@@ -32,48 +33,98 @@ class PetTypeController extends Controller
     }
 
     /**
-     * Lists all PetType models.
+     * @OA\Get(
+     *     path="/pet-type",
+     *     summary="List all Pet Types",
+     *     tags={"PetType"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/PetType"))
+     *     )
+     * )
      *
-     * @return string
+     * Lists all PetType models.
      */
     public function actionIndex()
     {
+        $query = PetType::find()
+            ->select(['id', '@@name'])
+            // ->select([
+            //     "id" => "id",
+            //     "name" => "@@name",
+            // ])
+            ->orderBy(['@@name' => SORT_ASC])
+            ->asArray();
+
         $dataProvider = new ActiveDataProvider([
-            'query' => PetType::find(),
-            /*
+            'query' => $query,
             'pagination' => [
-                'pageSize' => 50
+                'pageSize' => 5
             ],
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ]
-            ],
-            */
+            // 'sort' => [
+            //     'defaultOrder' => [
+            //         '@@name' => SORT_DESC,
+            //     ]
+            // ],
         ]);
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
+        return [
+            'items' => $dataProvider->getModels(), // data
+            '_meta' => [
+                'totalCount' => $dataProvider->getTotalCount(),
+                'pageCount' => $dataProvider->pagination->getPageCount(),
+                'currentPage' => $dataProvider->pagination->getPage() + 1,
+                'perPage' => $dataProvider->pagination->getPageSize(),
+            ],
+        ];
     }
 
     /**
+     * @OA\Get(
+     *     path="/pet-type/{id}",
+     *     summary="View a Pet Type",
+     *     tags={"PetType"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Pet Type ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/PetType")
+     *     ),
+     *     @OA\Response(response=404, description="Pet Type not found")
+     * )
+     *
      * Displays a single PetType model.
-     * @param int $id ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        return $this->findModel($id);
     }
 
     /**
+     * @OA\Post(
+     *     path="/pet-type",
+     *     summary="Create a new Pet Type",
+     *     tags={"PetType"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/PetType")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Pet Type created",
+     *         @OA\JsonContent(ref="#/components/schemas/PetType")
+     *     ),
+     *     @OA\Response(response=400, description="Invalid input")
+     * )
+     *
      * Creates a new PetType model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
@@ -87,17 +138,34 @@ class PetTypeController extends Controller
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $model;
     }
 
     /**
+     * @OA\Put(
+     *     path="/pet-type/{id}",
+     *     summary="Update an existing Pet Type",
+     *     tags={"PetType"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Pet Type ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/PetType")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Pet Type updated",
+     *         @OA\JsonContent(ref="#/components/schemas/PetType")
+     *     ),
+     *     @OA\Response(response=404, description="Pet Type not found")
+     * )
+     *
      * Updates an existing PetType model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id)
     {
@@ -107,23 +175,32 @@ class PetTypeController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        return $model;
     }
 
     /**
+     * @OA\Delete(
+     *     path="/pet-type/{id}",
+     *     summary="Delete a Pet Type",
+     *     tags={"PetType"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Pet Type ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=204, description="Pet Type deleted"),
+     *     @OA\Response(response=404, description="Pet Type not found")
+     * )
+     *
      * Deletes an existing PetType model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return ['success' => true];
     }
 
     /**

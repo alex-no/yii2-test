@@ -15,6 +15,14 @@ return [
     'GET languages' => 'v1/language/index',
     'GET languages/<id:\d+>' => 'v1/language/view',
 
+    [
+        'class' => 'yii\rest\UrlRule',
+        'controller' => [
+            'pet-types' => 'v1/pet-type',
+        ],
+        'pluralize' => true,
+    ],
+
     'GET db-tables' => 'v1/site/db-tables',
     'GET test' => 'v1/site/test',
 

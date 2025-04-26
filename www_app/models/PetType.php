@@ -9,4 +9,11 @@ use app\models\base\PetType as PetTypeBase;
  */
 class PetType extends PetTypeBase
 {
+    // public function fields()
+    // {
+    //     return [
+    //         'id',
+    //         '@@name',
+    //     ];
+    // }
 }

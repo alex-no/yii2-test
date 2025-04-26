@@ -26,8 +26,8 @@ return [
             'localizedPrefixes' => '@@',
         ],
         // Personal Model PetType config
-        \app\models\PetType::class => [
-            'localizedPrefixes' => '##',
-        ],
+        // \app\models\PetType::class => [
+        //     'localizedPrefixes' => '##',
+        // ],
     ],
 ];
