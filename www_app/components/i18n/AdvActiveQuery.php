@@ -44,12 +44,12 @@ class AdvActiveQuery extends ActiveQuery
 
     public function orderBy($columns)
     {
-        return parent::orderBy($this->localizeColumns($columns, true));
+        return parent::orderBy($this->localizeOrderColumns($columns));
     }
 
     public function addOrderBy($columns)
     {
-        return parent::addOrderBy($this->localizeColumns($columns, true));
+        return parent::addOrderBy($this->localizeOrderColumns($columns));
     }
 
     public function groupBy($columns)
@@ -63,39 +63,51 @@ class AdvActiveQuery extends ActiveQuery
     }
 
     // Converts strings/arrays of columns into localized names
-    protected function localizeColumns($columns, $isOrderBy = false)
+    // In select: $columns = ['id', '@@name'] or ['name' => '@@name']
+    protected function localizeColumns($columns)
     {
-        if (is_string($columns)) {
-            $columns = preg_split('/\s*,\s*/', $columns);
-        }
-
-        if (!is_array($columns)) {
-            return $columns;
-        }
+        $columns = $this->stringToArray($columns);
 
         $result = [];
         foreach ($columns as $key => $col) {
-            if ($isOrderBy) {
-                // In orderBy: $columns = ['@@name' => SORT_ASC] or ['@@name DESC', '@@title ASC']
-                if (is_string($key)) {
-                    $result[$this->getLocalizedAttributeName($key)] = $col;
-                } else {
-                    $colParts = preg_split('/\s+/', $col);
-                    $localizedColumn = $this->getLocalizedAttributeName($colParts[0]);
-                    $result[$localizedColumn] = isset($colParts[1]) && strtoupper($colParts[1]) === 'DESC' ? SORT_DESC : SORT_ASC;
-                }
+            if (is_string($key)) {
+                $result[$key] = $this->getLocalizedAttributeName($col);
             } else {
-                // In select: $columns = ['id', '@@name'] or ['name' => '@@name']
-                if (is_string($key)) {
-                    // Алиас => поле
-                    $result[$key] = $this->getLocalizedAttributeName($col);
-                } else {
-                    $result[] = $this->getLocalizedAttributeName($col);
-                }
+                $result[] = $this->getLocalizedAttributeName($col);
             }
         }
 
         return $result;
+    }
+
+    // Converts strings/arrays of columns into localized names
+    // In orderBy: $columns = ['@@name' => SORT_ASC] or ['@@name DESC', '@@title ASC']
+    protected function localizeOrderColumns($columns)
+    {
+        $columns = $this->stringToArray($columns);
+
+        $result = [];
+        foreach ($columns as $key => $col) {
+            if (is_string($key)) {
+                $result[$this->getLocalizedAttributeName($key)] = $col;
+            } else {
+                $colParts = preg_split('/\s+/', $col);
+                $localizedColumn = $this->getLocalizedAttributeName($colParts[0]);
+                $result[$localizedColumn] = isset($colParts[1]) && strtoupper($colParts[1]) === 'DESC' ? SORT_DESC : SORT_ASC;
+            }
+        }
+
+        return $result;
+    }
+
+    protected function stringToArray($columns)
+    {
+        $result = is_string($columns) ? preg_split('/\s*,\s*/', $columns) : $columns;
+        if (!is_array($result)) {
+            $result = [$result];
+        }
+        return $result;
+
     }
 
     // Converts a condition (in the format ['@@name' => 'Cat']) into a localized one
