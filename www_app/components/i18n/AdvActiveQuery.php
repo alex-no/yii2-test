@@ -75,13 +75,23 @@ class AdvActiveQuery extends ActiveQuery
 
         $result = [];
         foreach ($columns as $key => $col) {
-            if (is_string($key)) {
-                $result[$this->getLocalizedAttributeName($key)] = $col;
-            } elseif ($isOrderBy) {
-                $col = preg_split('/\s+/', $col);
-                $result[$this->getLocalizedAttributeName($col[0])] = isset($col[1]) && strtoupper($col[1]) === 'DESC' ? SORT_DESC : SORT_ASC;
+            if ($isOrderBy) {
+                // In orderBy: $columns = ['@@name' => SORT_ASC] or ['@@name DESC', '@@title ASC']
+                if (is_string($key)) {
+                    $result[$this->getLocalizedAttributeName($key)] = $col;
+                } else {
+                    $colParts = preg_split('/\s+/', $col);
+                    $localizedColumn = $this->getLocalizedAttributeName($colParts[0]);
+                    $result[$localizedColumn] = isset($colParts[1]) && strtoupper($colParts[1]) === 'DESC' ? SORT_DESC : SORT_ASC;
+                }
             } else {
-                $result[] = $this->getLocalizedAttributeName($col);
+                // In select: $columns = ['id', '@@name'] or ['name' => '@@name']
+                if (is_string($key)) {
+                    // Алиас => поле
+                    $result[$key] = $this->getLocalizedAttributeName($col);
+                } else {
+                    $result[] = $this->getLocalizedAttributeName($col);
+                }
             }
         }
 

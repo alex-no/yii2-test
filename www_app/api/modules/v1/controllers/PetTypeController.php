@@ -49,11 +49,11 @@ class PetTypeController extends Controller
     public function actionIndex()
     {
         $query = PetType::find()
-            ->select(['id', '@@name'])
-            // ->select([
-            //     "id" => "id",
-            //     "name" => "@@name",
-            // ])
+            // ->select(['id', '@@name'])
+            ->select([
+                "id" => "id",
+                "name" => "@@name",
+            ])
             ->orderBy(['@@name' => SORT_ASC])
             ->asArray();
 
