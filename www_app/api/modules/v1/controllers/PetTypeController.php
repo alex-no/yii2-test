@@ -4,7 +4,7 @@ namespace app\api\modules\v1\controllers;
 
 use Yii;
 use app\models\PetType;
-use yii\data\ActiveDataProvider;
+use app\components\i18n\AdvActiveDataProvider;
 use yii\rest\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -71,20 +71,20 @@ class PetTypeController extends Controller
                 "id" => "id",
                 "name" => "@@name",
             ])
-            //->orderBy(['@@name' => SORT_ASC])
-            ->orderBy('@@name DESC')
+            // ->orderBy(['@@name' => SORT_ASC])
+            // ->orderBy('@@name DESC')
             ->asArray();
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider = new AdvActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSize' => 5
             ],
-            // 'sort' => [
-            //     'defaultOrder' => [
-            //         '@@name' => SORT_DESC,
-            //     ]
-            // ],
+            'sort' => [
+                'defaultOrder' => [
+                    '@@name' => SORT_DESC,
+                ]
+            ],
         ]);
 
         return [

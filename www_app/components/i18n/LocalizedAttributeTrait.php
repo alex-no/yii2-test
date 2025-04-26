@@ -60,4 +60,16 @@ trait LocalizedAttributeTrait
 
         return $localized;
     }
+
+    /**
+     * Returns localized settings for external usage (e.g., in DataProvider).
+     */
+    public function getLocalizedSettings(): array
+    {
+        return [
+            'localizedPrefixes' => $this->localizedPrefixes,
+            'defaultLanguage' => $this->defaultLanguage,
+            'isStrict' => $this->isStrict,
+        ];
+    }
 }
