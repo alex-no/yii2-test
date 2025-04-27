@@ -48,20 +48,40 @@ class RouteViewerGenerator extends Generator
     public function getRoutes()
     {
         $urlManager = $this->appContext === $this->getConfig('currentUrlManager', 'web')
-        ? Yii::$app->urlManager
-        : $this->loadUrlManagerFromApi();
+            ? Yii::$app->urlManager
+            : $this->loadUrlManagerFromApi();
 
         $rules = $urlManager->rules;
+        $normalizedRules = [];
 
+        foreach ($rules as $rule) {
+            if ($rule instanceof \yii\rest\UrlRule) {
+                foreach ($this->extractSubRules($rule) as $subRules) {
+                    foreach ($subRules as $subRule) {
+                        $normalizedRules[] = $subRule;
+                    }
+                }
+            } else {
+                $normalizedRules[] = $rule;
+            }
+        }
 
         if ($this->filter) {
-            $rules = array_filter($rules, function ($rule) {
-                $pattern = is_object($rule) && property_exists($rule, 'name') ? $rule->name : $rule->route;
-                return stripos($pattern, $this->filter) === 0;
+            $normalizedRules = array_filter($normalizedRules, function ($rule) {
+                $pattern = $rule->name ?? $rule->route ?? null;
+                return $pattern !== null && stripos($pattern, $this->filter) === 0;
             });
         }
 
-        return $this->validateRules($rules);
+        return $this->validateRules($normalizedRules);
+    }
+
+    protected function extractSubRules(\yii\rest\UrlRule $rule): array
+    {
+        $reflection = new \ReflectionClass($rule);
+        $property = $reflection->getProperty('rules');
+        $property->setAccessible(true);
+        return $property->getValue($rule) ?: [];
     }
 
     protected function loadUrlManagerFromApi(): UrlManager
