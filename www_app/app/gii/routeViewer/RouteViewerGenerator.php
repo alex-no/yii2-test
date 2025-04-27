@@ -123,16 +123,16 @@ class RouteViewerGenerator extends Generator
 
                         $namespaceBase = 'app\\' . $this->appContext;
                         $namespace = $namespaceBase . '\\controllers';
-                        $controllerClass = $namespace . '\\' . $this->idToCamel($controllerId) . 'Controller';
+                        $controllerClass = $namespace . '\\' . $this->idToCamelCase($controllerId) . 'Controller';
 
                         if ($modulePath) {
                             try {
                                 $module = Yii::$app->getModule($modulePath);
                                 if ($module && isset($module->controllerNamespace)) {
-                                    $controllerClass = $module->controllerNamespace . '\\' . $this->idToCamel($controllerId) . 'Controller';
+                                    $controllerClass = $module->controllerNamespace . '\\' . $this->idToCamelCase($controllerId) . 'Controller';
                                 } else {
                                     $namespace = $namespaceBase . '\\modules\\' . str_replace('/', '\\modules\\', $modulePath) . '\\controllers';
-                                    $controllerClass = $namespace . '\\' . $this->idToCamel($controllerId) . 'Controller';
+                                    $controllerClass = $namespace . '\\' . $this->idToCamelCase($controllerId) . 'Controller';
                                 }
                             } catch (\Throwable $e) {
                                 $isValid = false;
@@ -146,7 +146,7 @@ class RouteViewerGenerator extends Generator
                         } elseif ($isValid !== false) {
                             try {
                                 $controller = Yii::createObject($controllerClass, ['id' => $controllerId, 'module' => Yii::$app->controller->module]);
-                                $actionMethod = 'action' . ucfirst($action);
+                                $actionMethod = 'action' . $this->idToCamelCase($action);
                                 if (!method_exists($controller, $actionMethod)) {
                                     $isValid = false;
                                     $error = "Method {$actionMethod}() not found in {$controllerClass}";
@@ -177,7 +177,7 @@ class RouteViewerGenerator extends Generator
         return $results;
     }
 
-    protected function idToCamel($id)
+    protected function idToCamelCase(string $id): string
     {
         return str_replace(' ', '', ucwords(str_replace('-', ' ', $id)));
     }
