@@ -77,16 +77,9 @@ class RouteViewerGenerator extends Generator
         $property->setAccessible(true);
         $subRules = $property->getValue($rule);
 
-        $flattened = [];
-        foreach ($subRules as $subRule) {
-            if (is_array($subRule)) {
-                $flattened = array_merge($flattened, $subRule);
-            } else {
-                $flattened[] = $subRule;
-            }
-        }
-
-        return $flattened;
+        return array_reduce($subRules, function (array $carry, $item) {
+            return array_merge($carry, is_array($item) ? $item : [$item]);
+        }, []);
     }
 
     protected function loadUrlManagerFromApi(): UrlManager
