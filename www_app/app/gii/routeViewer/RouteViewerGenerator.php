@@ -52,19 +52,13 @@ class RouteViewerGenerator extends Generator
             : $this->loadUrlManagerFromApi();
 
         $rules = $urlManager->rules;
-        $normalizedRules = [];
 
-        foreach ($rules as $rule) {
+        $normalizedRules = array_merge(...array_map(function ($rule) {
             if ($rule instanceof \yii\rest\UrlRule) {
-                foreach ($this->extractSubRules($rule) as $subRules) {
-                    foreach ($subRules as $subRule) {
-                        $normalizedRules[] = $subRule;
-                    }
-                }
-            } else {
-                $normalizedRules[] = $rule;
+                return $this->extractSubRules($rule);
             }
-        }
+            return [$rule];
+        }, $rules));
 
         if ($this->filter) {
             $normalizedRules = array_filter($normalizedRules, function ($rule) {
@@ -81,7 +75,18 @@ class RouteViewerGenerator extends Generator
         $reflection = new \ReflectionClass($rule);
         $property = $reflection->getProperty('rules');
         $property->setAccessible(true);
-        return $property->getValue($rule) ?: [];
+        $subRules = $property->getValue($rule);
+
+        $flattened = [];
+        foreach ($subRules as $subRule) {
+            if (is_array($subRule)) {
+                $flattened = array_merge($flattened, $subRule);
+            } else {
+                $flattened[] = $subRule;
+            }
+        }
+
+        return $flattened;
     }
 
     protected function loadUrlManagerFromApi(): UrlManager
