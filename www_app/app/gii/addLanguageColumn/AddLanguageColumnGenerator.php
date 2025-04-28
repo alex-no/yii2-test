@@ -5,7 +5,8 @@ namespace app\gii\addLanguageColumn;
 use Yii;
 use yii\gii\Generator;
 use yii\db\TableSchema;
-use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+//use yii\helpers\ArrayHelper;
 
 class AddLanguageColumnGenerator extends Generator
 {
@@ -88,7 +89,7 @@ class AddLanguageColumnGenerator extends Generator
         }
         $options['after_all'] = 'After all';
 
-        // Убедимся, что по умолчанию выбран 'after_all', если position пуст
+        // Ensure that 'after_all' is selected by default if position is empty
         if ($this->position === null) {
             $this->position = 'after_all';
         }
@@ -100,20 +101,36 @@ class AddLanguageColumnGenerator extends Generator
     {
         $db = Yii::$app->db;
         $tables = $db->schema->getTableSchemas();
+        $files = [];
 
         foreach ($tables as $table) {
             $localizedGroups = $this->findLocalizedFields($table);
-            $allColumns = array_values($table->columns); // сохраняем полный порядок колонок
+            $allColumns = array_values($table->columns);
+
             foreach ($localizedGroups as $baseName => $columns) {
                 $sql = $this->generateAlterTableSql($table->name, $baseName, $columns, $allColumns);
                 if ($sql !== null) {
+                    $virtualPath = '@db/' . $table->name . '_' . $baseName . '_add_' . $this->newLanguageSuffix . '.sql';
+                    $files[] = new SqlCodeFile(
+                        '@db/' . $table->name . '_' . $baseName . '_add_' . $this->newLanguageSuffix . '.sql',
+                        $sql,
+                        [
+                            'tableName' => $table->name,
+                            'columnName' => $baseName . '_' . $this->newLanguageSuffix,
+                        ]
+                    );
+
                     $this->executedSql[] = $sql;
-                    $db->createCommand($sql)->execute();
                 }
             }
         }
 
-        return [];
+        return $files;
+    }
+
+    public function successMessage()
+    {
+        return 'All SQL statements have been successfully executed.';
     }
 
     public function formView()
