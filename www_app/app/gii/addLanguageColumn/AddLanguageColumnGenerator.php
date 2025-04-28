@@ -22,17 +22,17 @@ class AddLanguageColumnGenerator extends Generator
     {
         parent::init();
 
-        // Initialization of available languages from the language table
-        $this->availableLanguages = ArrayHelper::map(
+        // Populate available languages (from the database)
+        $this->availableLanguages = \yii\helpers\ArrayHelper::map(
             Yii::$app->db->createCommand('SELECT `code`, `full_name` FROM `language` WHERE `is_enabled` = 1 ORDER BY `order`')->queryAll(),
             'code',
-            function($row) {
+            function ($row) {
                 return "{$row['code']} ({$row['full_name']})";
             }
         );
 
-        // If the languages property is not yet filled (e.g., the form is opened for the first time) — set ALL languages by default
-        if (empty($this->languages)) {
+        // If the list of languages is not yet filled (e.g., when the form is opened for the first time) — set all available
+        if ($this->languages === null || $this->languages === []) {
             $this->languages = array_keys($this->availableLanguages);
         }
     }
@@ -87,6 +87,12 @@ class AddLanguageColumnGenerator extends Generator
             $options[$lang] = 'After ' . strtoupper($lang);
         }
         $options['after_all'] = 'After all';
+
+        // Убедимся, что по умолчанию выбран 'after_all', если position пуст
+        if ($this->position === null) {
+            $this->position = 'after_all';
+        }
+
         return $options;
     }
 
