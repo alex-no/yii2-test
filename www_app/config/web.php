@@ -79,6 +79,9 @@ if (YII_ENV_DEV) {
                     'currentUrlManager' => 'web',
                 ]
             ],
+            'addLanguageColumn' => [
+                'class' => 'app\gii\addLanguageColumn\AddLanguageColumnGenerator',
+            ],
         ],
     ];
 }

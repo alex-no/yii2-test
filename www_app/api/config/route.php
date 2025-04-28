@@ -21,6 +21,9 @@ return [
             'pet-types' => 'v1/pet-type',
         ],
         'pluralize' => true,
+        // 'patterns' => [
+        //     'OPTIONS pet-types' => '',
+        // ],
     ],
 
     'GET db-tables' => 'v1/site/db-tables',

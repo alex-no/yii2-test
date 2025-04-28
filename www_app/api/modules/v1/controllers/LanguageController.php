@@ -48,7 +48,6 @@ class LanguageController extends Controller
         return Language::find()->all();
     }
 
-
     /**
      * @OA\Get(
      *     path="/languages/{code}",
