@@ -21,6 +21,7 @@ use yii\widgets\ActiveForm;
 <?= $form->field($generator, 'languages')->checkboxList(
     $generator->availableLanguages,
     [
+        'itemOptions' => ['labelOptions' => ['class' => 'checkbox-inline']],
         'separator' => '<br>',
     ]
 ) ?>
