@@ -9,7 +9,7 @@ class SqlCodeFile extends CodeFile
 {
     public string $tableName;
     public string $columnName;
-    public string $operationDescription;
+    //public string $operationDescription;
     public bool $skip;
 
     public function __construct(
@@ -29,7 +29,7 @@ class SqlCodeFile extends CodeFile
         $this->skip = $skip;
 
         $this->operation = $skip ? parent::OP_SKIP : parent::OP_CREATE;
-        $this->operationDescription = $skip ? 'Already exists (skipped)' : 'Add column';
+        //$this->operation = $skip ? 'Already exists (skipped)' : 'Add column';
     }
 
     public function save(): bool
@@ -59,14 +59,8 @@ HTML;
 //<script type="text/javascript">alert(1);window.onload = function() {initHighlighting();};alert(2);</script>
     }
 
-    public function getName()
+    public function getRelativePath()
     {
-        return "Table `{$this->tableName}` — Column `{$this->columnName}`";
+        return "Table `{$this->tableName}` — Add column `{$this->columnName}`";
     }
-
-    public function getOperationDescription()
-    {
-        return $this->operationDescription;
-    }
-
 }

@@ -80,7 +80,10 @@ if (YII_ENV_DEV) {
                 ]
             ],
             'addLanguageColumn' => [
-                'class' => 'app\gii\addLanguageColumn\AddLanguageColumnGenerator',
+                'class' => \app\gii\addLanguageColumn\AddLanguageColumnGenerator::class,
+                // 'templates' => [
+                //     'Default (SQL Generator)' => '@gii/addLanguageColumn/default/',
+                // ],
             ],
         ],
     ];
