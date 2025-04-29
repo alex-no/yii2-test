@@ -112,15 +112,20 @@ class AddLanguageColumnGenerator extends Generator
                 $sql = $this->generateAlterTableSql($table->name, $baseName, $columns, $allColumns);
                 if ($sql !== null) {
                     $columnName = $baseName . '_' . $this->newLanguageSuffix;
+
                     $file = new SqlCodeFile(
                         $table->name,
                         $columnName,
                         $sql
                     );
-                    $file->skip = $this->columnExists($table->name, $columnName);
-                    $files[] = $file;
 
-                    $this->executedSql[] = $sql;
+                    $file->skip = $this->columnExists($table->name, $columnName);
+
+                    if (!$file->skip) {
+                        $this->executedSql[] = $sql;
+                    }
+
+                    $files[] = $file;
                 }
             }
         }
@@ -136,7 +141,10 @@ class AddLanguageColumnGenerator extends Generator
 
     public function successMessage()
     {
-        return 'All SQL statements have been successfully executed.';
+        $applied = count($this->executedSql);
+        $skipped = count($this->skippedFields);
+
+        return "Successfully applied {$applied} changes. Skipped {$skipped} fields.";
     }
 
     public function formView()

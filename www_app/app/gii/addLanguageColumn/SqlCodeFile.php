@@ -26,8 +26,12 @@ class SqlCodeFile extends CodeFile
         $this->columnName = $columnName;
     }
 
-    public function save()
+    public function save(): bool
     {
+        if ($this->skip) {
+            return true;
+        }
+
         try {
             Yii::$app->db->createCommand($this->content)->execute();
             return true;
@@ -39,7 +43,7 @@ class SqlCodeFile extends CodeFile
 
     public function getName()
     {
-        return "`{$this->tableName}`.{$this->columnName}";
+        return "`{$this->tableName}`.`{$this->columnName}`";
     }
 
     public function preview()
@@ -49,8 +53,9 @@ class SqlCodeFile extends CodeFile
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <pre class="hljs sql">{$escapedSql}</pre>
-<script>hljs.highlightAll();</script>
+<script type="text/javascript">hljs.highlightAll();</script>
 HTML;
+//<script type="text/javascript">alert(1);window.onload = function() {initHighlighting();};alert(2);</script>
     }
 
     public function getOperation()
@@ -60,6 +65,7 @@ HTML;
 
     public function getOperationDescription()
     {
-        return 'Apply SQL';
+        return $this->skip ? 'Already exists (skipped)' : 'Add column';
     }
+
 }
