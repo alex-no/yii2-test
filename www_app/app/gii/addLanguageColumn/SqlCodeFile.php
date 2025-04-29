@@ -51,12 +51,15 @@ class SqlCodeFile extends CodeFile
     {
         $escapedSql = htmlspecialchars($this->content, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         return <<<HTML
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<pre class="hljs sql">{$escapedSql}</pre>
-<script type="text/javascript">hljs.highlightAll();</script>
+<pre><code class="sql hljs">{$escapedSql}</code></pre>
+<script type="text/javascript">
+if (typeof hljs !== 'undefined') {
+    hljs.highlightAll();
+} else {
+    console.warn('highlight.js not loaded');
+}
+</script>
 HTML;
-//<script type="text/javascript">alert(1);window.onload = function() {initHighlighting();};alert(2);</script>
     }
 
     public function getRelativePath()

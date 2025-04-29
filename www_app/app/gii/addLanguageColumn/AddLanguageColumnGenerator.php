@@ -37,6 +37,12 @@ class AddLanguageColumnGenerator extends Generator
         if (empty($this->languages)) {
             $this->languages = array_keys($this->availableLanguages);
         }
+
+        Yii::$app->view->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css');
+        Yii::$app->view->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js', [
+            'position' => \yii\web\View::POS_END,
+            'depends' => [\yii\web\JqueryAsset::class],
+        ]);
     }
 
     public function getName(): string
