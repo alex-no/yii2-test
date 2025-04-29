@@ -5,8 +5,7 @@ namespace app\gii\addLanguageColumn;
 use Yii;
 use yii\gii\Generator;
 use yii\db\TableSchema;
-use yii\helpers\Html;
-//use yii\helpers\ArrayHelper;
+use app\gii\addLanguageColumn\SqlCodeFile;
 
 class AddLanguageColumnGenerator extends Generator
 {
@@ -19,8 +18,10 @@ class AddLanguageColumnGenerator extends Generator
     public $executedSql = [];
     public $skippedFields = [];
 
-    public function init()
+    public function init(): void
     {
+        // Call the parent init method to ensure proper initialization
+        // and to set up the default values for the generator.
         parent::init();
 
         // Populate available languages (from the database)
@@ -38,17 +39,17 @@ class AddLanguageColumnGenerator extends Generator
         }
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'Add Language Column';
     }
 
-    public function getDescription()
+    public function getDescription(): string
     {
         return 'Adds a new language field (e.g., name_fr) to tables with multilingual fields.';
     }
 
-    public function rules()
+    public function rules(): array
     {
         return array_merge(parent::rules(), [
             [['newLanguageSuffix', 'languages', 'position'], 'required'],
@@ -56,7 +57,7 @@ class AddLanguageColumnGenerator extends Generator
         ]);
     }
 
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'newLanguageSuffix' => 'New Language Suffix (e.g., fr)',
@@ -65,7 +66,7 @@ class AddLanguageColumnGenerator extends Generator
         ];
     }
 
-    public function hints()
+    public function hints(): array
     {
         return [
             'newLanguageSuffix' => 'Two-letter code for the new language (lowercase or uppercase).',
@@ -74,12 +75,12 @@ class AddLanguageColumnGenerator extends Generator
         ];
     }
 
-    public function getAvailableLanguages()
+    public function getAvailableLanguages(): array
     {
         return $this->availableLanguages;
     }
 
-    public function getPositionOptions()
+    public function getPositionOptions(): array
     {
         $options = [
             'before_all' => 'Before all',
@@ -97,7 +98,7 @@ class AddLanguageColumnGenerator extends Generator
         return $options;
     }
 
-    public function generate()
+    public function generate(): array
     {
         $db = Yii::$app->db;
         $tables = $db->schema->getTableSchemas();
@@ -110,15 +111,14 @@ class AddLanguageColumnGenerator extends Generator
             foreach ($localizedGroups as $baseName => $columns) {
                 $sql = $this->generateAlterTableSql($table->name, $baseName, $columns, $allColumns);
                 if ($sql !== null) {
-                    $virtualPath = '@db/' . $table->name . '_' . $baseName . '_add_' . $this->newLanguageSuffix . '.sql';
-                    $files[] = new SqlCodeFile(
-                        '@db/' . $table->name . '_' . $baseName . '_add_' . $this->newLanguageSuffix . '.sql',
-                        $sql,
-                        [
-                            'tableName' => $table->name,
-                            'columnName' => $baseName . '_' . $this->newLanguageSuffix,
-                        ]
+                    $columnName = $baseName . '_' . $this->newLanguageSuffix;
+                    $file = new SqlCodeFile(
+                        $table->name,
+                        $columnName,
+                        $sql
                     );
+                    $file->skip = $this->columnExists($table->name, $columnName);
+                    $files[] = $file;
 
                     $this->executedSql[] = $sql;
                 }
@@ -126,6 +126,12 @@ class AddLanguageColumnGenerator extends Generator
         }
 
         return $files;
+    }
+
+    private function columnExists(string $tableName, string $columnName): bool
+    {
+        $schema = Yii::$app->db->getTableSchema($tableName, true);
+        return isset($schema->columns[$columnName]);
     }
 
     public function successMessage()
@@ -152,7 +158,7 @@ class AddLanguageColumnGenerator extends Generator
         return $localizedFields;
     }
 
-    public function generateAlterTableSql($tableName, $baseName, $columns, $allColumns)
+    public function generateAlterTableSql($tableName, $baseName, $columns, $allColumns): ?string
     {
         if (isset($columns[$this->newLanguageSuffix])) {
             $this->skippedFields[] = "$tableName.{$baseName}_{$this->newLanguageSuffix}";
@@ -167,14 +173,14 @@ class AddLanguageColumnGenerator extends Generator
         return $sql;
     }
 
-    public function determineAfterColumn($columns, $allColumns)
+    public function determineAfterColumn(array $columns, array $allColumns): string
     {
         $langKeys = array_keys($columns);
 
         if ($this->position === 'before_all') {
             $firstLocalizedColumn = $columns[$langKeys[0]]->name;
 
-            // Найти индекс поля через array_column + array_search
+            // Find the index of the field using array_column + array_search
             $columnNames = array_column($allColumns, 'name');
             $index = array_search($firstLocalizedColumn, $columnNames);
 
@@ -182,7 +188,7 @@ class AddLanguageColumnGenerator extends Generator
                 return $columnNames[$index - 1];
             }
 
-            // Fallback: самое первое поле таблицы
+            // Fallback: the very first field of the table
             return $columnNames[0];
         }
 
@@ -190,7 +196,7 @@ class AddLanguageColumnGenerator extends Generator
             return $columns[$this->position]->name;
         }
 
-        // По умолчанию — после последнего локализованного поля
+        // By default — after the last localized field
         $lastLocalizedColumn = $columns[end($langKeys)];
         return $lastLocalizedColumn->name;
     }
