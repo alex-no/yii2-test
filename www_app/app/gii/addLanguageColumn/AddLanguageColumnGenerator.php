@@ -121,7 +121,9 @@ class AddLanguageColumnGenerator extends Generator
                         $skip
                     );
 
-                    if (!$skip) {
+                    if ($skip) {
+                        $this->skippedFields[] = "{$table->name}.{$columnName}";
+                    } else {
                         $this->executedSql[] = $sql;
                     }
                 }

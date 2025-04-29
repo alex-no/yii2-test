@@ -61,13 +61,11 @@ HTML;
 
     public function getName()
     {
-dd($this->tableName);
-        return "`{$this->tableName}`.`{$this->columnName}`";
+        return "Table `{$this->tableName}` — Column `{$this->columnName}`";
     }
 
     public function getOperationDescription()
     {
-dd($this->operationDescription);
         return $this->operationDescription;
     }
 
