@@ -9,12 +9,14 @@ class SqlCodeFile extends CodeFile
 {
     public string $tableName;
     public string $columnName;
-    public bool $skip = false;
+    public string $operationDescription;
+    public bool $skip;
 
     public function __construct(
         string $tableName,
         string $columnName,
-        string $content // ready SQL
+        string $content, // ready SQL
+        bool $skip = false
     ) {
         // Call the parent constructor — a fake "path" is needed for compatibility with Gii
         parent::__construct(
@@ -24,6 +26,10 @@ class SqlCodeFile extends CodeFile
 
         $this->tableName = $tableName;
         $this->columnName = $columnName;
+        $this->skip = $skip;
+
+        $this->operation = $skip ? parent::OP_SKIP : parent::OP_CREATE;
+        $this->operationDescription = $skip ? 'Already exists (skipped)' : 'Add column';
     }
 
     public function save(): bool
@@ -41,11 +47,6 @@ class SqlCodeFile extends CodeFile
         }
     }
 
-    public function getName()
-    {
-        return "`{$this->tableName}`.`{$this->columnName}`";
-    }
-
     public function preview()
     {
         $escapedSql = htmlspecialchars($this->content, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -58,14 +59,16 @@ HTML;
 //<script type="text/javascript">alert(1);window.onload = function() {initHighlighting();};alert(2);</script>
     }
 
-    public function getOperation()
+    public function getName()
     {
-        return $this->skip ? self::OP_SKIP : self::OP_CREATE;
+dd($this->tableName);
+        return "`{$this->tableName}`.`{$this->columnName}`";
     }
 
     public function getOperationDescription()
     {
-        return $this->skip ? 'Already exists (skipped)' : 'Add column';
+dd($this->operationDescription);
+        return $this->operationDescription;
     }
 
 }

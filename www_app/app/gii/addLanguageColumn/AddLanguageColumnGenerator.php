@@ -112,20 +112,18 @@ class AddLanguageColumnGenerator extends Generator
                 $sql = $this->generateAlterTableSql($table->name, $baseName, $columns, $allColumns);
                 if ($sql !== null) {
                     $columnName = $baseName . '_' . $this->newLanguageSuffix;
+                    $skip = $this->columnExists($table->name, $columnName);
 
-                    $file = new SqlCodeFile(
+                    $files[] = new SqlCodeFile(
                         $table->name,
                         $columnName,
-                        $sql
+                        $sql,
+                        $skip
                     );
 
-                    $file->skip = $this->columnExists($table->name, $columnName);
-
-                    if (!$file->skip) {
+                    if (!$skip) {
                         $this->executedSql[] = $sql;
                     }
-
-                    $files[] = $file;
                 }
             }
         }
