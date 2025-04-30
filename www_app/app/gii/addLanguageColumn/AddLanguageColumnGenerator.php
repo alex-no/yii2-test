@@ -9,6 +9,10 @@ use app\gii\addLanguageColumn\SqlCodeFile;
 
 class AddLanguageColumnGenerator extends Generator
 {
+    const
+        POSITION_BEFORE_ALL = 'before_all',
+        POSITION_AFTER_ALL = 'after_all';
+
     public $newLanguageSuffix;
     public $languages = []; // selected languages
     public $position;
@@ -89,16 +93,16 @@ class AddLanguageColumnGenerator extends Generator
     public function getPositionOptions(): array
     {
         $options = [
-            'before_all' => 'Before all',
+            self::POSITION_BEFORE_ALL => 'Before all',
         ];
         foreach ($this->languages as $lang) {
             $options[$lang] = 'After ' . strtoupper($lang);
         }
-        $options['after_all'] = 'After all';
+        $options[self::POSITION_AFTER_ALL] = 'After all';
 
-        // Ensure that 'after_all' is selected by default if position is empty
+        // Ensure that "after_all" is selected by default if position is empty
         if ($this->position === null) {
-            $this->position = 'after_all';
+            $this->position = self::POSITION_AFTER_ALL;
         }
 
         return $options;
@@ -161,12 +165,20 @@ class AddLanguageColumnGenerator extends Generator
     public function findLocalizedFields(TableSchema $tableSchema)
     {
         $localizedFields = [];
+        $checkFields = [];
+        $countChecked = count($this->languages);
+
         foreach ($tableSchema->columns as $column) {
             foreach ($this->languages as $lang) {
                 if (preg_match('/^(.+)_' . preg_quote($lang, '/') . '$/', $column->name, $matches)) {
                     $baseName = $matches[1];
-                    $localizedFields[$baseName][$lang] = $column;
+                    $checkFields[$baseName][$lang] = $column;
                 }
+            }
+        }
+        foreach ($checkFields as $baseName => $fields) {
+            if (count($fields) == $countChecked) {
+                $localizedFields[$baseName] = $fields;
             }
         }
         return $localizedFields;
@@ -179,7 +191,7 @@ class AddLanguageColumnGenerator extends Generator
             return null;
         }
 
-        $columnType = reset($columns)->dbType;
+        $columnType = $this->determineColumnType($columns, $allColumns);
         $afterColumn = $this->determineAfterColumn($columns, $allColumns);
 
         $sql = "ALTER TABLE `{$tableName}` ADD COLUMN `{$baseName}_{$this->newLanguageSuffix}` {$columnType} AFTER `{$afterColumn}`";
@@ -187,11 +199,25 @@ class AddLanguageColumnGenerator extends Generator
         return $sql;
     }
 
+    public function determineColumnType(array $columns, array $allColumns): string
+    {
+        // "before_all" → type of the first localized column
+        if ($this->position === self::POSITION_BEFORE_ALL) {
+            return reset($columns)->dbType;
+        }
+        // if insertion "after" a specific language is specified
+        if (isset($columns[$this->position])) {
+            return $columns[$this->position]->dbType;
+        }
+        // by default — the type of the last localized field
+        return end($columns)->dbType;
+    }
+
     public function determineAfterColumn(array $columns, array $allColumns): string
     {
         $langKeys = array_keys($columns);
 
-        if ($this->position === 'before_all') {
+        if ($this->position === self::POSITION_BEFORE_ALL) {
             $firstLocalizedColumn = $columns[$langKeys[0]]->name;
 
             // Find the index of the field using array_column + array_search
