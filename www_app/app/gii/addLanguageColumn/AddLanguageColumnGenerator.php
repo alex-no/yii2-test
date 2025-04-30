@@ -80,7 +80,7 @@ class AddLanguageColumnGenerator extends Generator
     public function rules(): array
     {
         return array_merge(parent::rules(), [
-            [['newLanguageSuffix', 'languages', 'position'], 'required'],
+            [['newLanguageSuffix', 'position'], 'required'],
             ['newLanguageSuffix', 'match', 'pattern' => '/^[a-z]{2}$/i', 'message' => 'Language suffix must be 2 letters.'],
             ['languages', 'each', 'rule' => ['string']],
             ['languages', 'validateLanguagesNotEmpty'],
@@ -123,7 +123,7 @@ class AddLanguageColumnGenerator extends Generator
             self::POSITION_BEFORE_ALL => 'Before all',
         ];
         foreach ($this->languages as $lang) {
-            $options[$lang] = 'After ' . strtoupper($lang);
+            $options[$lang] = "After fields ending with _{$lang}";
         }
         $options[self::POSITION_AFTER_ALL] = 'After all';
 
@@ -133,17 +133,17 @@ class AddLanguageColumnGenerator extends Generator
     public function generate(): array
     {
         $db = Yii::$app->db;
-        $tables = $db->schema->getTableSchemas();
+        $schemas = ArrayHelper::index($db->schema->getTableSchemas(), 'name');
         $files = [];
 
-        foreach ($tables as $table) {
+        foreach ($schemas as $table) {
             $localizedFields = $this->findLocalizedFields($table);
 
             foreach ($localizedFields as $baseName => $columns) {
                 $sql = $this->generateAlterTableSql($table, $baseName, $columns);
                 if ($sql !== null) {
                     $columnName = $baseName . '_' . $this->newLanguageSuffix;
-                    $skip = isset($table->columns[$columnName]);
+                    $skip = array_key_exists($columnName, $table->columns);
 
                     $files[] = new SqlCodeFile(
                         $table->name,
@@ -196,6 +196,10 @@ class AddLanguageColumnGenerator extends Generator
 
     private function generateAlterTableSql(TableSchema $table, $baseName, $columns): ?string
     {
+        if (empty($columns)) {
+            return null;
+        }
+
         $positionClause = '';
 
         if ($this->position === self::POSITION_BEFORE_ALL) {

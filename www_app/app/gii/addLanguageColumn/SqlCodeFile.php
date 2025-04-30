@@ -9,7 +9,6 @@ class SqlCodeFile extends CodeFile
 {
     public string $tableName;
     public string $columnName;
-    //public string $operationDescription;
     public bool $skip;
 
     public function __construct(
@@ -29,7 +28,6 @@ class SqlCodeFile extends CodeFile
         $this->skip = $skip;
 
         $this->operation = $skip ? parent::OP_SKIP : parent::OP_CREATE;
-        //$this->operation = $skip ? 'Already exists (skipped)' : 'Add column';
     }
 
     public function save(): bool
@@ -64,6 +62,6 @@ HTML;
 
     public function getRelativePath()
     {
-        return "Table `{$this->tableName}` — Add column `{$this->columnName}`";
+        return "Table {$this->tableName} — Add column {$this->columnName}";
     }
 }
