@@ -64,7 +64,16 @@ class AddLanguageColumnGenerator extends Generator
         return array_merge(parent::rules(), [
             [['newLanguageSuffix', 'languages', 'position'], 'required'],
             ['newLanguageSuffix', 'match', 'pattern' => '/^[a-z]{2}$/i', 'message' => 'Language suffix must be 2 letters.'],
+            ['languages', 'each', 'rule' => ['string']],
+            ['languages', 'validateLanguagesNotEmpty'],
         ]);
+    }
+
+    public function validateLanguagesNotEmpty($attribute, $params): void
+    {
+        if (empty($this->$attribute)) {
+            $this->addError($attribute, 'Please select at least one base language.');
+        }
     }
 
     public function attributeLabels(): array

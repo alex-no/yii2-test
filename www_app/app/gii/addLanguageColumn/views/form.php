@@ -15,7 +15,8 @@ use yii\widgets\ActiveForm;
 
 <?= $form->field($generator, 'newLanguageSuffix')->textInput([
     'maxlength' => true,
-    'placeholder' => 'e.g., fr'
+    'placeholder' => 'e.g., fr',
+    'required' => true
 ]) ?>
 
 <?= $form->field($generator, 'languages')->checkboxList(
@@ -23,6 +24,7 @@ use yii\widgets\ActiveForm;
     [
         'itemOptions' => ['labelOptions' => ['class' => 'checkbox-inline']],
         'separator' => '<br>',
+        'required' => true
     ]
 ) ?>
 
@@ -33,5 +35,6 @@ use yii\widgets\ActiveForm;
             'before_all' => ['class' => 'text-primary font-weight-bold'],
             'after_all' => ['class' => 'text-primary font-weight-bold'],
         ],
+        'required' => true
     ]
 ) ?>
