@@ -38,7 +38,7 @@ class AddLanguageColumnGenerator extends Generator
         );
 
         // If the list of languages is not yet filled (e.g., when the form is opened for the first time) — set all available
-        if (empty($this->languages)) {
+        if (empty($this->languages) && Yii::$app->request->isGet) {
             $this->languages = array_keys($this->availableLanguages);
         }
 

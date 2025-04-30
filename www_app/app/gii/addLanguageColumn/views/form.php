@@ -38,3 +38,26 @@ use yii\widgets\ActiveForm;
         'required' => true
     ]
 ) ?>
+
+<?php
+$js = <<<JS
+$('form').on('submit', function (e) {
+    var checked = $('input[name="AddLanguageColumnGenerator[languages][]"]:checked').length;
+    var container = $('input[name="AddLanguageColumnGenerator[languages][]"]').closest('.form-group');
+
+    if (checked === 0) {
+        e.preventDefault();
+        if (!container.find('.help-block').length) {
+            container.addClass('has-error');
+            container.append('<div class="help-block text-danger">Please select at least one base language.</div>');
+        }
+        return false;
+    } else {
+        container.removeClass('has-error');
+        container.find('.help-block').remove();
+    }
+});
+JS;
+
+$this->registerJs($js);
+?>
