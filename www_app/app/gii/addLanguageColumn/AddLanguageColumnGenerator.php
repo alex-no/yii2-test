@@ -21,7 +21,7 @@ class AddLanguageColumnGenerator extends Generator
     public ?string $position = null; // Position to insert the new field (before/after existing localized fields)
 
     // Internal state
-    protected array $availableLanguages = []; // ALL available languages (retrieved from the database)
+    private array $_availableLanguages = []; // ALL available languages (retrieved from the database)
     public array $executedSql = [];
     public array $skippedFields = [];
 
@@ -36,12 +36,14 @@ class AddLanguageColumnGenerator extends Generator
         if ($this->position === null) {
             $this->position = self::POSITION_AFTER_ALL;
         }
+
+        $this->newLanguageSuffix = strtolower($this->newLanguageSuffix);
     }
 
     // Populate available languages (from the database)
     private function loadAvailableLanguages(): void
     {
-        $this->availableLanguages = ArrayHelper::map(
+        $this->_availableLanguages = ArrayHelper::map(
             Yii::$app->db->createCommand('SELECT `code`, `full_name` FROM `language` WHERE `is_enabled` = 1 ORDER BY `order`')->queryAll(),
             'code',
             fn($row) => "{$row['code']} ({$row['full_name']})"
@@ -114,7 +116,7 @@ class AddLanguageColumnGenerator extends Generator
 
     public function getAvailableLanguages(): array
     {
-        return $this->availableLanguages;
+        return $this->_availableLanguages;
     }
 
     public function getPositionOptions(): array
@@ -132,6 +134,10 @@ class AddLanguageColumnGenerator extends Generator
 
     public function generate(): array
     {
+        if (empty($this->languages)) {
+            return [];
+        }
+
         $db = Yii::$app->db;
         $schemas = ArrayHelper::index($db->schema->getTableSchemas(), 'name');
         $files = [];
@@ -212,7 +218,7 @@ class AddLanguageColumnGenerator extends Generator
                 $positionClause = ' FIRST';
             }
         } else {
-            $sourceName = $this->position === self::POSITION_AFTER_ALL ? end($columns) : "{$baseName}_{$this->position}";
+            $sourceName = $this->position === self::POSITION_AFTER_ALL ? $columns[array_key_last($columns)] : "{$baseName}_{$this->position}";
             $positionClause = " AFTER `{$sourceName}`";
         }
         if (!isset($table->columns[$sourceName])) {
