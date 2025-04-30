@@ -5,46 +5,60 @@ namespace app\gii\addLanguageColumn;
 use Yii;
 use yii\gii\Generator;
 use yii\db\TableSchema;
+use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
+use yii\web\View;
 use app\gii\addLanguageColumn\SqlCodeFile;
 
 class AddLanguageColumnGenerator extends Generator
 {
-    const
-        POSITION_BEFORE_ALL = 'before_all',
-        POSITION_AFTER_ALL = 'after_all';
+    // Constants for insert position
+    public const POSITION_BEFORE_ALL = 'before_all';
+    public const POSITION_AFTER_ALL  = 'after_all';
 
-    public $newLanguageSuffix;
-    public $languages = []; // selected languages
-    public $position;
+    // Form inputs
+    public string $newLanguageSuffix;
+    public array $languages = [];
+    public string $position;
 
-    protected $availableLanguages = []; // ALL available languages (retrieved from the database)
-
-    public $executedSql = [];
-    public $skippedFields = [];
+    // Internal state
+    protected array $availableLanguages = []; // ALL available languages (retrieved from the database)
+    public array $executedSql = [];
+    public array $skippedFields = [];
 
     public function init(): void
     {
-        // Call the parent init method to ensure proper initialization
-        // and to set up the default values for the generator.
         parent::init();
+        $this->loadAvailableLanguages();
+        $this->initSelectedLanguages();
+        $this->registerHighlightJs();
+    }
 
-        // Populate available languages (from the database)
-        $this->availableLanguages = \yii\helpers\ArrayHelper::map(
+    // Populate available languages (from the database)
+    private function loadAvailableLanguages(): void
+    {
+        $this->availableLanguages = ArrayHelper::map(
             Yii::$app->db->createCommand('SELECT `code`, `full_name` FROM `language` WHERE `is_enabled` = 1 ORDER BY `order`')->queryAll(),
             'code',
-            function ($row) {
-                return "{$row['code']} ({$row['full_name']})";
-            }
+            fn($row) => "{$row['code']} ({$row['full_name']})"
         );
+    }
 
-        // If the list of languages is not yet filled (e.g., when the form is opened for the first time) — set all available
+    // If the list of languages is not yet filled (e.g., when the form is opened for the first time) — set all available
+    private function initSelectedLanguages(): void
+    {
         if (empty($this->languages) && Yii::$app->request->isGet) {
             $this->languages = array_keys($this->availableLanguages);
         }
+    }
 
-        Yii::$app->view->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css');
-        Yii::$app->view->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js', [
-            'position' => \yii\web\View::POS_END,
+    // Register Highlight.js for syntax highlighting in the preview
+    private function registerHighlightJs(): void
+    {
+        $view = Yii::$app->view;
+        $view->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css');
+        $view->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js', [
+            'position' => View::POS_END,
             'depends' => [\yii\web\JqueryAsset::class],
         ]);
     }
