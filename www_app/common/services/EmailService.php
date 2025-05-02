@@ -16,6 +16,6 @@ class EmailService extends BaseEmailService
         ];
 
         $content = $this->renderTemplate('@app/common/mail/confirm_email.php', $params);
-        return $this->sendEmail($userEmail, 'Please confirm your email', $content);
+        return $this->sendEmail($userEmail, 'Please confirm your email', $content, null, ['support@example.com']);
     }
 }
