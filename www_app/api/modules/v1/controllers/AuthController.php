@@ -7,6 +7,8 @@ use yii\web\Response;
 use app\models\User;
 use yii\web\BadRequestHttpException;
 use app\components\JwtHelper;
+use yii\helpers\Url;
+use app\common\services\EmailService;
 
 class AuthController extends Controller
 {
@@ -60,11 +62,68 @@ class AuthController extends Controller
         $user->setPassword($body['password'] ?? '');
         $user->generateAuthData();
 
+        $user->email_verified_at = null; // Not confirmed yet
+        $token = $user->generateEmailVerificationToken();
+        $user->remember_token = $token;
+
         if ($user->save()) {
-            return $user->toPublicArray();
+            // send email confirmation
+            $userEmail =  $user->email;
+            $userName = $user->username;
+            $confirmUrl = Url::to(['/api/auth/confirm-email', 'email' => $userEmail], true);
+
+            $service = new EmailService();
+            $sent = $service->sendConfirmation($userEmail, $userName, $confirmUrl);
+
+            return $sent ?
+                ['success' => true,  'message' => 'Confirmation email sent'] :
+                ['success' => false, 'message' => 'Failed to send confirmation email'];
+            // return $user->toPublicArray();
         }
 
         throw new BadRequestHttpException(json_encode($user->getErrors()));
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/auth/confirm-email/{token}",
+     *     summary="Confirm user email",
+     *     tags={"Auth"},
+     *     @OA\Parameter(
+     *         name="token",
+     *         in="query",
+     *         required=true,
+     *         description="Confirm user email token",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Email confirmed"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid or expired token"
+     *     )
+     * )
+     */
+    public function actionConfirmEmail($token)
+    {
+        $user = User::find()->where(['remember_token' => $token])->one();
+
+        if (!$user || !$user->isEmailVerificationTokenValid($token)) {
+            throw new BadRequestHttpException('Invalid or expired token.');
+        }
+
+        $user->email_verified_at = date('Y-m-d H:i:s');
+        $user->remember_token = null;
+
+        if ($user->save(false)) {
+            return ['success' => true, 'message' => 'Email confirmed'];
+        }
+
+        throw new BadRequestHttpException('Failed to confirm email.');
     }
 
     /**
@@ -103,6 +162,14 @@ class AuthController extends Controller
         $user = User::findByUsername($body['username'] ?? '');
 
         if ($user && $user->validatePassword($body['password'] ?? '')) {
+            $token = JwtHelper::generateToken($user);
+            return ['access_token' => $token];
+        }
+        if ($user && $user->validatePassword($body['password'] ?? '')) {
+            if (!$user->email_verified_at) {
+                throw new BadRequestHttpException('Please verify your email first.');
+            }
+
             $token = JwtHelper::generateToken($user);
             return ['access_token' => $token];
         }

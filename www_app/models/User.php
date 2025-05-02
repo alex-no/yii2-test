@@ -113,4 +113,17 @@ class User extends UserBase implements IdentityInterface, HasHiddenFieldsInterfa
     {
         $this->password = Yii::$app->security->generatePasswordHash($password);
     }
+
+    public function generateEmailVerificationToken(): string
+    {
+        return Yii::$app->security->generateRandomString() . '_' . time();
+    }
+
+    public function isEmailVerificationTokenValid(string $token): bool
+    {
+        $timestamp = (int) substr(strrchr($token, '_'), 1);
+        $expire = 3600 * 24; // 24 hours
+        return $timestamp + $expire >= time();
+    }
+
 }

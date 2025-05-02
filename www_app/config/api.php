@@ -52,8 +52,13 @@ return yii\helpers\ArrayHelper::merge(
                 'identityClass' => 'app\models\User',
                 'enableAutoLogin' => false,
                 'enableSession' => false,
-                //'identityCookie' => ['name' => '_identity', 'httpOnly' => true],
                 'loginUrl' => null,
+            ],
+            'mailer' => [
+                'class' => \app\components\SymfonyMailer::class,
+                'dsn' => 'stream://@runtime/mails', // stream:// или stream:///tmp/emails
+                //'dsn' => 'smtp://user:password@smtp.example.com:587',
+                'from' => ['noreply@example.com' => 'Example App'],
             ],
         ],
     ]

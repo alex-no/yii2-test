@@ -22,7 +22,9 @@
         "bower-asset/bootstrap": "^5.3",
         "zircote/swagger-php": "^5.0",
         "doctrine/annotations": "^2.0",
-        "firebase/php-jwt": "^6.11"
+        "firebase/php-jwt": "^6.11",
+        "symfony/mailer": "^6.4",
+        "symfony/mime": "^6.4"
         },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
