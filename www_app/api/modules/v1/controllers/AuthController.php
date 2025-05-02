@@ -70,7 +70,7 @@ class AuthController extends Controller
             // send email confirmation
             $userEmail =  $user->email;
             $userName = $user->username;
-            $confirmUrl = Url::to(['/api/auth/confirm-email', 'email' => $userEmail], true);
+            $confirmUrl = Url::to(['/auth/confirm-email/' . $token, 'email' => $userEmail], true);
 
             $service = new EmailService();
             $sent = $service->sendConfirmation($userEmail, $userName, $confirmUrl);
