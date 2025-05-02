@@ -7,6 +7,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\RawMessage;
+use Symfony\Component\Mime\Address;
 
 class FileTransport implements TransportInterface
 {
@@ -28,8 +29,20 @@ class FileTransport implements TransportInterface
         $filename = $this->path . '/' . date('Ymd_His') . '_' . uniqid() . '.eml';
         file_put_contents($filename, $message->toString());
 
+        if ($envelope === null) {
+            if (method_exists($message, 'getFrom')) {
+                $from = $message->getFrom()[0] ?? new Address('noreply@example.com');
+                $to = $message->getTo()[0] ?? new Address('admin@example.com');
+            } else {
+                // Fallback if nothing can be extracted
+                $from = new Address('noreply@example.com');
+                $to = new Address('admin@example.com');
+            }
+
+            $envelope = new Envelope($from, [$to]);
+        }
+
         return new SentMessage($message, $envelope);
-        //return new SentMessage($message, $envelope ?? new Envelope(...));
     }
 
     public function __toString(): string
