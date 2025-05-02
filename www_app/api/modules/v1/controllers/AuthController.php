@@ -55,18 +55,25 @@ class AuthController extends Controller
     {
         $body = Yii::$app->request->bodyParams;
 
-        $user = new User();
-        $user->username = $body['username'] ?? null;
-        $user->email = $body['email'] ?? null;
-        $user->phone = $body['phone'] ?? null;
-        $user->setPassword($body['password'] ?? '');
-        $user->generateAuthData();
 
-        $user->email_verified_at = null; // Not confirmed yet
-        $token = $user->generateEmailVerificationToken();
-        $user->remember_token = $token;
+        $transaction = Yii::$app->db->beginTransaction();
 
-        if ($user->save()) {
+        try {
+            $user = new User();
+            $user->username = $body['username'] ?? null;
+            $user->email = $body['email'] ?? null;
+            $user->phone = $body['phone'] ?? null;
+            $user->setPassword($body['password'] ?? '');
+            $user->generateAuthData();
+
+            $user->email_verified_at = null; // Not confirmed yet
+            $token = $user->generateEmailVerificationToken();
+            $user->remember_token = $token;
+
+            if (!$user->save()) {
+                throw new \RuntimeException('Failed to save user: ' . json_encode($user->getErrors()));
+            }
+
             // send email confirmation
             $userEmail =  $user->email;
             $userName = $user->username;
@@ -75,13 +82,23 @@ class AuthController extends Controller
             $service = new EmailService();
             $sent = $service->sendConfirmation($userEmail, $userName, $confirmUrl);
 
-            return $sent ?
-                ['success' => true,  'message' => 'Confirmation email sent'] :
-                ['success' => false, 'message' => 'Failed to send confirmation email'];
-            // return $user->toPublicArray();
-        }
+            if (!$sent) {
+                throw new \RuntimeException('Failed to send confirmation email');
+            }
 
-        throw new BadRequestHttpException(json_encode($user->getErrors()));
+            $transaction->commit();
+
+            return [
+                'success' => true,
+                'message' => 'Confirmation email sent'
+            ];
+            // return $user->toPublicArray();
+
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            Yii::error('Registration failed: ' . $e->getMessage(), __METHOD__);
+            throw new BadRequestHttpException('Registration failed: ' . $e->getMessage());
+        }
     }
 
     /**

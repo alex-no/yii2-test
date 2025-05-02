@@ -24,23 +24,25 @@ class SymfonyMailer extends Component
         $this->mailer = new SymfonyMailerBase($transport);
     }
 
-    public function send(string $to, string $subject, string $template, array $params = []): bool
+    public function send(string $to, string $subject, array $content, ?string $from = null, array $cc = [], array $bcc = []): ?bool
     {
-        $view = Yii::$app->getView();
-        // Render HTML and plain text versions of the email
-        $htmlBody = $view->render($template, $params);
-        $textBody = strip_tags($htmlBody); // You can create a more refined plain-text version
-
         $email = (new Email())
-            ->from($this->from)
+            ->from($from ?? $this->from)
             ->to($to)
             ->subject($subject)
-            ->html($htmlBody)
-            ->text($textBody);
+            ->html($content['html'])
+            ->text($content['text']);
+
+            if (!empty($cc)) {
+                $email->cc(...$cc);
+            }
+
+            if (!empty($bcc)) {
+                $email->bcc(...$bcc);
+            }
 
         try {
-            $this->mailer->send($email);
-            return true;
+            return $this->mailer->send($email);
         } catch (\Throwable $e) {
             Yii::error("Email send error: " . $e->getMessage(), __METHOD__);
             return false;

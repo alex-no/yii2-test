@@ -122,7 +122,7 @@ function js_var($name, $value)
 function dd2($data, $exit = true)
 {
     app()->response->format = Response::FORMAT_JSON;
-    app()->response->data = ['debug' => $data];
+    app()->response->data = ['debug_data' => $data];
 
     if ($exit) {
         app()->end();
