@@ -30,7 +30,8 @@ abstract class BaseEmailService
     protected function sendEmail(string $to, string $subject, array $content, ?string $from = null, array $cc = [], array $bcc = []): bool
     {
         try {
-            $email = new SymfonyMailer();
+            /** @var \app\components\SymfonyMailer $email */
+            $email = Yii::$app->mailer;
             return $email->send($to, $subject, $content, $from, $cc, $bcc);
         } catch (TransportExceptionInterface|\Throwable $e) {
             Yii::error("Failed to send email to {$to}: " . $e->getMessage(), __METHOD__);

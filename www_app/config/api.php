@@ -56,9 +56,9 @@ return yii\helpers\ArrayHelper::merge(
             ],
             'mailer' => [
                 'class' => \app\components\SymfonyMailer::class,
-                'dsn' => 'stream://@runtime/mails', // stream:// или stream:///tmp/emails
-                //'dsn' => 'smtp://user:password@smtp.example.com:587',
-                'from' => ['noreply@example.com' => 'Example App'],
+                'dsn' => 'stream://' . Yii::getAlias('@runtime/mails'),
+                //'dsn' => 'smtp://user:pass@smtp.example.com:587',
+                'from' => 'noreply@example.com',
             ],
         ],
     ]

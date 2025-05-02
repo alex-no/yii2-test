@@ -5,6 +5,7 @@ namespace app\components;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Mailer as SymfonyMailerBase;
 use Symfony\Component\Mime\Email;
+use app\components\mailer\FileTransport;
 use yii\base\Component;
 use Yii;
 
@@ -19,8 +20,13 @@ class SymfonyMailer extends Component
     {
         parent::init();
 
-        $resolvedDsn = str_replace('@runtime', Yii::getAlias('@runtime'), $this->dsn);
-        $transport = Transport::fromDsn($resolvedDsn);
+        if (str_starts_with($this->dsn, 'stream://')) {
+            $path = substr($this->dsn, strlen('stream://'));
+            $transport = new FileTransport($path);
+        } else {
+            $transport = Transport::fromDsn($this->dsn);
+        }
+
         $this->mailer = new SymfonyMailerBase($transport);
     }
 
@@ -30,19 +36,19 @@ class SymfonyMailer extends Component
             ->from($from ?? $this->from)
             ->to($to)
             ->subject($subject)
-            ->html($content['html'])
-            ->text($content['text']);
+            ->html($content['html'] ?? '')
+            ->text($content['text'] ?? '');
 
-            if (!empty($cc)) {
-                $email->cc(...$cc);
-            }
+        if (!empty($cc)) {
+            $email->cc(...$cc);
+        }
 
-            if (!empty($bcc)) {
-                $email->bcc(...$bcc);
-            }
+        if (!empty($bcc)) {
+            $email->bcc(...$bcc);
+        }
 
         try {
-            return $this->mailer->send($email);
+            return $this->mailer->send($email) === null;
         } catch (\Throwable $e) {
             Yii::error("Email send error: " . $e->getMessage(), __METHOD__);
             return false;
