@@ -7,7 +7,7 @@ class m230101_000001_create_user_table extends Migration
     public function safeUp()
     {
         //$tableOptions = 'CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ENGINE=InnoDB';
-        $tableOptions = 'CHARACTER SET utf8mb4 ENGINE=InnoDB';
+        $tableOptions = 'ENGINE=InnoDB';
 
         $this->createTable('{{%user}}', [
             'id' => $this->bigPrimaryKey()->unsigned(),

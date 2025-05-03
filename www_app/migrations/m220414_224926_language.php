@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m250414_224926_language extends Migration
+class m220414_224926_language extends Migration
 {
     /**
      * {@inheritdoc}
