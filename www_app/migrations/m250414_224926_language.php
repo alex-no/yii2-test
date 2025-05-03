@@ -18,9 +18,8 @@ class m250414_224926_language extends Migration
                 `order` TINYINT(4) NOT NULL,
             PRIMARY KEY (`code`))
             ENGINE = InnoDB
-            DEFAULT CHARACTER SET = utf8mb4
         ");
-
+// DEFAULT CHARACTER SET = utf8mb4
 
         $this->insert('language', [
             'code' => 'uk',
