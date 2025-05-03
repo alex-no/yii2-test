@@ -80,7 +80,8 @@
     "autoload": {
         "psr-4": {
             "app\\api\\modules\\v1\\controllers\\": "api/modules/v1/controllers/",
-            "app\\": "app/"
+            "app\\": "app/",
+            "app\\": "frontend/"
         }
     }
 }
