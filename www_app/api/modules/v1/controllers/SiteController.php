@@ -68,6 +68,12 @@ class SiteController extends Controller
      *         response="200",
      *         description="Returns list of table names",
      *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Database connection is successful"
+     *             ),
      *             @OA\Property(
      *                 property="tables",
      *                 type="array",
@@ -79,11 +85,20 @@ class SiteController extends Controller
      */
     public function actionDbTables()
     {
-        $tables = Yii::$app->db->schema->getTableNames();
+        try {
+            // Checking the connection
+            $tables = Yii::$app->db->schema->getTableNames();
 
-        return [
-            'tables' => $tables,
-        ];
+            return [
+                'message' => 'Database connection is successful',
+                'tables' => $tables,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'message' => 'Could not connect to the database. Please check your configuration.',
+                'error' => $e->getMessage()
+            ];
+        }
     }
 
     public function actionTest()
