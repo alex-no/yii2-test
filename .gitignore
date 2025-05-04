@@ -11,3 +11,4 @@ node_modules
 bak
 /doc/PetType1.php
 /doc/PetType2.php
+/doc/ssh/*.ppk
