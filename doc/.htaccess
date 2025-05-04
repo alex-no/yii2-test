@@ -1,0 +1,19 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # --- Перенаправление /api/documentation на /api/documentation/ ---
+    RewriteRule ^api/documentation$ /api/documentation/ [R=301,L]
+
+    # --- Эмуляция Alias для Swagger UI ---
+    RewriteCond %{REQUEST_URI} ^/api/documentation/
+    RewriteRule ^api/documentation/(.*)$ ../api/public/swagger-ui/$1 [L]
+
+    # --- Эмуляция Alias /api → /var/www/api/public ---
+    RewriteCond %{REQUEST_URI} ^/api/
+    RewriteRule ^api/(.*)$ ../api/public/$1 [L]
+
+    # --- Основная маршрутизация для веб-приложения (если нужно) ---
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>

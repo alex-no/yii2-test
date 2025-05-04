@@ -17,10 +17,10 @@ $config = yii\helpers\ArrayHelper::merge(
                 'class' => 'app\components\SetLanguageBootstrap',
                 'isApi' => false,
             ],
-            'assetManager' => [
-                'basePath' => '@webroot',
-                'baseUrl' => '@web',
-            ],
+            // 'assetManager' => [
+            //     'basePath' => '@webroot',
+            //     'baseUrl' => '@web',
+            // ],
             'request' => [
                 'cookieValidationKey' => 'secret-key-web',
             ],
