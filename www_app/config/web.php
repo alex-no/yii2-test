@@ -53,7 +53,8 @@ $config = yii\helpers\ArrayHelper::merge(
                         'globals' => [
                             'html' => \yii\helpers\Html::class,
                             'url' => \yii\helpers\Url::class,
-                            //'AppAsset' => ['class' => \app\assets\AppAsset::class],
+                            'navBar' => ['class' => \yii\bootstrap5\NavBar::class],
+                            'nav' => ['class' => \yii\bootstrap5\Nav::class],
                         ],
                         'uses' => ['yii\bootstrap5'],
                     ],

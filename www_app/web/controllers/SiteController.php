@@ -15,7 +15,7 @@ use app\models\ContactForm;
 class SiteController extends Controller
 {
     public $layout = 'main.twig';
-    
+
     /**
      * {@inheritdoc}
      */
@@ -63,10 +63,12 @@ class SiteController extends Controller
      */
     public function beforeAction($action)
     {
-        AppAsset::register($this->getView());
-        Yii::$app->view->params['powered_yii'] = Html::a('Yii Framework', 'https://www.yiiframework.com/', ['rel' => 'external']);
-        Yii::$app->view->params['powered_twig'] = Html::a('Twig', 'https://twig.symfony.com/', ['rel' => 'external']);
-        return parent::beforeAction($action);
+        $view = Yii::$app->view;
+        $view->params['powered_yii'] = Html::a('Yii Framework', 'https://www.yiiframework.com/', ['rel' => 'external']);
+        $view->params['powered_twig'] = Html::a('Twig', 'https://twig.symfony.com/', ['rel' => 'external']);
+        // $view->params['meta_description'] = 'description';
+        // $view->params['meta_keywords'] = 'keywords';
+         return parent::beforeAction($action);
     }
 
     /**
@@ -77,7 +79,6 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $this->view->title = Yii::t('app', 'My Yii Application-test');
-
         return $this->render('index.twig');
     }
 
