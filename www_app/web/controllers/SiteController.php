@@ -99,7 +99,9 @@ class SiteController extends Controller
         }
 
         $model->password = '';
-        return $this->render('login', [
+        return $this->render('login.twig', [
+            'title' => 'Login',
+            'breadcrumbs' => ['Login'],
             'model' => $model,
         ]);
     }
@@ -129,7 +131,9 @@ class SiteController extends Controller
 
             return $this->refresh();
         }
-        return $this->render('contact', [
+        return $this->render('contact.twig', [
+            'title' => 'Contact',
+            'breadcrumbs' => ['Contact'],
             'model' => $model,
         ]);
     }
@@ -141,6 +145,9 @@ class SiteController extends Controller
      */
     public function actionAbout()
     {
-        return $this->render('about');
+        return $this->render('about.twig', [
+            'title' => 'About',
+            'breadcrumbs' => ['About'],
+        ]);
     }
 }

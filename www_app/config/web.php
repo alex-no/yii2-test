@@ -51,10 +51,14 @@ $config = yii\helpers\ArrayHelper::merge(
                             \Twig\Extension\DebugExtension::class,
                         ],
                         'globals' => [
+                            'Yii' => \Yii::class,
                             'html' => \yii\helpers\Html::class,
                             'url' => \yii\helpers\Url::class,
                             'navBar' => ['class' => \yii\bootstrap5\NavBar::class],
                             'nav' => ['class' => \yii\bootstrap5\Nav::class],
+                        ],
+                        'functions' => [
+                            'alias' => 'alias',
                         ],
                         'uses' => ['yii\bootstrap5'],
                     ],
