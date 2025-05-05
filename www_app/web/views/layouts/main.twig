@@ -1,11 +1,35 @@
-{% set user = app.user %}
-{{ use('yii\\bootstrap5\\NavBar') }}
-{{ use('yii\\bootstrap5\\Nav') }}
-{{ use('yii\\bootstrap5\\Html') }}
-{{ use('yii\\bootstrap5\\Breadcrumbs') }}
-{{ use('app\\widgets\\Alert') }}
+{% do use('Yii') %}
+{% do use('yii\\helpers\\Html') %}
+{% do use('app\\assets\\AppAsset') %}
+
+{% set view = this.view %}
+{% do AppAsset.register(view) %}
+{% do view.beginPage() %}
+
+<!DOCTYPE html>
+<html lang="{{ app.language }}" class="h-100">
+<head>
+    <meta charset="{{ app.charset }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% do view.registerCsrfMetaTags() %}
+    {% do view.registerMetaTag({charset: app.charset}, 'charset') %}
+    {% do view.registerMetaTag({name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no'}) %}
+    {% do view.registerMetaTag({name: 'description', content: this.params.meta_description|default('')}) %}
+    {% do view.registerMetaTag({name: 'keywords', content: this.params.meta_keywords|default('')}) %}
+    {% do view.registerLinkTag({rel: 'icon', type: 'image/x-icon', href: web ~ '/favicon.ico'}) %}
+
+    <title>{{ this.title|e }}</title>
+    {{ view.head()|raw }}
+</head>
+<body class="d-flex flex-column h-100">
+{{ view.beginBody()|raw }}
 
 <header id="header">
+    {% set user = app.user %}
+    {{ use('yii\\bootstrap5\\NavBar') }}
+    {{ use('yii\\bootstrap5\\Nav') }}
+    {{ use('yii\\bootstrap5\\Html') }}
+
     {% set navItems = [
         {label: 'Home', url: ['/site/index']},
         {label: 'About', url: ['/site/about']},
@@ -44,9 +68,11 @@
 <main id="main" class="flex-shrink-0" role="main">
     <div class="container">
         {% if this.params.breadcrumbs is not empty %}
+            {{ use('yii\\bootstrap5\\Breadcrumbs') }}
             {{ breadcrumbs_widget({links: this.params.breadcrumbs})|raw }}
         {% endif %}
 
+        {{ use('app\\widgets\\Alert') }}
         {{ alert_widget()|raw }}
 
         {{ content|raw }}
@@ -61,3 +87,8 @@
         </div>
     </div>
 </footer>
+
+{{ view.endBody()|raw }}
+</body>
+</html>
+{{ view.endPage()|raw }}
