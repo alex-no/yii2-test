@@ -1,0 +1,34 @@
+{% set this.title = model.id %}
+{% do this.params['breadcrumbs'].append({'label': 'Pet Types'|t('app'), 'url': ['index']}) %}
+{% do this.params['breadcrumbs'].append(this.title) %}
+{% do register_asset('yii\\web\\YiiAsset', this) %}
+
+<div class="pet-type-view">
+
+    <h1>{{ this.title|e }}</h1>
+
+    <p>
+        <a href="{{ url(['update', 'id': model.id]) }}" class="btn btn-primary">
+            {{ 'Update'|t('app') }}
+        </a>
+        <a href="{{ url(['delete', 'id': model.id]) }}"
+           class="btn btn-danger"
+           data-confirm="{{ 'Are you sure you want to delete this item?'|t('app') }}"
+           data-method="post">
+            {{ 'Delete'|t('app') }}
+        </a>
+    </p>
+
+    {% widget 'yii\\widgets\\DetailView' with {
+        model: model,
+        attributes: [
+            'id',
+            'name_uk',
+            'name_en',
+            'name_ru',
+            'created_at',
+            'updated_at'
+        ]
+    } %}
+
+</div>

@@ -1,0 +1,14 @@
+{% set this.title = 'Update Pet Type: {name}'|t('app', {name: model.id}) %}
+{% do this.params['breadcrumbs'].append({'label': 'Pet Types'|t('app'), 'url': ['index']}) %}
+{% do this.params['breadcrumbs'].append({'label': model.id, 'url': ['view', 'id': model.id]}) %}
+{% do this.params['breadcrumbs'].append('Update'|t('app')) %}
+
+<div class="pet-type-update">
+
+    <h1>{{ this.title|e }}</h1>
+
+    {{ this.render('_form.twig', {
+        model: model
+    }) }}
+
+</div>

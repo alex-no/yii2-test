@@ -1,0 +1,63 @@
+{% set user = app.user %}
+{{ use('yii\\bootstrap5\\NavBar') }}
+{{ use('yii\\bootstrap5\\Nav') }}
+{{ use('yii\\bootstrap5\\Html') }}
+{{ use('yii\\bootstrap5\\Breadcrumbs') }}
+{{ use('app\\widgets\\Alert') }}
+
+<header id="header">
+    {% set navItems = [
+        {label: 'Home', url: ['/site/index']},
+        {label: 'About', url: ['/site/about']},
+        {label: 'Contact', url: ['/site/contact']}
+    ] %}
+
+    {% if user.isGuest %}
+        {% set navItems = navItems|merge([{label: 'Login', url: ['/site/login']}]) %}
+    {% else %}
+        {% set logoutItem %}
+            <li class="nav-item">
+                {{ html.beginForm(['/site/logout'])|raw }}
+                {{ html.submitButton('Logout (' ~ user.identity.username ~ ')', {
+                    class: 'nav-link btn btn-link logout'
+                })|raw }}
+                {{ html.endForm()|raw }}
+            </li>
+        {% endset %}
+        {% set navItems = navItems|merge([logoutItem]) %}
+    {% endif %}
+
+    {{ navBar.begin({
+        brandLabel: app.name,
+        brandUrl: app.homeUrl,
+        options: {class: 'navbar-expand-md navbar-dark bg-dark fixed-top'}
+    })|raw }}
+
+    {{ nav.widget({
+        options: {class: 'navbar-nav'},
+        items: navItems
+    })|raw }}
+
+    {{ navBar.end()|raw }}
+</header>
+
+<main id="main" class="flex-shrink-0" role="main">
+    <div class="container">
+        {% if this.params.breadcrumbs is not empty %}
+            {{ breadcrumbs_widget({links: this.params.breadcrumbs})|raw }}
+        {% endif %}
+
+        {{ alert_widget()|raw }}
+
+        {{ content|raw }}
+    </div>
+</main>
+
+<footer id="footer" class="mt-auto py-3 bg-light">
+    <div class="container">
+        <div class="row text-muted">
+            <div class="col-md-6 text-center text-md-start">&copy; My Company {{ "now"|date("Y") }}</div>
+            <div class="col-md-6 text-center text-md-end">Powered by {{ this.params.powered_yii|raw }} / {{ this.params.powered_twig|raw }}</div>
+        </div>
+    </div>
+</footer>

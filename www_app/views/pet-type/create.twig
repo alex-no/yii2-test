@@ -1,0 +1,13 @@
+{% set this.title = 'Create Pet Type'|t('app') %}
+{% do this.params['breadcrumbs'].append({'label': 'Pet Types'|t('app'), 'url': ['index']}) %}
+{% do this.params['breadcrumbs'].append(this.title) %}
+
+<div class="pet-type-create">
+
+    <h1>{{ this.title|e }}</h1>
+
+    {{ this.render('_form.twig', {
+        model: model
+    }) }}
+
+</div>

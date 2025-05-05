@@ -36,10 +36,44 @@ $config = yii\helpers\ArrayHelper::merge(
                 'enableAutoLogin' => true,
                 'loginUrl' => ['site/login'],
             ],
+            'view' => [
+                'class' => 'yii\web\View',
+                'defaultExtension' => 'twig',
+                // 'renderers' => [
+                //     'twig' => [
+                //         'class' => 'yii\twig\ViewRenderer',
+                //         // Folder with custom functions, if needed:
+                //         // 'cachePath' => '@runtime/Twig/cache',
+                //         'options' => [
+                //             'auto_reload' => true,
+                //         ],
+                //         'globals' => [
+                //             'html' => ['class' => '\yii\helpers\Html'],
+                //             'url' => ['class' => '\yii\helpers\Url'],
+                //         ],
+                //         'uses' => ['yii\bootstrap5'],
+                //     ],
+                // ],
+                'renderers' => [
+                    'twig' => [
+                        'class' => \yii\twig\ViewRenderer::class,
+                        'cachePath' => '@runtime/Twig/cache',
+                        'options' => [
+                            'auto_reload' => true,
+                        ],
+                        'globals' => [
+                            'Html' => \yii\helpers\Html::class,
+                            'url' => \yii\helpers\Url::class,
+                        ],
+                        'uses' => ['yii\bootstrap5'],
+                    ],
+                ],
+            ],
             'errorHandler' => [
                 'errorAction' => 'site/error',
             ],
         ],
+        'layout' => 'main',
     ],
 );
 

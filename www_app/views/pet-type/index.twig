@@ -1,0 +1,37 @@
+{% set this.title = 'Pet Types'|t('app') %}
+{% do this.params['breadcrumbs'].append(this.title) %}
+
+<div class="pet-type-index">
+
+    <h1>{{ this.title|e }}</h1>
+
+    <p>
+        <a href="{{ url(['create']) }}" class="btn btn-success">
+            {{ 'Create Pet Type'|t('app') }}
+        </a>
+    </p>
+
+    {% widget 'yii\\widgets\\Pjax' %}
+        {% widget 'yii\\grid\\GridView' with {
+            dataProvider: dataProvider,
+            columns: [
+                { class: 'yii\\grid\\SerialColumn' },
+                'id',
+                'name_uk',
+                'name_en',
+                'name_ru',
+                'created_at',
+                {
+                    class: 'yii\\grid\\ActionColumn',
+                    urlCreator: function(action, model, key, index, column) {
+                        return url([action, {id: model.id}]);
+                    }
+                }
+            ]
+        } %}
+    {% endwidget %}
+
+    {% endwidget %}
+
+</div>
+
