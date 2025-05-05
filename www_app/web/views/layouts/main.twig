@@ -1,10 +1,12 @@
+{{ register_asset_bundle('app/assets/AppAsset') }}
+
 {% do use('Yii') %}
 {% do use('yii\\helpers\\Html') %}
 {% do use('app\\assets\\AppAsset') %}
 
 {% set view = this.view %}
 {% do AppAsset.register(view) %}
-{% do view.beginPage() %}
+{{   void(this.beginPage()) }}
 
 <!DOCTYPE html>
 <html lang="{{ app.language }}" class="h-100">
@@ -18,11 +20,12 @@
     {% do view.registerMetaTag({name: 'keywords', content: this.params.meta_keywords|default('')}) %}
     {% do view.registerLinkTag({rel: 'icon', type: 'image/x-icon', href: web ~ '/favicon.ico'}) %}
 
-    <title>{{ this.title|e }}</title>
-    {{ view.head()|raw }}
+    <title>{{ html.encode(this.title|e ) }}</title>
+    {{ html.csrfMetaTags | raw }}
+    {{   void(this.head) }}
 </head>
 <body class="d-flex flex-column h-100">
-{{ view.beginBody()|raw }}
+{{   void(this.beginBody()) }}
 
 <header id="header">
     {% set user = app.user %}
@@ -88,7 +91,7 @@
     </div>
 </footer>
 
-{{ view.endBody()|raw }}
+{{   void(this.endBody()) }}
 </body>
 </html>
-{{ view.endPage()|raw }}
+{{   void(this.endPage()) }}

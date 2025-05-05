@@ -39,31 +39,21 @@ $config = yii\helpers\ArrayHelper::merge(
             'view' => [
                 'class' => 'yii\web\View',
                 'defaultExtension' => 'twig',
-                // 'renderers' => [
-                //     'twig' => [
-                //         'class' => 'yii\twig\ViewRenderer',
-                //         // Folder with custom functions, if needed:
-                //         // 'cachePath' => '@runtime/Twig/cache',
-                //         'options' => [
-                //             'auto_reload' => true,
-                //         ],
-                //         'globals' => [
-                //             'html' => ['class' => '\yii\helpers\Html'],
-                //             'url' => ['class' => '\yii\helpers\Url'],
-                //         ],
-                //         'uses' => ['yii\bootstrap5'],
-                //     ],
-                // ],
                 'renderers' => [
                     'twig' => [
                         'class' => \yii\twig\ViewRenderer::class,
                         'cachePath' => '@runtime/Twig/cache',
                         'options' => [
                             'auto_reload' => true,
+                            'debug' => true,
+                        ],
+                        'extensions' => [
+                            \Twig\Extension\DebugExtension::class,
                         ],
                         'globals' => [
-                            'Html' => \yii\helpers\Html::class,
+                            'html' => \yii\helpers\Html::class,
                             'url' => \yii\helpers\Url::class,
+                            //'AppAsset' => ['class' => \app\assets\AppAsset::class],
                         ],
                         'uses' => ['yii\bootstrap5'],
                     ],

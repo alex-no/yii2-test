@@ -6,6 +6,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
+use app\assets\AppAsset;
 use yii\filters\VerbFilter;
 use yii\helpers\Html;
 use app\models\LoginForm;
@@ -13,6 +14,8 @@ use app\models\ContactForm;
 
 class SiteController extends Controller
 {
+    public $layout = 'main.twig';
+    
     /**
      * {@inheritdoc}
      */
@@ -60,6 +63,7 @@ class SiteController extends Controller
      */
     public function beforeAction($action)
     {
+        AppAsset::register($this->getView());
         Yii::$app->view->params['powered_yii'] = Html::a('Yii Framework', 'https://www.yiiframework.com/', ['rel' => 'external']);
         Yii::$app->view->params['powered_twig'] = Html::a('Twig', 'https://twig.symfony.com/', ['rel' => 'external']);
         return parent::beforeAction($action);
@@ -74,7 +78,7 @@ class SiteController extends Controller
     {
         $this->view->title = Yii::t('app', 'My Yii Application-test');
 
-        return $this->render('index');
+        return $this->render('index.twig');
     }
 
     /**
