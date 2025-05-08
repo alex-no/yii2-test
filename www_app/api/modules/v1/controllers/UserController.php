@@ -3,27 +3,15 @@
 namespace app\api\modules\v1\controllers;
 
 use Yii;
-use yii\rest\Controller;
+use app\api\components\ApiController;
 use yii\web\Response;
 use app\components\JwtAuth;
 use app\models\User;
 use yii\web\NotFoundHttpException;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
-
-    public function behaviors()
-    {
-        $behaviors = parent::behaviors();
-
-        $behaviors['authenticator'] = [
-            'class' => JwtAuth::class,
-        ];
-
-        $behaviors['contentNegotiator']['formats']['application/json'] = Response::FORMAT_JSON;
-
-        return $behaviors;
-    }
+    protected array $authOnly = ['profile', 'logout', 'view', 'update'];
 
     /**
      * @OA\Get(

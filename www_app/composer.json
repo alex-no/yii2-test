@@ -25,7 +25,8 @@
         "firebase/php-jwt": "^6.11",
         "symfony/mailer": "^6.4",
         "symfony/mime": "^6.4",
-        "yiisoft/yii2-twig": "^2.5"
+        "yiisoft/yii2-twig": "^2.5",
+        "alex-no/server-time-clock": "^1.0"
         },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

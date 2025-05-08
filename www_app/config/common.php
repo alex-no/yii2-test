@@ -34,6 +34,15 @@ return [
             'enabledField' => 'is_enabled',
             'orderField' => 'order',
         ],
+        'serverClock' => [
+            'class' => \ServerTimeClock\Yii\ServerClockComponent::class,
+            'client' => 'WorldTimeApi',
+            'credentials' => [
+                'IpGeoLocation' => '71fba5dbb71e4e87a94cea31783d9f2a',
+            ],
+            'enableCache' => true,
+            'cacheTtl' => 300,
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],

@@ -2,22 +2,15 @@
 namespace app\api\modules\v1\controllers;
 
 use Yii;
-use yii\rest\Controller;
-use yii\web\Response;
+use app\api\components\ApiController;
 use app\models\User;
 use yii\web\BadRequestHttpException;
 use app\components\JwtHelper;
 use yii\helpers\Url;
 use app\common\services\EmailService;
 
-class AuthController extends Controller
+class AuthController extends ApiController
 {
-    public function behaviors()
-    {
-        $behaviors = parent::behaviors();
-        $behaviors['contentNegotiator']['formats']['application/json'] = Response::FORMAT_JSON;
-        return $behaviors;
-    }
 
     /**
      * @OA\Post(

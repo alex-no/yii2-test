@@ -1,21 +1,12 @@
 <?php
 namespace app\api\modules\v1\controllers;
 
-use yii\rest\Controller;
+// use Yii;
+use app\api\components\ApiController;
 use app\models\Language;
-use yii\web\Response;
-use Yii;
 
-class LanguageController extends Controller
+class LanguageController extends ApiController
 {
-    public function behaviors()
-    {
-        $behaviors = parent::behaviors();
-        // Ensure the response is in JSON format
-        $behaviors['contentNegotiator']['formats']['application/json'] = Response::FORMAT_JSON;
-        return $behaviors;
-    }
-
     /**
      * @OA\Get(
      *     path="/api/languages",

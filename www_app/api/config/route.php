@@ -27,8 +27,9 @@ return [
         // ],
     ],
 
-    'GET db-tables' => 'v1/site/db-tables',
-    'GET test' => 'v1/site/test',
+    'GET test' => 'v1/test/index',
+    'GET server-clock' => 'v1/test/server-clock',
+    'GET db-tables' => 'v1/test/db-tables',
 
     'swagger/json' => 'v1/swagger/json',
     //'swagger/ui' => 'v1/swagger/ui',

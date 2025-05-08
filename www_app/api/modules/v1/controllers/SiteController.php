@@ -1,10 +1,8 @@
 <?php
 namespace app\api\modules\v1\controllers;
 
-use Yii;
-use yii\web\Controller;
-use yii\web\Response;
-use app\models\PetType;
+// use Yii;
+use app\api\components\ApiController;
 
 /**
  * @OA\Info(
@@ -13,22 +11,8 @@ use app\models\PetType;
  *     description="API documentation for the Yii2-test project"
  * )
  */
-class SiteController extends Controller
+class SiteController extends ApiController
 {
-    public function behaviors()
-    {
-        $behaviors = parent::behaviors();
-
-        $behaviors['contentNegotiator'] = [
-            'class' => \yii\filters\ContentNegotiator::class,
-            'formats' => [
-                'application/json' => Response::FORMAT_JSON,
-            ],
-        ];
-
-        return $behaviors;
-    }
-
     /**
      * @OA\Get(
      *     path="/api",
@@ -51,78 +35,11 @@ class SiteController extends Controller
     {
         $app = app();
         return [
-            'api' => 'Test API',
+            'api' => 'Test Yii2-API',
             'projectName' => $app->name,
             'version' => $app->version,
             'language' => $app->language,
             'timeZone' => $app->timeZone,
         ];
-    }
-
-    /**
-     * @OA\Get(
-     *     path="/api/db-tables",
-     *     summary="List database tables",
-     *     tags={"Test"},
-     *     @OA\Response(
-     *         response="200",
-     *         description="Returns list of table names",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Database connection is successful"
-     *             ),
-     *             @OA\Property(
-     *                 property="tables",
-     *                 type="array",
-     *                 @OA\Items(type="string")
-     *             )
-     *         )
-     *     )
-     * )
-     */
-    public function actionDbTables()
-    {
-        try {
-            // Checking the connection
-            $tables = Yii::$app->db->schema->getTableNames();
-
-            return [
-                'message' => 'Database connection is successful',
-                'tables' => $tables,
-            ];
-        } catch (\Exception $e) {
-            return [
-                'message' => 'Could not connect to the database. Please check your configuration.',
-                'error' => $e->getMessage()
-            ];
-        }
-    }
-
-    public function actionTest()
-    {
-        $types = PetType::find()
-            ->select(['id', '##name'])
-            ->orderBy('##name DESC')
-            ->all();
-
-        return [
-            'types' => $types,
-        ];
-
-        // $id = Yii::$app->request->get('id', 1); // Retrieve id from GET request, default is 1
-        // $petType = PetType::findOne($id);
-
-        // if ($petType === null) {
-        //     $name = "PetType with id={$id} not found";
-        // } else {
-        //     $name = $petType->{'##name'};
-        // }
-
-        // return [
-        //     'name' => $name,
-        // ];
     }
 }
