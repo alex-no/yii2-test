@@ -26,6 +26,13 @@ return [
         //     'OPTIONS pet-types' => '',
         // ],
     ],
+    [
+        'class' => 'yii\rest\UrlRule',
+        'controller' => [
+            'pet-breeds' => 'v1/pet-breed',
+        ],
+        'pluralize' => true,
+    ],
 
     'GET test' => 'v1/test/index',
     'GET server-clock' => 'v1/test/server-clock',

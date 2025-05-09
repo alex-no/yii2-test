@@ -3,34 +3,31 @@
 namespace app\api\modules\v1\controllers;
 
 use Yii;
+use yii\web\NotFoundHttpException;
+// use yii\filters\VerbFilter;
+use app\api\components\ApiController;
 use app\models\PetType;
 use app\components\i18n\AdvActiveDataProvider;
-use yii\rest\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * PetTypeController implements the CRUD actions for PetType model.
  */
-class PetTypeController extends Controller
+class PetTypeController extends ApiController
 {
     /**
      * @inheritDoc
      */
-    public function behaviors()
-    {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::class,
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
-                ],
-            ]
-        );
-    }
+    // public function behaviors()
+    // {
+    //     $behaviors = parent::behaviors();
+    //     $behaviors['verbs'] = [
+    //         'class' => VerbFilter::class,
+    //         'actions' => [
+    //             'delete' => ['POST'],
+    //         ],
+    //     ];
+    //     return $behaviors;
+    // }
 
     /**
      * @OA\Get(
@@ -82,7 +79,7 @@ class PetTypeController extends Controller
             ],
             'sort' => [
                 'defaultOrder' => [
-                    '@@name' => SORT_DESC,
+                    '@@name' => SORT_ASC,
                 ]
             ],
         ]);
