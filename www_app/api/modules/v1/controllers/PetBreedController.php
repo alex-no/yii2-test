@@ -220,20 +220,6 @@ class PetBreedController extends ApiController
      * @param int $id ID
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
-
-    /**
-     * Finds the PetBreed model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return PetBreed the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
      *
      * @OA\Delete(
      *     path="/api/pet-breed/{id}",
@@ -255,6 +241,20 @@ class PetBreedController extends ApiController
      *         description="Not found"
      *     ),
      * )
+     */
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Finds the PetBreed model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param int $id ID
+     * @return PetBreed the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
