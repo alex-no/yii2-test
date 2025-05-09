@@ -33,6 +33,13 @@ return [
         ],
         'pluralize' => true,
     ],
+    [
+        'class' => 'yii\rest\UrlRule',
+        'controller' => [
+            'pet-owners' => 'v1/pet-owner',
+        ],
+        'pluralize' => true,
+    ],
 
     'GET test' => 'v1/test/index',
     'GET server-clock' => 'v1/test/server-clock',
