@@ -162,7 +162,7 @@ class PetBreedController extends ApiController
      *         @OA\JsonContent(
      *             type="object",
      *             required={"pet_type_id"},
-     *             @OA\Property(property="pet_type_id", required=true, type="integer", example=1),
+     *             @OA\Property(property="pet_type_id", type="integer", example=1),
      *             @OA\Property(property="name_uk", type="string", example="Китайський чубатий собака"),
      *             @OA\Property(property="name_en", type="string", example="Chinese Crested Dog"),
      *             @OA\Property(property="name_ru", type="string", example="Китайская хохлатая собака")
@@ -190,9 +190,7 @@ class PetBreedController extends ApiController
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $model->toArray();
     }
 
     /**
@@ -216,7 +214,6 @@ class PetBreedController extends ApiController
      *         required=true,
      *         @OA\JsonContent(
      *             type="object",
-     *             required={"pet_type_id"},
      *             @OA\Property(property="pet_type_id", type="integer", example=1),
      *             @OA\Property(property="name_uk", type="string", example="Китайський чубатий собака"),
      *             @OA\Property(property="name_en", type="string", example="Chinese Crested Dog"),
@@ -248,9 +245,7 @@ class PetBreedController extends ApiController
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        return $model->toArray();
     }
 
     /**

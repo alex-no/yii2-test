@@ -12,10 +12,11 @@ use app\components\i18n\AdvActiveDataProvider;
  *
  * @OA\Schema(
  *     schema="PetOwner",
- *     required={"nickname", "pet_type_id", "user_id"},
- *     @OA\Property(property="nickname", type="string"),
- *     @OA\Property(property="pet_type_id", type="integer"),
+ *     required={"user_id", "pet_type_id", "pet_breed_id", "nickname"},
  *     @OA\Property(property="user_id", type="integer"),
+ *     @OA\Property(property="pet_type_id", type="integer"),
+ *     @OA\Property(property="pet_breed_id", type="integer"),
+ *     @OA\Property(property="nickname", type="string"),
  *     @OA\Property(property="description", type="string", nullable=true)
  * )
  */
@@ -54,7 +55,10 @@ class PetOwnerController extends ApiController
      *                 @OA\Items(
      *                     type="object",
      *                     @OA\Property(property="id", type="integer", example=11),
-     *                     @OA\Property(property="nickname", type="string", example="Chinese Crested Dog"),
+     *                     @OA\Property(property="user_id", type="integer"),
+     *                     @OA\Property(property="pet_type_id", type="integer"),
+     *                     @OA\Property(property="pet_breed_id", type="integer"),
+     *                     @OA\Property(property="nickname", type="string", example="Sharick"),
      *                     @OA\Property(property="year_of_birth", type="integer", example="2020")
      *                 )
      *             ),
@@ -78,15 +82,25 @@ class PetOwnerController extends ApiController
      *     )
      * )
      */
-    public function actionIndex($petTypeId = null, $userId = null)
+    public function actionIndex($userId = null, $petTypeId = null, $petBreedId = null)
     {
-        if (empty($petTypeId) || empty($userId)) {
-            throw new \yii\web\BadRequestHttpException('petTypeId or userId is required');
+        $where = [];
+        if (!empty($userId)) {
+            $where['user_id'] = $userId;
+        }
+        if (!empty($petTypeId)) {
+            $where['pet_type_id'] = $petTypeId;
+        }
+        if (!empty($petBreedId)) {
+            $where['pet_breed_id'] = $petBreedId;
+        }
+        if (empty($where)) {
+            throw new \yii\web\BadRequestHttpException('userId or petTypeId or petBreedId is required');
         }
 
         $query = PetOwner::find()
-            ->select(['id', 'nickname' => '@@nickname'])
-            ->where(['pet_type_id' => $petTypeId])
+            ->select(['id', 'user_id', 'pet_type_id', 'pet_breed_id', 'nickname' => '@@nickname', 'year_of_birth'])
+            ->where($where)
             ->asArray();
 
         $dataProvider = new AdvActiveDataProvider([
@@ -137,13 +151,17 @@ class PetOwnerController extends ApiController
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="id", type="integer", example=11),
+     *             @OA\Property(property="user_id", type="integer", example=1),
      *             @OA\Property(property="pet_type_id", type="integer", example=1),
-     *             @OA\Property(property="nickname_uk", type="string", example="Китайський чубатий собака"),
-     *             @OA\Property(property="nickname_en", type="string", example="Chinese Crested Dog"),
-     *             @OA\Property(property="nickname_ru", type="string", example="Китайская хохлатая собака"),
+     *             @OA\Property(property="pet_breed_id", type="integer", example=1),
+     *             @OA\Property(property="nickname_uk", type="string", example="Шарік"),
+     *             @OA\Property(property="nickname_en", type="string", example="Sharick"),
+     *             @OA\Property(property="nickname_ru", type="string", example="Шарик"),
      *             @OA\Property(property="year_of_birth", type="integer", example=2020),
      *             @OA\Property(property="updated_at", type="string", format="date-time", example="2025-03-12 03:15:20"),
+     *             @OA\Property(property="user_name", type="string", example="Petro")
      *             @OA\Property(property="pet_type_name", type="string", example="dog")
+     *             @OA\Property(property="pet_breed_name", type="string", example="Chinese Crested Dog")
      *         )
      *     ),
      *     @OA\Response(
@@ -170,11 +188,12 @@ class PetOwnerController extends ApiController
      *         required=true,
      *         @OA\JsonContent(
      *             type="object",
-     *             required={"pet_type_id"},
-     *             @OA\Property(property="pet_type_id", required=true, type="integer", example=1),
-     *             @OA\Property(property="nickname_uk", type="string", example="Китайський чубатий собака"),
-     *             @OA\Property(property="nickname_en", type="string", example="Chinese Crested Dog"),
-     *             @OA\Property(property="nickname_ru", type="string", example="Китайская хохлатая собака"),
+     *             required={"user_id", "pet_breed_id"},
+     *             @OA\Property(property="user_id", type="integer", example=1),
+     *             @OA\Property(property="pet_breed_id", type="integer", example=1),
+     *             @OA\Property(property="nickname_uk", type="string", example="Шарік"),
+     *             @OA\Property(property="nickname_en", type="string", example="Sharick"),
+     *             @OA\Property(property="nickname_ru", type="string", example="Шарик"),
      *             @OA\Property(property="year_of_birth", type="integer", example=2020)
      *         )
      *     ),
@@ -200,9 +219,7 @@ class PetOwnerController extends ApiController
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $model->toArray();
     }
 
     /**
@@ -226,11 +243,11 @@ class PetOwnerController extends ApiController
      *         required=true,
      *         @OA\JsonContent(
      *             type="object",
-     *             required={"pet_type_id"},
-     *             @OA\Property(property="pet_type_id", type="integer", example=1),
-     *             @OA\Property(property="nickname_uk", type="string", example="Китайський чубатий собака"),
-     *             @OA\Property(property="nickname_en", type="string", example="Chinese Crested Dog"),
-     *             @OA\Property(property="nickname_ru", type="string", example="Китайская хохлатая собака"),
+     *             @OA\Property(property="user_id", type="integer", example=1),
+     *             @OA\Property(property="pet_breed_id", type="integer", example=1),
+     *             @OA\Property(property="nickname_uk", type="string", example="Шарік"),
+     *             @OA\Property(property="nickname_en", type="string", example="Sharick"),
+     *             @OA\Property(property="nickname_ru", type="string", example="Шарик"),
      *             @OA\Property(property="year_of_birth", type="integer", example=2020)
      *         )
      *     ),
@@ -259,9 +276,7 @@ class PetOwnerController extends ApiController
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        return $model->toArray();
     }
 
     /**
