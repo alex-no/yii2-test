@@ -38,12 +38,22 @@ class PetTypeController extends ApiController
      *         response=200,
      *         description="Successful operation",
      *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(
+     *             @OA\Property(
+     *                 property="items",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example="1"),
+     *                     @OA\Property(property="name", type="string", example="dog"),
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="_meta",
      *                 type="object",
-     *                 @OA\Property(property="id", type="integer", example="1"),
-     *                 @OA\Property(property="name", type="string", example="собака"),
-     *                 @OA\Property(property="updated_at", type="datetime", example="2025-03-12T20:08:04.566Z")
+     *                 @OA\Property(property="totalCount", type="integer", example=16),
+     *                 @OA\Property(property="pageCount", type="integer", example=2),
+     *                 @OA\Property(property="currentPage", type="integer", example=2),
+     *                 @OA\Property(property="perPage", type="integer", example=10)
      *             )
      *         )
      *     ),

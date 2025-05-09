@@ -3,7 +3,6 @@
 namespace app\api\modules\v1\controllers;
 
 use app\models\PetBreed;
-use yii\data\ActiveDataProvider;
 use app\api\components\ApiController;
 use yii\web\NotFoundHttpException;
 use app\components\i18n\AdvActiveDataProvider;
@@ -24,10 +23,10 @@ class PetBreedController extends ApiController
     /**
      * Lists all PetBreed models.
      *
-     * @return string
+     * @return array
      *
      * @OA\Get(
-     *     path="/api/pet-breed?petTypeId={petTypeId}",
+     *     path="/api/pet-breeds?petTypeId={petTypeId}",
      *     operationId="getPetBreeds",
      *     summary="Get all pet breeds by petTypeId",
      *     tags={"PetBreed"},
@@ -42,8 +41,23 @@ class PetBreedController extends ApiController
      *         response=200,
      *         description="Successful response",
      *         @OA\JsonContent(
-     *             @OA\Property(property="items", type="array", @OA\Items(type="object")),
-     *             @OA\Property(property="_meta", type="object")
+     *             @OA\Property(
+     *                 property="items",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=11),
+     *                     @OA\Property(property="name", type="string", example="Chinese Crested Dog")
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="_meta",
+     *                 type="object",
+     *                 @OA\Property(property="totalCount", type="integer", example=16),
+     *                 @OA\Property(property="pageCount", type="integer", example=2),
+     *                 @OA\Property(property="currentPage", type="integer", example=2),
+     *                 @OA\Property(property="perPage", type="integer", example=10)
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -63,7 +77,7 @@ class PetBreedController extends ApiController
         }
 
         $query = PetBreed::find()
-            ->select(['id', '@@name'])
+            ->select(['id', 'name' => '@@name'])
             ->where(['pet_type_id' => $petTypeId])
             ->asArray();
 
@@ -92,23 +106,36 @@ class PetBreedController extends ApiController
 
     /**
      * Displays a single PetBreed model.
+     *
      * @param int $id ID
-     * @return string
+     * @return array|PetBreed
      * @throws NotFoundHttpException if the model cannot be found
      *
      * @OA\Get(
      *     path="/api/pet-breed/{id}",
      *     summary="Get a single pet breed",
      *     tags={"PetBreed"},
+     *     operationId="getPetBreedById",
      *     @OA\Parameter(
      *         name="id",
-     *         in="query",
+     *         in="path",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         description="ID of the pet breed",
+     *         @OA\Schema(type="integer", example=11)
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Successful response"
+     *         description="Successful response",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="id", type="integer", example=11),
+     *             @OA\Property(property="pet_type_id", type="integer", example=1),
+     *             @OA\Property(property="name_uk", type="string", example="Китайський чубатий собака"),
+     *             @OA\Property(property="name_en", type="string", example="Chinese Crested Dog"),
+     *             @OA\Property(property="name_ru", type="string", example="Китайская хохлатая собака"),
+     *             @OA\Property(property="updated_at", type="string", format="date-time", example="2025-03-12 03:15:20"),
+     *             @OA\Property(property="pet_type_name", type="string", example="dog")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -118,9 +145,7 @@ class PetBreedController extends ApiController
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        return $this->findModel($id);
     }
 
     /**
@@ -129,7 +154,7 @@ class PetBreedController extends ApiController
      * @return string|\yii\web\Response
      *
      * @OA\Post(
-     *     path="/api/pet-breed",
+     *     path="/api/pet-breeds",
      *     summary="Create a new pet breed",
      *     tags={"PetBreed"},
      *     @OA\RequestBody(
@@ -171,7 +196,7 @@ class PetBreedController extends ApiController
      * @throws NotFoundHttpException if the model cannot be found
      *
      * @OA\Put(
-     *     path="/api/pet-breed/{id}",
+     *     path="/api/pet-breeds/{id}",
      *     summary="Update a pet breed",
      *     tags={"PetBreed"},
      *     @OA\Parameter(
@@ -222,7 +247,7 @@ class PetBreedController extends ApiController
      * @throws NotFoundHttpException if the model cannot be found
      *
      * @OA\Delete(
-     *     path="/api/pet-breed/{id}",
+     *     path="/api/pet-breeds/{id}",
      *     operationId="deletePetBreed",
      *     summary="Delete a pet breed",
      *     tags={"PetBreed"},
