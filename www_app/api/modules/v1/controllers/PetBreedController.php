@@ -159,7 +159,14 @@ class PetBreedController extends ApiController
      *     tags={"PetBreed"},
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/PetBreed")
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"pet_type_id"},
+     *             @OA\Property(property="pet_type_id", required=true, type="integer", example=1),
+     *             @OA\Property(property="name_uk", type="string", example="Китайський чубатий собака"),
+     *             @OA\Property(property="name_en", type="string", example="Chinese Crested Dog"),
+     *             @OA\Property(property="name_ru", type="string", example="Китайская хохлатая собака")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=201,
@@ -201,13 +208,20 @@ class PetBreedController extends ApiController
      *     tags={"PetBreed"},
      *     @OA\Parameter(
      *         name="id",
-     *         in="query",
+     *         in="path",
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/PetBreed")
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"pet_type_id"},
+     *             @OA\Property(property="pet_type_id", type="integer", example=1),
+     *             @OA\Property(property="name_uk", type="string", example="Китайський чубатий собака"),
+     *             @OA\Property(property="name_en", type="string", example="Chinese Crested Dog"),
+     *             @OA\Property(property="name_ru", type="string", example="Китайская хохлатая собака")
+     *         )
      *     ),
      *     @OA\Response(
      *        response=201, description="Updated"
@@ -253,7 +267,7 @@ class PetBreedController extends ApiController
      *     tags={"PetBreed"},
      *     @OA\Parameter(
      *         name="id",
-     *         in="query",
+     *         in="path",
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
