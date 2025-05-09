@@ -159,8 +159,8 @@ class PetOwnerController extends ApiController
      *             @OA\Property(property="nickname_ru", type="string", example="Шарик"),
      *             @OA\Property(property="year_of_birth", type="integer", example=2020),
      *             @OA\Property(property="updated_at", type="string", format="date-time", example="2025-03-12 03:15:20"),
-     *             @OA\Property(property="user_name", type="string", example="Petro")
-     *             @OA\Property(property="pet_type_name", type="string", example="dog")
+     *             @OA\Property(property="user_name", type="string", example="Petro"),
+     *             @OA\Property(property="pet_type_name", type="string", example="dog"),
      *             @OA\Property(property="pet_breed_name", type="string", example="Chinese Crested Dog")
      *         )
      *     ),
