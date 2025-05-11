@@ -4,14 +4,6 @@ namespace app\api\modules\v1\controllers;
 use Yii;
 use app\api\components\ApiController;
 
-/**
- * @OA\SecurityScheme(
- *     securityScheme="bearerAuth",
- *     type="http",
- *     scheme="bearer",
- *     bearerFormat="JWT"
- * )
- */
 class TestController extends ApiController
 {
     protected array $authOnly = ['db-tables'];

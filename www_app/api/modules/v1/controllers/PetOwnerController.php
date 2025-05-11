@@ -20,7 +20,6 @@ use app\components\i18n\AdvActiveDataProvider;
  *     @OA\Property(property="nickname", type="string"),
  *     @OA\Property(property="description", type="string", nullable=true)
  * )
- * @OA\SecurityRequirement(name="bearerAuth")
  */
 class PetOwnerController extends ApiController
 {
@@ -61,6 +60,7 @@ class PetOwnerController extends ApiController
      *
      * @OA\Get(
      *     path="/api/pet-owners?userId={userId}&petTypeId={petTypeId}&petBreedId={petBreedId}",
+     *     security={{"bearerAuth":{}}},
      *     operationId="getPetOwners",
      *     summary="Get all pet owners by petTypeId",
      *     tags={"PetOwner"},
@@ -173,6 +173,7 @@ class PetOwnerController extends ApiController
      *
      * @OA\Get(
      *     path="/api/pet-owners/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Get a single pet and owner",
      *     tags={"PetOwner"},
      *     operationId="getPetOwnerById",
@@ -220,6 +221,7 @@ class PetOwnerController extends ApiController
      *
      * @OA\Post(
      *     path="/api/pet-owners",
+     *     security={{"bearerAuth":{}}},
      *     summary="Create a new pet and owner",
      *     tags={"PetOwner"},
      *     @OA\RequestBody(
@@ -269,6 +271,7 @@ class PetOwnerController extends ApiController
      *
      * @OA\Put(
      *     path="/api/pet-owners/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Update a pet and owner",
      *     tags={"PetOwner"},
      *     @OA\Parameter(
@@ -323,6 +326,7 @@ class PetOwnerController extends ApiController
      *
      * @OA\Delete(
      *     path="/api/pet-owners/{id}",
+     *     security={{"bearerAuth":{}}},
      *     operationId="deletePetOwner",
      *     summary="Delete a pet owner",
      *     tags={"PetOwner"},
