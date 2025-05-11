@@ -2,6 +2,7 @@
 
 namespace app\api\modules\v1\controllers;
 
+use Yii;
 use app\models\PetOwner;
 use app\api\components\ApiController;
 use yii\filters\AccessControl;
@@ -122,6 +123,9 @@ class PetOwnerController extends ApiController
      */
     public function actionIndex($userId = null, $petTypeId = null, $petBreedId = null)
     {
+        $authUserId = Yii::$app->user->id;
+        $auth = Yii::$app->authManager;
+
         $where = [];
         if (!empty($userId)) {
             $where['user_id'] = $userId;
@@ -132,8 +136,14 @@ class PetOwnerController extends ApiController
         if (!empty($petBreedId)) {
             $where['pet_breed_id'] = $petBreedId;
         }
-        if (empty($where)) {
-            throw new \yii\web\BadRequestHttpException('userId or petTypeId or petBreedId is required');
+
+        // All user roles (including inherited ones)
+        $roles = $auth->getRolesByUser($authUserId);
+        $firstRole = reset($roles);
+        $roleName = $firstRole ? $firstRole->name : null;
+        if ($roleName == 'roleUser' || empty($where)) {
+            //throw new \yii\web\BadRequestHttpException('userId or petTypeId or petBreedId is required');
+            $where['user_id'] = $authUserId;
         }
 
         $query = PetOwner::find()
