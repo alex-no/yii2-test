@@ -4,6 +4,7 @@ namespace app\api\modules\v1\controllers;
 
 use app\models\PetOwner;
 use app\api\components\ApiController;
+use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use app\components\i18n\AdvActiveDataProvider;
 
@@ -19,19 +20,56 @@ use app\components\i18n\AdvActiveDataProvider;
  *     @OA\Property(property="nickname", type="string"),
  *     @OA\Property(property="description", type="string", nullable=true)
  * )
+ * @OA\SecurityRequirement(name="bearerAuth")
  */
 class PetOwnerController extends ApiController
 {
+    protected array $authOnly = [
+        'index',
+        'view',
+        'create',
+        'update',
+        'delete',
+    ];
+
+    public function behaviors()
+    {
+        return array_merge(parent::behaviors(), [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['index', 'view', 'create', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view'],
+                        'roles' => ['@'], // authenticated users
+                    ],
+                    // [
+                    //     'allow' => true,
+                    //     'actions' => ['create', 'update', 'delete'],
+                    //     'roles' => ['petOwner.create', 'petOwner.update', 'petOwner.delete'],
+                    // ],
+                ],
+            ],
+        ]);
+    }
+
     /**
      * Lists all PetOwner models.
      *
      * @return array
      *
      * @OA\Get(
-     *     path="/api/pet-owners?petTypeId={petTypeId}&userId={userId}",
+     *     path="/api/pet-owners?userId={userId}&petTypeId={petTypeId}&petBreedId={petBreedId}",
      *     operationId="getPetOwners",
      *     summary="Get all pet owners by petTypeId",
      *     tags={"PetOwner"},
+     *     @OA\Parameter(
+     *         name="userId",
+     *         description="ID of the user",
+     *         in="query",
+     *         @OA\Schema(type="integer")
+     *     ),
      *     @OA\Parameter(
      *         name="petTypeId",
      *         description="ID of the pet type",
@@ -40,8 +78,8 @@ class PetOwnerController extends ApiController
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
-     *         name="userId",
-     *         description="ID of the user",
+     *         name="petBreedId",
+     *         description="ID of the pet breed",
      *         in="query",
      *         @OA\Schema(type="integer")
      *     ),
@@ -74,7 +112,7 @@ class PetOwnerController extends ApiController
      *     ),
      *     @OA\Response(
      *         response=400,
-     *         description="Missing petTypeId"
+     *         description="At least one of userId, petTypeId or petBreedId is required"
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -250,9 +288,6 @@ class PetOwnerController extends ApiController
      *             @OA\Property(property="nickname_ru", type="string", example="Шарик"),
      *             @OA\Property(property="year_of_birth", type="integer", example=2020)
      *         )
-     *     ),
-     *     @OA\Response(
-     *        response=201, description="Updated"
      *     ),
      *     @OA\Response(
      *         response=200,

@@ -11,6 +11,13 @@ use app\components\i18n\AdvActiveDataProvider;
 
 /**
  * PetTypeController implements the CRUD actions for PetType model.
+ *
+ * @OA\Schema(
+ *     schema="PetType",
+ *     required={"name"},
+ *     @OA\Property(property="name", type="string"),
+ *     @OA\Property(property="description", type="string", nullable=true)
+ * )
  */
 class PetTypeController extends ApiController
 {

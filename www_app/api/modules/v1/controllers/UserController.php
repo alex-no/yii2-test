@@ -4,8 +4,6 @@ namespace app\api\modules\v1\controllers;
 
 use Yii;
 use app\api\components\ApiController;
-use yii\web\Response;
-use app\components\JwtAuth;
 use app\models\User;
 use yii\web\NotFoundHttpException;
 

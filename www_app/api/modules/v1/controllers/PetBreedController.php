@@ -12,9 +12,9 @@ use app\components\i18n\AdvActiveDataProvider;
  *
  * @OA\Schema(
  *     schema="PetBreed",
+ *     @OA\Property(property="pet_type_id", type="integer"),
  *     required={"name", "pet_type_id"},
  *     @OA\Property(property="name", type="string"),
- *     @OA\Property(property="pet_type_id", type="integer"),
  *     @OA\Property(property="description", type="string", nullable=true)
  * )
  */

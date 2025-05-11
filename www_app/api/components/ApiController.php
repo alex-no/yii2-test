@@ -4,7 +4,7 @@ namespace app\api\components;
 
 use Yii;
 use yii\rest\Controller;
-use yii\filters\auth\HttpBearerAuth;
+use app\components\JwtAuth;
 use yii\filters\ContentNegotiator;
 use yii\web\Response;
 
@@ -26,7 +26,7 @@ class ApiController extends Controller
 
         if (!empty($this->authOnly)) {
             $behaviors['authenticator'] = [
-                'class' => HttpBearerAuth::class,
+                'class' => JwtAuth::class,
                 'only' => $this->authOnly,
             ];
         }

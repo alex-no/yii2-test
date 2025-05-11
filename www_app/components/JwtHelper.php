@@ -16,7 +16,7 @@ class JwtHelper
     public static function getSecret()
     {
         if (self::$secret === '') {
-            self::$secret = param('JwtSecret');  // Получаем значение из конфигурации
+            self::$secret = param('JwtSecret');  // Retrieve the value from the configuration
         }
         return self::$secret;
     }

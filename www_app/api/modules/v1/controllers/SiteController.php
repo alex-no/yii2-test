@@ -10,6 +10,12 @@ use app\api\components\ApiController;
  *     version="0.1",
  *     description="API documentation for the Yii2-test project"
  * )
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT"
+ * )
  */
 class SiteController extends ApiController
 {

@@ -34,6 +34,9 @@ return [
             'enabledField' => 'is_enabled',
             'orderField' => 'order',
         ],
+        'authManager' => [
+            'class' => \yii\rbac\DbManager::class,
+        ],
         'serverClock' => [
             'class' => \ServerTimeClock\Yii\ServerClockComponent::class,
             'client' => 'WorldTimeApi',
