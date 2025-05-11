@@ -41,7 +41,7 @@ class PetOwnerController extends ApiController
                     [
                         'allow' => true,
                         'actions' => ['index', 'view'],
-                        'roles' => ['@'], // authenticated users
+                        'roles' => ['roleUser'], // authenticated users
                     ],
                     // [
                     //     'allow' => true,
