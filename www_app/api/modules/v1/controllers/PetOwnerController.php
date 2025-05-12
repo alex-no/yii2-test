@@ -41,14 +41,29 @@ class PetOwnerController extends ApiController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view'],
-                        'roles' => ['roleUser'], // authenticated users
+                        'actions' => ['index'],
+                        'roles' => ['listPets'],
                     ],
-                    // [
-                    //     'allow' => true,
-                    //     'actions' => ['create', 'update', 'delete'],
-                    //     'roles' => ['petOwner.create', 'petOwner.update', 'petOwner.delete'],
-                    // ],
+                    [
+                        'allow' => true,
+                        'actions' => ['view'],
+                        'roles' => ['viewPet'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['createPet'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['update'],
+                        'roles' => ['updatePet'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['deletePet'],
+                    ],
                 ],
             ],
         ]);

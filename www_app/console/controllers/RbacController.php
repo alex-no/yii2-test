@@ -18,40 +18,83 @@ class RbacController extends Controller
 
     public function actionInit()
     {
-        $this->auth->removeAll(); // ⚠ Removes all existing roles and permissions
+        $auth = $this->auth;
 
-        // Create permissions
-        $manageUsers = $this->auth->createPermission('manageUsers');
-        $manageUsers->description = 'Manage users';
-        $this->auth->add($manageUsers);
-
-        $manageDogs = $this->auth->createPermission('manageDogs');
-        $manageDogs->description = 'Manage pets';
-        $this->auth->add($manageDogs);
-
-        $viewOwnDogs = $this->auth->createPermission('viewOwnDogs');
-        $viewOwnDogs->description = 'View and edit own pets';
-        $this->auth->add($viewOwnDogs);
-
-        $readOnlyData = $this->auth->createPermission('readOnlyData');
-        $readOnlyData->description = 'View available data';
-        $this->auth->add($readOnlyData);
+        $auth->removeAll(); // ⚠ Removes all existing roles and permissions
 
         // Roles
-        $user = $this->auth->createRole('roleUser');
-        $this->auth->add($user);
-        $this->auth->addChild($user, $viewOwnDogs);
-        $this->auth->addChild($user, $readOnlyData);
+        $owner = $auth->createRole('roleOwner');
+        $auth->add($owner);
 
-        $admin = $this->auth->createRole('roleAdmin');
-        $this->auth->add($admin);
-        $this->auth->addChild($admin, $manageDogs);
-        $this->auth->addChild($admin, $readOnlyData);
+        $user = $auth->createRole('roleUser');
+        $auth->add($user);
 
-        $superadmin = $this->auth->createRole('roleSuperadmin');
-        $this->auth->add($superadmin);
-        $this->auth->addChild($superadmin, $manageUsers);
-        $this->auth->addChild($superadmin, $manageDogs);
-        $this->auth->addChild($superadmin, $readOnlyData);
+        $admin = $auth->createRole('roleAdmin');
+        $auth->add($admin);
+        $auth->addChild($admin, $owner);
+        $auth->addChild($admin, $user);
+
+        $superadmin = $auth->createRole('roleSuperadmin');
+        $auth->add($superadmin);
+        $auth->addChild($superadmin, $admin);
+
+        // Create permissions
+        $readOnlyData = $auth->createPermission('readOnlyData');
+        $readOnlyData->description = 'View available data';
+        $auth->add($readOnlyData);
+
+        // $crateData = $auth->createPermission('crateData');
+        // $crateData->description = 'Crate data';
+        // $auth->add($crateData);
+
+        // $updateData = $auth->createPermission('updateData');
+        // $updateData->description = 'Update data';
+        // $auth->add($updateData);
+
+        // $deleteData = $auth->createPermission('deleteData');
+        // $deleteData->description = 'Delete data';
+        // $auth->add($deleteData);
+
+        // Add permissions about pets
+        $listPets = $auth->createPermission('listPets');
+        $listPets->description = 'Get list of Pets';
+        $auth->add($listPets);
+        $auth->addChild($user, $listPets);
+
+        $viewPet = $auth->createPermission('viewPet');
+        $viewPet->description = 'View a specific Pet';
+        $auth->add($viewPet);
+        $auth->addChild($owner, $viewPet);
+
+        $createPet = $auth->createPermission('createPet');
+        $createPet->description = 'Create a specific Pet';
+        $auth->add($createPet);
+        $auth->addChild($owner, $createPet);
+
+        $updatePet = $auth->createPermission('updatePet');
+        $updatePet->description = 'Update a specific Pet';
+        $auth->add($updatePet);
+        $auth->addChild($admin, $updatePet);
+        $auth->addChild($owner, $updatePet);
+
+        $deletePet = $auth->createPermission('deletePet');
+        $deletePet->description = 'Delete a specific Pet';
+        $auth->add($deletePet);
+        $auth->addChild($superadmin, $deletePet);
+        $auth->addChild($owner, $deletePet);
+
+        // Add owner rule
+        $rule = new \app\rbac\OwnerRule();
+        $auth->add($rule);
+
+        // Add the "updateOwnPet" permission and associate it with the rule.
+        $updateOwnPet = $auth->createPermission('updateOwnPet');
+        $updateOwnPet->description = 'Update own pet';
+        $updateOwnPet->ruleName = $rule->name;
+        $auth->add($updateOwnPet);
+
+        $auth->addChild($updateOwnPet, $updatePet);
+        $auth->addChild($owner, $updateOwnPet);
+
     }
 }

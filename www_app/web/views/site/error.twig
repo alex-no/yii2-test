@@ -1,8 +1,6 @@
-{% set this.title = name %}
-
 <div class="site-error">
 
-    <h1>{{ this.title|e }}</h1>
+    <h1>{{ title|e }}</h1>
 
     <div class="alert alert-danger">
         {{ message|nl2br|e }}
