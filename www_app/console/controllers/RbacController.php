@@ -87,6 +87,15 @@ class RbacController extends Controller
         $rule = new \app\rbac\OwnerRule();
         $auth->add($rule);
 
+        // Add the "viewOwnPet" permission and associate it with the rule.
+        $viewOwnPet = $auth->createPermission('viewOwnPet');
+        $viewOwnPet->description = 'View own pet';
+        $viewOwnPet->ruleName = $rule->name;
+        $auth->add($viewOwnPet);
+
+        $auth->addChild($viewOwnPet, $viewPet);
+        $auth->addChild($owner, $viewOwnPet);
+
         // Add the "updateOwnPet" permission and associate it with the rule.
         $updateOwnPet = $auth->createPermission('updateOwnPet');
         $updateOwnPet->description = 'Update own pet';
@@ -95,6 +104,15 @@ class RbacController extends Controller
 
         $auth->addChild($updateOwnPet, $updatePet);
         $auth->addChild($owner, $updateOwnPet);
+
+        // Add the "deleteOwnPet" permission and associate it with the rule.
+        $deleteOwnPet = $auth->createPermission('deleteOwnPet');
+        $deleteOwnPet->description = 'Delete own pet';
+        $deleteOwnPet->ruleName = $rule->name;
+        $auth->add($deleteOwnPet);
+
+        $auth->addChild($deleteOwnPet, $deletePet);
+        $auth->addChild($owner, $deleteOwnPet);
 
     }
 }

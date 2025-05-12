@@ -47,7 +47,7 @@ class PetOwnerController extends ApiController
                     [
                         'allow' => true,
                         'actions' => ['view'],
-                        'roles' => ['viewPet'],
+                        'roles' => ['viewPet', 'viewPetOwner'],
                     ],
                     [
                         'allow' => true,
@@ -57,12 +57,12 @@ class PetOwnerController extends ApiController
                     [
                         'allow' => true,
                         'actions' => ['update'],
-                        'roles' => ['updatePet'],
+                        'roles' => ['updatePet', 'updatePetOwner'],
                     ],
                     [
                         'allow' => true,
                         'actions' => ['delete'],
-                        'roles' => ['deletePet'],
+                        'roles' => ['deletePet', 'deletePetOwner'],
                     ],
                 ],
             ],
@@ -335,7 +335,7 @@ class PetOwnerController extends ApiController
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+        if ($this->request->isPut && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
