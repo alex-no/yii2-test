@@ -1,6 +1,7 @@
 <?php
 namespace app\rbac;
 
+use Yii;
 use yii\rbac\Rule;
 
 /**
@@ -8,7 +9,15 @@ use yii\rbac\Rule;
  */
 class OwnerRule extends Rule
 {
+    /**
+     * @var string the name of this rule
+     */
     public $name = 'isOwner';
+
+    /**
+     * @var string the model class name
+     */
+    public $modelClass = 'app\models\PetOwner';
 
     /**
      * @param string|int $user the user ID.
@@ -18,6 +27,15 @@ class OwnerRule extends Rule
      */
     public function execute($user, $item, $params)
     {
-        return isset($params['pet_owner']) ? $params['pet_owner']->createdBy == $user : false;
+        $model = $params['model'] ?? new $this->modelClass;
+        if (empty($model->user_id)) {
+            $id = $params['id'] ?? Yii::$app->request->get('id');
+            if (empty($id)) {
+                return false;
+            }
+            $model = $this->modelClass::findOne($id);
+        }
+
+        return !empty($model->user_id) && $model->user_id == $user;
     }
 }

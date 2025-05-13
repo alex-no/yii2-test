@@ -57,7 +57,8 @@ class PetOwnerController extends ApiController
                     [
                         'allow' => true,
                         'actions' => ['update'],
-                        'roles' => ['updatePet', 'updatePetOwner'],
+                        //'roles' => ['updatePet', 'updatePetOwner'],
+                        'roles' => ['updatePetOwner'],
                     ],
                     [
                         'allow' => true,
@@ -335,7 +336,8 @@ class PetOwnerController extends ApiController
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPut && $model->load($this->request->post()) && $model->save()) {
+        $post = $this->request->post();
+        if ($this->request->isPut && $model->load($post, '') && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
