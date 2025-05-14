@@ -12,8 +12,13 @@ use app\components\i18n\AdvActiveDataProvider;
 /**
  * PetOwnerController implements the CRUD actions for PetOwner model.
  *
+ * @OA\Tag(
+ *     name="PetOwner",
+ *     description="API for working with Pet Owners"
+ * )
  * @OA\Schema(
  *     schema="PetOwner",
+ *     title="Pet Owners",
  *     required={"user_id", "pet_type_id", "pet_breed_id", "nickname"},
  *     @OA\Property(property="user_id", type="integer"),
  *     @OA\Property(property="pet_type_id", type="integer"),
@@ -62,7 +67,7 @@ class PetOwnerController extends ApiController
                     [
                         'allow' => true,
                         'actions' => ['delete'],
-                        'roles' => ['petOwner', 'roleAdmin'],
+                        'roles' => ['petOwner', 'roleSuperadmin'],
                     ],
                 ],
             ],
@@ -78,7 +83,8 @@ class PetOwnerController extends ApiController
      *     path="/api/pet-owners?userId={userId}&petTypeId={petTypeId}&petBreedId={petBreedId}",
      *     security={{"bearerAuth":{}}},
      *     operationId="getPetOwners",
-     *     summary="Get all pet owners by petTypeId",
+     *     summary="Retrieve a list of Pet Owners",
+     *     description="Returns a list of Pet Owners from the database",
      *     tags={"PetOwner"},
      *     @OA\Parameter(
      *         name="userId",
@@ -110,19 +116,25 @@ class PetOwnerController extends ApiController
      *                     type="object",
      *                     @OA\Property(property="id", type="integer", example=11),
      *                     @OA\Property(property="user_id", type="integer"),
-     *                     @OA\Property(property="pet_type_id", type="integer"),
-     *                     @OA\Property(property="pet_breed_id", type="integer"),
-     *                     @OA\Property(property="nickname", type="string", example="Sharick"),
-     *                     @OA\Property(property="year_of_birth", type="integer", example="2020")
+     *                     @OA\Property(property="owner", type="string", example="John Doe", description="Name of Owner"),
+     *                     @OA\Property(property="pet_type_id", type="integer", example="1", description="ID of the Pet Type"),
+     *                     @OA\Property(property="type", type="string", example="Dog", description="Type of the Pet in Current language"),
+     *                     @OA\Property(property="pet_breed_id", type="integer", example="1", description="ID of the Pet Breed"),
+     *                     @OA\Property(property="breed", type="string", example="German Shepherd", description="Breed of the Pet in Current language"),
+     *                     @OA\Property(property="nickname", type="string", example="Sharick", description="Nickname of the Pet in Current language"),
+     *                     @OA\Property(property="year_of_birth", type="integer", example="2020", description="Year of birth"),
+     *                     @OA\Property(property="age", type="integer", example="5", description="Age of pet"),
+     *                     @OA\Property(property="updated_at", type="datetime", example="2025-03-12T20:08:04.566Z", description="Date and time of the last update"),
+     *                     @OA\Property(property="created_at", type="datetime", example="2025-03-12T20:08:04.566Z", description="Date and time of the creation")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="_meta",
+     *                     type="object",
+     *                     @OA\Property(property="totalCount", type="integer", example=16),
+     *                     @OA\Property(property="pageCount", type="integer", example=2),
+     *                     @OA\Property(property="currentPage", type="integer", example=2),
+     *                     @OA\Property(property="perPage", type="integer", example=10)
      *                 )
-     *             ),
-     *             @OA\Property(
-     *                 property="_meta",
-     *                 type="object",
-     *                 @OA\Property(property="totalCount", type="integer", example=16),
-     *                 @OA\Property(property="pageCount", type="integer", example=2),
-     *                 @OA\Property(property="currentPage", type="integer", example=2),
-     *                 @OA\Property(property="perPage", type="integer", example=10)
      *             )
      *         )
      *     ),
@@ -253,7 +265,7 @@ class PetOwnerController extends ApiController
      *         required=true,
      *         @OA\JsonContent(
      *             type="object",
-     *             required={"user_id", "pet_breed_id"},
+     *             required={"pet_breed_id"},
      *             @OA\Property(property="user_id", type="integer", example=1),
      *             @OA\Property(property="pet_breed_id", type="integer", example=1),
      *             @OA\Property(property="nickname_uk", type="string", example="Шарік"),
