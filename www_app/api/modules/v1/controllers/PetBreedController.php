@@ -4,6 +4,7 @@ namespace app\api\modules\v1\controllers;
 
 use app\models\PetBreed;
 use app\api\components\ApiController;
+use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use app\components\i18n\AdvActiveDataProvider;
 
@@ -20,6 +21,46 @@ use app\components\i18n\AdvActiveDataProvider;
  */
 class PetBreedController extends ApiController
 {
+    protected array $authOnly = [
+        'index',
+        'view',
+        'create',
+        'update',
+        'delete',
+    ];
+
+    /**
+     * @inheritDoc
+     */
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+
+        $behaviors['access'] = [
+            'class' => AccessControl::class,
+            'only' => ['index', 'view', 'create', 'update', 'delete'],
+            'rules' => [
+                [
+                    'actions' => ['index', 'view'],
+                    'allow' => true,
+                    'roles' => ['?', '@'],
+                ],
+                [
+                    'actions' => ['create', 'update'],
+                    'allow' => true,
+                    'roles' => ['roleAdmin', 'roleSuperadmin'],
+                ],
+                [
+                    'actions' => ['delete'],
+                    'allow' => true,
+                    'roles' => ['roleSuperadmin'],
+                ],
+            ],
+        ];
+
+        return $behaviors;
+    }
+
     /**
      * Lists all PetBreed models.
      *
@@ -155,6 +196,7 @@ class PetBreedController extends ApiController
      *
      * @OA\Post(
      *     path="/api/pet-breeds",
+     *     security={{"bearerAuth":{}}},
      *     summary="Create a new pet breed",
      *     tags={"PetBreed"},
      *     @OA\RequestBody(
@@ -183,7 +225,7 @@ class PetBreedController extends ApiController
         $model = new PetBreed();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+            if ($model->load($this->request->post(), '') && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
@@ -202,6 +244,7 @@ class PetBreedController extends ApiController
      *
      * @OA\Put(
      *     path="/api/pet-breeds/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Update a pet breed",
      *     tags={"PetBreed"},
      *     @OA\Parameter(
@@ -257,6 +300,7 @@ class PetBreedController extends ApiController
      *
      * @OA\Delete(
      *     path="/api/pet-breeds/{id}",
+     *     security={{"bearerAuth":{}}},
      *     operationId="deletePetBreed",
      *     summary="Delete a pet breed",
      *     tags={"PetBreed"},

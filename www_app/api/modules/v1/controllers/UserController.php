@@ -124,7 +124,7 @@ class UserController extends ApiController
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+        if ($this->request->isPost && $model->load($this->request->post(), '') && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

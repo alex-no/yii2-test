@@ -288,15 +288,22 @@ class PetOwnerController extends ApiController
     {
         $model = new PetOwner();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+        $model->load(Yii::$app->request->post(), '');
+
+        if ($model->validate()) {
+            if ($model->save(false)) {
+                return [
+                    'success' => true,
+                    'data' => $model,
+                ];
             }
-        } else {
-            $model->loadDefaultValues();
         }
 
-        return $model->toArray();
+        Yii::$app->response->statusCode = 400;
+        return [
+            'success' => false,
+            'errors' => $model->getErrors(),
+        ];
     }
 
     /**

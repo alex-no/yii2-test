@@ -4,7 +4,7 @@ namespace app\api\modules\v1\controllers;
 
 use Yii;
 use yii\web\NotFoundHttpException;
-// use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use app\api\components\ApiController;
 use app\models\PetType;
 use app\components\i18n\AdvActiveDataProvider;
@@ -21,20 +21,45 @@ use app\components\i18n\AdvActiveDataProvider;
  */
 class PetTypeController extends ApiController
 {
+    protected array $authOnly = [
+        'index',
+        'view',
+        'create',
+        'update',
+        'delete',
+    ];
+
     /**
      * @inheritDoc
      */
-    // public function behaviors()
-    // {
-    //     $behaviors = parent::behaviors();
-    //     $behaviors['verbs'] = [
-    //         'class' => VerbFilter::class,
-    //         'actions' => [
-    //             'delete' => ['POST'],
-    //         ],
-    //     ];
-    //     return $behaviors;
-    // }
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+
+        $behaviors['access'] = [
+            'class' => AccessControl::class,
+            'only' => ['index', 'view', 'create', 'update', 'delete'],
+            'rules' => [
+                [
+                    'actions' => ['index', 'view'],
+                    'allow' => true,
+                    'roles' => ['?', '@'],
+                ],
+                [
+                    'actions' => ['create', 'update'],
+                    'allow' => true,
+                    'roles' => ['roleAdmin', 'roleSuperadmin'],
+                ],
+                [
+                    'actions' => ['delete'],
+                    'allow' => true,
+                    'roles' => ['roleSuperadmin'],
+                ],
+            ],
+        ];
+
+        return $behaviors;
+    }
 
     /**
      * @OA\Get(
@@ -185,6 +210,7 @@ class PetTypeController extends ApiController
     /**
      * @OA\Post(
      *     path="/api/pet-types",
+     *     security={{"bearerAuth":{}}},
      *     summary="Store a new Pet Type",
      *     description="Creates a new Pet Type and stores it in the database.",
      *     operationId="storePetTypes",
@@ -274,7 +300,7 @@ class PetTypeController extends ApiController
         $model = new PetType();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+            if ($model->load($this->request->post(), '') && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
@@ -287,6 +313,7 @@ class PetTypeController extends ApiController
     /**
      * @OA\Put(
      *     path="/api/pet-types/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Update an existing Pet Type",
      *     description="Updates the details of an existing Pet Type by its ID.",
      *     operationId="updatePetType",
@@ -407,6 +434,7 @@ class PetTypeController extends ApiController
     /**
      * @OA\Delete(
      *     path="/api/pet-types/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Delete a Pet Type",
      *     description="Deletes a PetType by its ID",
      *     operationId="destroyPetType",
