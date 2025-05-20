@@ -19,6 +19,13 @@ return [
     [
         'class' => 'yii\rest\UrlRule',
         'controller' => [
+            'development-plan' => 'v1/development-plan',
+        ],
+        'pluralize' => true,
+    ],
+    [
+        'class' => 'yii\rest\UrlRule',
+        'controller' => [
             'pet-types' => 'v1/pet-type',
         ],
         'pluralize' => true,

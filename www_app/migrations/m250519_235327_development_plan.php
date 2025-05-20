@@ -24,6 +24,7 @@ class m250519_235327_development_plan extends Migration
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
         ]);
+
         $this->batchInsert('development_plan',
             [
             'status',
@@ -31,7 +32,7 @@ class m250519_235327_development_plan extends Migration
             'technology_en', 'technology_uk', 'technology_ru',
             'result_en', 'result_uk', 'result_ru',
             'created_at', 'updated_at'
-            ],
+            ], [
             [
                 'completed',
                 'REST API development',
@@ -208,7 +209,6 @@ class m250519_235327_development_plan extends Migration
             ],
             [
                 'pending',
-                'pending',
                 'Testing API and business logic',
                 'Тестування API та бізнес-логіки',
                 'Тестирование API и логики',
@@ -220,7 +220,7 @@ class m250519_235327_development_plan extends Migration
                 'Покрытие тестами REST и бизнес-логики',
                 time(), time()
             ],
-        );
+        ]);
 
     }
 
