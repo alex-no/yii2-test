@@ -159,7 +159,7 @@ class DevelopmentPlanController extends ApiController
     }
 
     /**
-     * Displays a single DevelopmentPlan model.
+     * Displays a single Development Plan model.
      *
      * @param int $id ID
      * @return array|DevelopmentPlan
@@ -211,6 +211,44 @@ class DevelopmentPlanController extends ApiController
         return $this->findModel($id);
     }
 
+    /**
+     * Creates a new Development Plan model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return string|\yii\web\Response
+     *
+     * @OA\Post(
+     *     path="/api/development-plan",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Create a new Development Plan model",
+     *     tags={"About system"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"status", "feature_uk", "feature_en", "feature_ru"},
+     *             @OA\Property(property="sort_order", type="integer", example=10),
+     *             @OA\Property(property="status", type="string", example="in_progress", description="Status of Feature"),
+     *             @OA\Property(property="feature_uk", type="string", example="REST API", description="Feature Name in Ukrainian"),
+     *             @OA\Property(property="feature_en", type="string", example="REST API", description="Feature Name in English"),
+     *             @OA\Property(property="feature_ru", type="string", example="REST API", description="Feature Name in Russian"),
+     *             @OA\Property(property="technology_uk", type="string", example="Yii2, PHP", description="Technology of the feature in Ukrainian"),
+     *             @OA\Property(property="technology_en", type="string", example="Yii2, PHP", description="Technology of the feature in English"),
+     *             @OA\Property(property="technology_ru", type="string", example="Yii2, PHP", description="Technology of the feature in Russian"),
+     *             @OA\Property(property="result_uk", type="string", nullable=true, example="API", description="result of the feature in Ukrainian"),
+     *             @OA\Property(property="result_en", type="string", nullable=true, example="API", description="result of the feature in English"),
+     *             @OA\Property(property="result_ru", type="string", nullable=true, example="API", description="result of the feature in Russian"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Created"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Validation error"
+     *     )
+     * )
+     */
     public function actionCreate()
     {
         $model = new DevelopmentPlan();
@@ -226,6 +264,55 @@ class DevelopmentPlanController extends ApiController
         return $model;
     }
 
+    /**
+     * Updates an existing Development Plan model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param int $id ID
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     *
+     * @OA\Put(
+     *     path="/api/development-plan/{id}",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Update a Development Plan model",
+     *     tags={"About system"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="sort_order", type="integer", example=10),
+     *             @OA\Property(property="status", type="string", example="in_progress", description="Status of Feature"),
+     *             @OA\Property(property="feature_uk", type="string", example="REST API", description="Feature Name in Ukrainian"),
+     *             @OA\Property(property="feature_en", type="string", example="REST API", description="Feature Name in English"),
+     *             @OA\Property(property="feature_ru", type="string", example="REST API", description="Feature Name in Russian"),
+     *             @OA\Property(property="technology_uk", type="string", example="Yii2, PHP", description="Technology of the feature in Ukrainian"),
+     *             @OA\Property(property="technology_en", type="string", example="Yii2, PHP", description="Technology of the feature in English"),
+     *             @OA\Property(property="technology_ru", type="string", example="Yii2, PHP", description="Technology of the feature in Russian"),
+     *             @OA\Property(property="result_uk", type="string", nullable=true, example="API", description="result of the feature in Ukrainian"),
+     *             @OA\Property(property="result_en", type="string", nullable=true, example="API", description="result of the feature in English"),
+     *             @OA\Property(property="result_ru", type="string", nullable=true, example="API", description="result of the feature in Russian"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Updated"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not found"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Validation error"
+     *     )
+     * )
+     */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
@@ -237,6 +324,35 @@ class DevelopmentPlanController extends ApiController
         return $model;
     }
 
+    /**
+     * Deletes an existing DevelopmentPlan model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param int $id ID
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     *
+     * @OA\Delete(
+     *     path="/api/development-plan/{id}",
+     *     security={{"bearerAuth":{}}},
+     *     operationId="delete Development Plan",
+     *     summary="Delete a Development Plan",
+     *     tags={"About system"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not found"
+     *     ),
+     * )
+     */
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
