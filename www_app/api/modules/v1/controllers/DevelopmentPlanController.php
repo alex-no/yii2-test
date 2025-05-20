@@ -9,6 +9,24 @@ use app\api\components\ApiController;
 use app\models\DevelopmentPlan;
 use app\components\i18n\AdvActiveDataProvider;
 
+/**
+ * DevelopmentPlanController implements the CRUD actions for DevelopmentPlan model.
+ *
+ * @OA\Tag(
+ *     name="DevelopmentPlan",
+ *     description="API for working with Development Plan"
+ * )
+ * @OA\Schema(
+ *     schema="DevelopmentPlan",
+ *     title="Development Plan",
+ *     required={"sort_order", "status", "feature", "technology"},
+ *     @OA\Property(property="sort_order", type="integer"),
+ *     @OA\Property(property="status", type="string"),
+ *     @OA\Property(property="feature", type="string"),
+ *     @OA\Property(property="technology", type="string"),
+ *     @OA\Property(property="result", type="string", nullable=true)
+ * )
+ */
 class DevelopmentPlanController extends ApiController
 {
     protected array $authOnly = [
@@ -44,10 +62,75 @@ class DevelopmentPlanController extends ApiController
         return $behaviors;
     }
 
-    public function actionIndex()
+
+    /**
+     * Lists all DevelopmentPlan models.
+     *
+     * @return array
+     *
+     * @OA\Get(
+     *     path="/api/development-plan?status={status}",
+     *     operationId="getDevelopmentPlans",
+     *     summary="Retrieve a list of Development Plans",
+     *     description="Returns a list of Development Plans from the database",
+     *     tags={"About system"},
+     *     @OA\Parameter(
+     *         name="status",
+     *         description="Status of Plan",
+     *         in="query",
+     *         @OA\Schema(type="string", enum={"pending", "in_progress", "completed"})
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful response",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="items",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=11),
+     *                     @OA\Property(property="sort_order", type="integer"),
+     *                     @OA\Property(property="status", type="string", example="in_progress", description="Status of Feature"),
+     *                     @OA\Property(property="feature", type="string", example="REST API", description="Feature Name"),
+     *                     @OA\Property(property="technology", type="string", example="Yii2, PHP", description="Technology of the feature"),
+     *                     @OA\Property(property="result", type="string", nullable=true, example="API", description="result of the feature"),
+     *                     @OA\Property(property="updated_at", type="datetime", example="2025-03-12T20:08:04.566Z", description="Date and time of the last update"),
+     *                     @OA\Property(property="created_at", type="datetime", example="2025-03-12T20:08:04.566Z", description="Date and time of the creation")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="_meta",
+     *                     type="object",
+     *                     @OA\Property(property="totalCount", type="integer", example=16),
+     *                     @OA\Property(property="pageCount", type="integer", example=2),
+     *                     @OA\Property(property="currentPage", type="integer", example=2),
+     *                     @OA\Property(property="perPage", type="integer", example=10)
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Development Plan not found"
+     *     )
+     * )
+     */
+    public function actionIndex($status = null)
     {
+        $where = [];
+        if (!empty($status)) {
+            $where['status'] = $status;
+        }
         $query = DevelopmentPlan::find()
-            ->select(['id', 'sort_order', 'status', '@@feature', '@@technology', '@@result'])
+            ->select([
+                'id',
+                'sort_order',
+                'status',
+                'feature' => '@@feature',
+                'technology' => '@@technology',
+                'result' =>'@@result'
+            ])
+            ->where($where)
             ->asArray();
 
         $dataProvider = new AdvActiveDataProvider([
