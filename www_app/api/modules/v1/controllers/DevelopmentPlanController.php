@@ -147,7 +147,10 @@ class DevelopmentPlanController extends ApiController
         ]);
 
         return [
-            'items' => $dataProvider->getModels(), // data
+            'items' => array_map(function($row) {
+                $row['status_adv'] = DevelopmentPlan::makeStatusAdv($row['status']);
+                return $row;
+            }, $dataProvider->getModels()),
             '_meta' => [
                 'totalCount' => $dataProvider->getTotalCount(),
                 'pageCount' => $dataProvider->pagination->getPageCount(),
