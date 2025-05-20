@@ -47,7 +47,7 @@ class DevelopmentPlanController extends ApiController
     public function actionIndex()
     {
         $query = DevelopmentPlan::find()
-            ->select(['id', 'status', '@@feature', '@@technology', '@@result'])
+            ->select(['id', 'sort_order', 'status', '@@feature', '@@technology', '@@result'])
             ->asArray();
 
         $dataProvider = new AdvActiveDataProvider([
@@ -57,8 +57,8 @@ class DevelopmentPlanController extends ApiController
             ],
             'sort' => [
                 'defaultOrder' => [
-                    'status' => SORT_ASC,
-                    '@@feature' => SORT_ASC,
+                    'status' => SORT_DESC,
+                    'sort_order' => SORT_ASC,
                 ]
             ],
         ]);
