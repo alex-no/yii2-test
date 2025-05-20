@@ -32,9 +32,21 @@ class DevelopmentPlan extends DevelopmentPlanBase
 
     /**
      * Virtual field, calculated based on status.
+     * @return string
      */
     public function getStatusAdv(): string
     {
         return self::makeStatusAdv($this->status);
+    }
+
+    /**
+     * @inheritDoc
+     * @return array
+     */
+    public function fields(): array
+    {
+        return array_merge(parent::fields(), [
+            'status_adv',
+        ]);
     }
 }

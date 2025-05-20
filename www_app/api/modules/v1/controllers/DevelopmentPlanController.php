@@ -95,8 +95,6 @@ class DevelopmentPlanController extends ApiController
      *                     @OA\Property(property="feature", type="string", example="REST API", description="Feature Name"),
      *                     @OA\Property(property="technology", type="string", example="Yii2, PHP", description="Technology of the feature"),
      *                     @OA\Property(property="result", type="string", nullable=true, example="API", description="result of the feature"),
-     *                     @OA\Property(property="updated_at", type="datetime", example="2025-03-12T20:08:04.566Z", description="Date and time of the last update"),
-     *                     @OA\Property(property="created_at", type="datetime", example="2025-03-12T20:08:04.566Z", description="Date and time of the creation")
      *                 ),
      *                 @OA\Property(
      *                     property="_meta",
@@ -160,6 +158,54 @@ class DevelopmentPlanController extends ApiController
         ];
     }
 
+    /**
+     * Displays a single DevelopmentPlan model.
+     *
+     * @param int $id ID
+     * @return array|DevelopmentPlan
+     * @throws NotFoundHttpException if the model cannot be found
+     *
+     * @OA\Get(
+     *     path="/api/development-plan/{id}",
+     *     summary="Get a single Development Plan details",
+     *     description="Returns details of a single Development Plan",
+     *     tags={"About system"},
+     *     operationId="getDevelopmentPlanById",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the Development Plan",
+     *         @OA\Schema(type="integer", example=11)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful response",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="id", type="integer", example=11),
+     *             @OA\Property(property="sort_order", type="integer", example=10),
+     *             @OA\Property(property="status", type="string", example="in_progress", description="Status of Feature"),
+     *             @OA\Property(property="feature_uk", type="string", example="REST API", description="Feature Name in Ukrainian"),
+     *             @OA\Property(property="feature_en", type="string", example="REST API", description="Feature Name in English"),
+     *             @OA\Property(property="feature_ru", type="string", example="REST API", description="Feature Name in Russian"),
+     *             @OA\Property(property="technology_uk", type="string", example="Yii2, PHP", description="Technology of the feature in Ukrainian"),
+     *             @OA\Property(property="technology_en", type="string", example="Yii2, PHP", description="Technology of the feature in English"),
+     *             @OA\Property(property="technology_ru", type="string", example="Yii2, PHP", description="Technology of the feature in Russian"),
+     *             @OA\Property(property="result_uk", type="string", nullable=true, example="API", description="result of the feature in Ukrainian"),
+     *             @OA\Property(property="result_en", type="string", nullable=true, example="API", description="result of the feature in English"),
+     *             @OA\Property(property="result_ru", type="string", nullable=true, example="API", description="result of the feature in Russian"),
+     *             @OA\Property(property="status_adv", type="string", example="🔧 In Progress", description="Status with icon"),
+     *             @OA\Property(property="updated_at", type="datetime", example="2025-03-12T20:08:04.566Z", description="Date and time of the last update"),
+     *             @OA\Property(property="created_at", type="datetime", example="2025-03-12T20:08:04.566Z", description="Date and time of the creation")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="DevelopmentPlan not found"
+     *     )
+     * )
+     */
     public function actionView($id)
     {
         return $this->findModel($id);
