@@ -9,8 +9,8 @@ use app\models\base\DevelopmentPlan as DevelopmentPlanBase;
  */
 class DevelopmentPlan extends DevelopmentPlanBase
 {
-    // Example values prefix for conversion
     /**
+     *  Example values prefix for conversion
      * @var array<string, string>
      */
     private static array $statusLabels = [
