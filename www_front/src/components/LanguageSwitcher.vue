@@ -68,7 +68,7 @@ async function fetchLanguages() {
   try {
     const res = await fetch('/api/languages')
     const data = await res.json()
-    languages.value = data.data
+    languages.value = data
 
     const detectedLang = detectLanguage()
     currentLanguage.value = languages.value.find((l) => l.code === detectedLang)

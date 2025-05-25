@@ -134,7 +134,7 @@ class DevelopmentPlanController extends ApiController
         $dataProvider = new AdvActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 20
+                'pageSize' => 10
             ],
             'sort' => [
                 'defaultOrder' => [
@@ -149,12 +149,6 @@ class DevelopmentPlanController extends ApiController
                 $row['status_adv'] = DevelopmentPlan::makeStatusAdv($row['status']);
                 return $row;
             }, $dataProvider->getModels()),
-            '_meta' => [
-                'totalCount' => $dataProvider->getTotalCount(),
-                'pageCount' => $dataProvider->pagination->getPageCount(),
-                'currentPage' => $dataProvider->pagination->getPage() + 1,
-                'perPage' => $dataProvider->pagination->getPageSize(),
-            ],
         ];
     }
 
