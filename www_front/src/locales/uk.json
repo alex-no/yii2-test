@@ -1,0 +1,16 @@
+{
+  "pageTitle": "План розробки",
+  "pageLoading": "Завантаження",
+  "pageLoadingError": "Не вдалося завантажити дані.",
+  "table": {
+    "columnFeature": "Функція",
+    "columnTechnology": "Технологія",
+    "columnResult": "Результат",
+    "columnStatus": "Статус",
+    "columnUpdated": "Оновлено"
+  },
+  "pagination": {
+    "next": "Наступна",
+    "previous": "Попередня"
+  }
+}

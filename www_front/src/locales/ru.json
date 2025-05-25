@@ -1,0 +1,16 @@
+{
+  "pageTitle": "План разработки",
+  "pageLoading": "Загрузка",
+  "pageLoadingError": "Не удалось загрузить данные.",
+  "table": {
+    "columnFeature": "Функция",
+    "columnTechnology": "Технология",
+    "columnResult": "Результат",
+    "columnStatus": "Статус",
+    "columnUpdated": "Обновлено"
+  },
+  "pagination": {
+    "next": "Следующая",
+    "previous": "Предыдущая"
+  }
+}

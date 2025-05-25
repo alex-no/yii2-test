@@ -1,0 +1,16 @@
+{
+  "pageTitle": "Development Plan",
+  "pageLoading": "Loading",
+  "pageLoadingError": "Failed to load data.",
+  "table": {
+    "columnFeature": "Feature",
+    "columnTechnology": "Technology",
+    "columnResult": "Result",
+    "columnStatus": "Status",
+    "columnUpdated": "Updated"
+  },
+  "pagination": {
+    "next": "Next",
+    "previous": "Previous"
+  }
+}
