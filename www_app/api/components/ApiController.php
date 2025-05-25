@@ -7,6 +7,7 @@ use yii\rest\Controller;
 use app\components\JwtAuth;
 use yii\filters\ContentNegotiator;
 use yii\web\Response;
+use app\components\i18n\AdvActiveDataProvider;
 
 class ApiController extends Controller
 {
@@ -20,6 +21,9 @@ class ApiController extends Controller
      */
     protected bool $enableJsonNegotiation = true;
 
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         $behaviors = parent::behaviors();
@@ -43,6 +47,9 @@ class ApiController extends Controller
         return $behaviors;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function beforeAction($action)
     {
         if (!parent::beforeAction($action)) {
@@ -59,5 +66,44 @@ class ApiController extends Controller
         }
 
         return true;
+    }
+
+    /**
+     * Get metadata for paginated list responses.
+     * This method is used to provide pagination metadata for API responses.
+     *
+     * @param \yii\data\ActiveDataProvider $dataProvider
+     * @return array
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected function getListMeta(AdvActiveDataProvider $dataProvider): array
+    {
+        $pagination = $dataProvider->pagination;
+        $page = $pagination->getPage();
+        $count = $pagination->getPageCount();
+
+        $pageLinks = array_map(
+            fn(int $i) => [
+                'label' => (string)($i + 1),
+                'url' => $pagination->createUrl($i),
+                'active' => $i === $page,
+            ],
+            range(0, $count - 1)
+        );
+
+        return [
+            'page' => $page + 1,
+            'totalCount' => $dataProvider->getTotalCount(),
+            'pageCount' => $count,
+            'currentPage' => $page + 1,
+            'perPage' => $pagination->getPageSize(),
+            'links' => [
+                'first' => $pagination->createUrl(0),
+                'last' => $pagination->createUrl($count - 1),
+                'prev' => $page > 0 ? $pagination->createUrl($page - 1) : null,
+                'next' => $page + 1 < $count ? $pagination->createUrl($page + 1) : null,
+            ],
+            'pageLinks' => $pageLinks,
+        ];
     }
 }

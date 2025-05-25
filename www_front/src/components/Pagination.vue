@@ -8,7 +8,7 @@
       </li>
 
       <li
-        v-for="link in meta.links"
+        v-for="link in meta.pageLinks"
         :key="link.label"
         class="page-item"
         :class="{ active: link.active, disabled: !link.url || link.label.includes('pagination') }"
