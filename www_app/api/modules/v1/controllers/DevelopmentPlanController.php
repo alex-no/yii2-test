@@ -144,11 +144,29 @@ class DevelopmentPlanController extends ApiController
             ],
         ]);
 
+        $models = $dataProvider->getModels();
+        $pagination = $dataProvider->pagination;
+        $page = $pagination->getPage();
+        $count = $pagination->getPageCount();
+
         return [
             'items' => array_map(function($row) {
                 $row['status_adv'] = DevelopmentPlan::makeStatusAdv($row['status']);
                 return $row;
-            }, $dataProvider->getModels()),
+            }, $models),
+            '_meta' => [
+                'page' => $page + 1,
+                'totalCount' => $dataProvider->getTotalCount(),
+                'pageCount' => $count,
+                'currentPage' => $page + 1,
+                'perPage' => $pagination->getPageSize(),
+                'links' => [
+                    'first' => $pagination->createUrl(0),
+                    'last' => $pagination->createUrl($count - 1),
+                    'prev' => $page > 0 ? $pagination->createUrl($page - 1) : null,
+                    'next' => $page + 1 < $count ? $pagination->createUrl($page + 1) : null,
+                ],
+            ],
         ];
     }
 

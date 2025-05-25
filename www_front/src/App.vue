@@ -100,17 +100,11 @@ function fetchData(lang, page) {
       return response.json()
     })
     .then((data) => {
-// console.log('Full Data loaded:', data.items)
-// console.log('Data items:', data.items)
-// console.log('Meta _meta:', data._meta)
       items.value = data.items
       meta.value = data._meta
       const links = data._meta.links || {}
-console.log('Step 1', data.links.next)
       pagination.value.next = links.next ? getPageFromUrl(links.next) : null
-console.log('Step 2', data.links.prev)
       pagination.value.prev = links.prev ? getPageFromUrl(links.prev) : null
-console.log('Step 3')
     })
     .catch((err) => {
       console.error(err)
