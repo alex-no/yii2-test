@@ -124,12 +124,6 @@ function getPageFromUrl(url) {
     return null
   }
 }
-
-function formatLabel(label) {
-  if (label === 'pagination.previous') return '← Назад'
-  if (label === 'pagination.next') return 'Вперед →'
-  return label
-}
 </script>
 
 <style>

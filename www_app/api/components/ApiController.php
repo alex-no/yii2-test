@@ -90,6 +90,17 @@ class ApiController extends Controller
             ],
             range(0, $count - 1)
         );
+        array_unshift($pageLinks, [
+            'label' => 'previous',
+            'url' => $page > 0 ? $pagination->createUrl($page - 1) : null,
+            'active' => false,
+        ]);
+        $pageLinks[] = [
+            'label' => 'next',
+            'url' => $page + 1 < $count ? $pagination->createUrl($page + 1) : null,
+            'active' => false,
+        ];
+
 
         return [
             'page' => $page + 1,
@@ -100,8 +111,6 @@ class ApiController extends Controller
             'links' => [
                 'first' => $pagination->createUrl(0),
                 'last' => $pagination->createUrl($count - 1),
-                'prev' => $page > 0 ? $pagination->createUrl($page - 1) : null,
-                'next' => $page + 1 < $count ? $pagination->createUrl($page + 1) : null,
             ],
             'pageLinks' => $pageLinks,
         ];
