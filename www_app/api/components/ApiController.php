@@ -79,40 +79,78 @@ class ApiController extends Controller
     protected function getListMeta(AdvActiveDataProvider $dataProvider): array
     {
         $pagination = $dataProvider->pagination;
-        $page = $pagination->getPage();
-        $count = $pagination->getPageCount();
+        $currentPage = $pagination->getPage(); // 0-based
+        $pageCount = $pagination->getPageCount(); // total pages
+        $maxVisible = 5;
 
-        $pageLinks = array_map(
-            fn(int $i) => [
-                'label' => (string)($i + 1),
-                'url' => $pagination->createUrl($i),
-                'active' => $i === $page,
-            ],
-            range(0, $count - 1)
-        );
+        $pageLinks = [];
+
+        if ($pageCount <= $maxVisible + 2) {
+            // Simple pagination without ellipsis
+            $pageRange = range(0, $pageCount - 1);
+        } else {
+            $pageRange = [];
+
+            $start = max(1, $currentPage - 1);
+            $end = min($pageCount - 2, $currentPage + 1);
+
+            $pageRange[] = 0;
+
+            if ($start > 1) {
+                $pageRange[] = 'ellipsis-start';
+            }
+
+            foreach (range($start, $end) as $i) {
+                $pageRange[] = $i;
+            }
+
+            if ($end < $pageCount - 2) {
+                $pageRange[] = 'ellipsis-end';
+            }
+
+            $pageRange[] = $pageCount - 1;
+        }
+
+        foreach ($pageRange as $i) {
+            if ($i === 'ellipsis-start' || $i === 'ellipsis-end') {
+                $pageLinks[] = [
+                    'label' => '...',
+                    'url' => null,
+                    'active' => false,
+                ];
+            } else {
+                $pageLinks[] = [
+                    'label' => (string)($i + 1),
+                    'url' => $pagination->createUrl($i),
+                    'active' => $i === $currentPage,
+                ];
+            }
+        }
+
+        // Add "previous" and "next"
         array_unshift($pageLinks, [
             'label' => 'previous',
-            'url' => $page > 0 ? $pagination->createUrl($page - 1) : null,
+            'url' => $currentPage > 0 ? $pagination->createUrl($currentPage - 1) : null,
             'active' => false,
         ]);
         $pageLinks[] = [
             'label' => 'next',
-            'url' => $page + 1 < $count ? $pagination->createUrl($page + 1) : null,
+            'url' => $currentPage + 1 < $pageCount ? $pagination->createUrl($currentPage + 1) : null,
             'active' => false,
         ];
 
-
         return [
-            'page' => $page + 1,
+            'page' => $currentPage + 1,
             'totalCount' => $dataProvider->getTotalCount(),
-            'pageCount' => $count,
-            'currentPage' => $page + 1,
+            'pageCount' => $pageCount,
+            'currentPage' => $currentPage + 1,
             'perPage' => $pagination->getPageSize(),
             'links' => [
                 'first' => $pagination->createUrl(0),
-                'last' => $pagination->createUrl($count - 1),
+                'last' => $pagination->createUrl($pageCount - 1),
             ],
             'pageLinks' => $pageLinks,
         ];
     }
+
 }
