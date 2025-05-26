@@ -134,7 +134,7 @@ class DevelopmentPlanController extends ApiController
         $dataProvider = new AdvActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 10
+                'pageSize' => 16
             ],
             'sort' => [
                 'defaultOrder' => [
