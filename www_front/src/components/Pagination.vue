@@ -1,15 +1,19 @@
 <template>
   <nav>
     <ul class="pagination justify-content-center">
-      <li class="page-item" :class="{ disabled: !pagination.prev }">
-        <button class="page-link" @click="$emit('load', pagination.prev)" :disabled="!pagination.prev">
+      <li class="page-item" :class="{ disabled: !meta.links.first }">
+        <button
+          class="page-link"
+          @click="$emit('load', getPageFromUrl(meta.links.first))"
+          :disabled="!meta.links.first"
+        >
           &laquo;
         </button>
       </li>
 
       <li
         v-for="link in meta.pageLinks"
-        :key="link.label"
+        :key="link.label + (link.url ?? '')"
         class="page-item"
         :class="{ active: link.active, disabled: !link.url || link.label.includes('pagination') }"
       >
@@ -22,8 +26,12 @@
         </button>
       </li>
 
-      <li class="page-item" :class="{ disabled: !pagination.next }">
-        <button class="page-link" @click="$emit('load', pagination.next)" :disabled="!pagination.next">
+      <li class="page-item" :class="{ disabled: !meta.links.last }">
+        <button
+          class="page-link"
+          @click="$emit('load', getPageFromUrl(meta.links.last))"
+          :disabled="!meta.links.last"
+        >
           &raquo;
         </button>
       </li>
@@ -32,7 +40,6 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -58,4 +65,3 @@ function formatLabel(label) {
   return label
 }
 </script>
-
