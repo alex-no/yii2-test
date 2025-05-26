@@ -6,6 +6,7 @@
           class="page-link"
           @click="$emit('load', getPageFromUrl(meta.links.first))"
           :disabled="!meta.links.first"
+          :title="t('pagination.first')"
         >
           &laquo;
         </button>
@@ -31,6 +32,7 @@
           class="page-link"
           @click="$emit('load', getPageFromUrl(meta.links.last))"
           :disabled="!meta.links.last"
+          :title="t('pagination.last')"
         >
           &raquo;
         </button>

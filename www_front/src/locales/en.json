@@ -11,6 +11,8 @@
   },
   "pagination": {
     "next": "Next",
-    "previous": "Previous"
+    "previous": "Previous",
+    "first": "First page",
+    "last": "Last page"
   }
 }
