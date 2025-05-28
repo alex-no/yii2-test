@@ -20,6 +20,29 @@ class DevelopmentPlan extends DevelopmentPlanBase
     ];
 
     /**
+     * Get options for status dropdown.
+     * @return array<string, string>
+     */
+    public static function optsStatus(): array
+    {
+        return [
+            'pending' => 'Pending',
+            'in_progress' => 'In Progress',
+            'completed' => 'Completed',
+        ];
+    }
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return array_merge(parent::rules(), [
+            ['status', 'in', 'range' => array_keys(self::optsStatus())],
+        ]);
+    }
+
+
+    /**
      * Make status label with icon.
      * @param string $status
      * @return string

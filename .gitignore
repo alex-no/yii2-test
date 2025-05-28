@@ -13,3 +13,4 @@ bak
 /doc/PetType2.php
 /doc/ssh/*.ppk
 /www_front/rebuild.bat
+/www_app/config/params-secure.php

@@ -60,6 +60,9 @@ return yii\helpers\ArrayHelper::merge(
                 //'dsn' => 'smtp://user:pass@smtp.example.com:587',
                 'from' => 'noreply@example.com',
             ],
+            'payment' => [
+                'class' => \app\components\payment\PaymentManager::class,
+            ],
         ],
     ]
 );

@@ -54,7 +54,7 @@ class DevelopmentPlan extends AdvActiveRecord
             [['created_at', 'updated_at'], 'integer'],
             [['feature_en', 'feature_uk', 'feature_ru'], 'string', 'max' => 255],
             [['technology_en', 'technology_uk', 'technology_ru'], 'string', 'max' => 512],
-            ['status', 'in', 'range' => array_keys(self::optsStatus())],
+            // ['status', 'in', 'range' => array_keys(self::optsStatus())],
         ];
     }
 
