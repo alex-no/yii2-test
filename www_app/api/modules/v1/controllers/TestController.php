@@ -3,6 +3,7 @@ namespace app\api\modules\v1\controllers;
 
 use Yii;
 use app\api\components\ApiController;
+use app\common\services\EmailService;
 
 class TestController extends ApiController
 {
@@ -144,6 +145,52 @@ class TestController extends ApiController
                 'message' => 'Could not connect to the database. Please check your configuration.',
                 'error' => $e->getMessage()
             ];
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/mail-test",
+     *     summary="Mail Test",
+     *     tags={"Test"},
+     *     description="Check if the mail service is working by sending a test email",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Email sent successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=true
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Email sent successfully"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Failed to send email",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Failed to send email"),
+     *             @OA\Property(property="success", type="boolean", example=false)
+     *         )
+     *     )
+     * )
+     */
+    public function actionMailTest(): array
+    {
+        $service = new EmailService();
+        $sent = $service->sendConfirmation('alex@4n.com.ua', 'Alex', 'http://yii.loc/');
+
+        if ($sent) {
+            return ['success' => true, 'message' => 'Email sent successfully'];
+        } else {
+            Yii::$app->response->statusCode = 500;
+            return ['success' => false, 'message' => 'Failed to send email'];
         }
     }
 }

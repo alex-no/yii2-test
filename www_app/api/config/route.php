@@ -51,6 +51,7 @@ return [
     'GET test' => 'v1/test/index',
     'GET server-clock' => 'v1/test/server-clock',
     'GET db-tables' => 'v1/test/db-tables',
+    'GET mail-test' => 'v1/test/mail-test',
 
     'POST payments' => 'v1/payment/create',
     'POST payments/handle' => 'v1/payment/handle',
