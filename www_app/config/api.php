@@ -64,5 +64,6 @@ return yii\helpers\ArrayHelper::merge(
                 'class' => \app\components\payment\PaymentManager::class,
             ],
         ],
-    ]
+    ],
+    is_file(__DIR__ . '/api-secure.php') ? require __DIR__ . '/api-secure.php' : []
 );
