@@ -41,8 +41,8 @@ $params = [
             'config' => [
                 'publicKey'  => null, // Set your public key here
                 'privateKey' => null, // Set your private key here
-                'callbackUrl' => 'https://' . $currentDomain . '/api/payment/handle',
-                'resultUrl' => 'https://' . $currentDomain . '/api/payment/success',
+                'callbackUrl' => 'https://' . $currentDomain . '/api/payments/handle',
+                'resultUrl' => 'https://' . $currentDomain . '/api/payments/success',
             ],
         ],
         // 'paypal' => [...],

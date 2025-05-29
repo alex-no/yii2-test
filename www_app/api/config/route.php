@@ -53,8 +53,8 @@ return [
     'GET db-tables' => 'v1/test/db-tables',
 
     'POST payments' => 'v1/payment/create',
-    'POST payment/handle' => 'v1/payment/handle',
-    'POST payment/success' => 'v1/payment/success',
+    'POST payments/handle' => 'v1/payment/handle',
+    'POST payments/success' => 'v1/payment/success',
 
     'swagger/json' => 'v1/swagger/json',
     //'swagger/ui' => 'v1/swagger/ui',
