@@ -3,8 +3,8 @@ $hostName = !empty(\Yii::$app->request) ? Yii::$app->request->getHostName() : $_
 $currentDomain = $hostName ?? 'localhost';
 
 $params = [
-    'adminEmail' => 'alex@4n.com.ua',
-    'senderEmail' => 'noreply@example.com',
+    'adminEmail' => 'admin@4n.com.ua',
+    'senderEmail' => 'admin@4n.com.ua',
     'senderName' => 'Alex mailer',
     'JwtSecret' => 'MySuperSecretKey',
     'hiddenFields' => [

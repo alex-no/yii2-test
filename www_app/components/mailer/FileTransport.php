@@ -31,12 +31,12 @@ class FileTransport implements TransportInterface
 
         if ($envelope === null) {
             if (method_exists($message, 'getFrom')) {
-                $from = $message->getFrom()[0] ?? new Address('noreply@example.com');
-                $to = $message->getTo()[0] ?? new Address('admin@example.com');
+                $from = $message->getFrom()[0] ?? new Address('admin@4n.com.ua');
+                $to = $message->getTo()[0] ?? new Address('admin@4n.com.ua');
             } else {
                 // Fallback if nothing can be extracted
-                $from = new Address('noreply@example.com');
-                $to = new Address('admin@example.com');
+                $from = new Address('admin@4n.com.ua');
+                $to = new Address('admin@4n.com.ua');
             }
 
             $envelope = new Envelope($from, [$to]);
