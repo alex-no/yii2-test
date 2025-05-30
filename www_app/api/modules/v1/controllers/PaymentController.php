@@ -25,6 +25,10 @@ class PaymentController extends ApiController
 
     public function behaviors()
     {
+Yii::info('User ID: ' . Yii::$app->user->id, __METHOD__);
+Yii::info('Is guest: ' . (Yii::$app->user->isGuest ? 'yes' : 'no'), __METHOD__);
+Yii::info('Roles: ' . json_encode(Yii::$app->authManager->getRolesByUser(Yii::$app->user->id)), __METHOD__);
+Yii::info('Can: ' . Yii::$app->user->can('roleUser'), __METHOD__);
         return array_merge(parent::behaviors(), [
             'access' => [
                 'class' => AccessControl::class,
