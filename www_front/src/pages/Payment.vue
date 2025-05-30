@@ -22,13 +22,20 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import BaseLayout from '@/layouts/BaseLayout.vue';
 
 const amount = ref('100.00');
 const paySystem = ref('liqpay');
 const router = useRouter();
+
+onMounted(() => {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    router.replace('/html/login');
+  }
+});
 
 const handleSubmit = async () => {
   const orderId = `ORD-${new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)}-${Math.random().toString(36).slice(2, 10)}`;
