@@ -150,4 +150,14 @@ class SiteController extends Controller
             'breadcrumbs' => ['About'],
         ]);
     }
+
+    /**
+     * Displays Vue.js application.
+     *
+     * @return string
+     */
+    public function actionVue(): string
+    {
+        return $this->renderFile(Yii::getAlias('@webroot/html/index.html'));
+    }
 }

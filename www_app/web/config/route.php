@@ -2,8 +2,11 @@
 
 return [
     // vue routes
-    'html/<path:.+>' => 'html/index',
-    'html' => 'html/index',
+    [
+        'pattern' => 'html/<path:[\w\-\/]+>',
+        'route' => 'site/vue',
+    ],
+    'html' => 'site/vue',
 
     // api routes
     '' => 'site/index',
