@@ -144,14 +144,17 @@ class PaymentController extends ApiController
     public function actionHandle(): array
     {
         $post = Yii::$app->request->post();
+Yii::info('Handle - POST: ' . $post, __METHOD__);
 
         if (empty($post['data']) || empty($post['signature'])) {
+Yii::error('Handle - Missing data or signature.', __METHOD__);
             throw new BadRequestHttpException("Missing data or signature.");
         }
 
         $driver = Yii::$app->payment->getDriver();
 
         if (!$driver->verifySignature($post['data'], $post['signature'])) {
+Yii::error('Handle - Invalid signature.', __METHOD__);
             throw new BadRequestHttpException("Invalid signature.");
         }
 
@@ -161,11 +164,13 @@ class PaymentController extends ApiController
         $status = $data['status'] ?? null;
 
         if (!$orderId || !$status) {
+Yii::error('Handle - Invalid callback data.', __METHOD__);
             throw new BadRequestHttpException("Invalid callback data.");
         }
 
         $order = Order::findOne(['order_id' => $orderId]);
         if (!$order) {
+Yii::error("Handle - Order not found.", __METHOD__);
             throw new ServerErrorHttpException("Order not found.");
         }
 
