@@ -1,6 +1,10 @@
 import messages from '../locales'
 
 export function detectLanguage() {
+  if (typeof window === 'undefined') return 'en'
+  if (typeof navigator === 'undefined') return 'en'
+  if (typeof document === 'undefined') return 'en'
+
   const candidates = [
     () => new URLSearchParams(window.location.search).get('lang'),
     () => localStorage.getItem('selected_language'),

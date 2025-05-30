@@ -8,12 +8,14 @@ import router from './router'
 import { createI18n } from 'vue-i18n'
 import messages from './locales'
 import { applyI18nEffects } from './i18n/i18n-utils'
+//import { detectLanguage } from '@/utils/detect_language'
 
-//import './style.css'
+import './style.css'
 
 const i18n = createI18n({
   legacy: false,
-  locale: detectLanguage(),
+  //locale: detectLanguage(),
+  locale: 'en',
   fallbackLocale: 'en',
   messages
 })
