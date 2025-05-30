@@ -1,15 +1,21 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import Payment from '@/pages/Payment.vue';
-import PaymentResult from '@/pages/PaymentResult.vue';
-import Login from '@/pages/Login.vue';
+import { createRouter, createWebHistory } from 'vue-router'
+
+import FeaturesList from '@/pages/FeaturesList.vue'
+import Login from '@/pages/Login.vue'
+import Payment from '@/pages/Payment.vue'
+import PaymentResult from '@/pages/PaymentResult.vue'
 
 const routes = [
-  { path: '/html/payment', component: Payment },
-  { path: '/html/payment/result', component: PaymentResult },
-  { path: '/html/login', component: Login }
-];
+  { path: '/features', component: FeaturesList },
+  { path: '/login', component: Login },
+  { path: '/payment', component: Payment },
+  { path: '/payment-result', component: PaymentResult },
+  { path: '/', redirect: '/features' },
+]
 
-export const router = createRouter({
-  history: createWebHistory(),
-  routes
-});
+const router = createRouter({
+  history: createWebHistory('/html/'),
+  routes,
+})
+
+export default router
