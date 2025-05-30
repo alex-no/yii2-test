@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen flex flex-col">
-    <header class="bg-gray-800 text-white p-4 text-xl font-semibold">
-      <div class="container mx-auto">Vue Payment</div>
+  <div>
+    <header class="p-3 bg-light border-bottom d-flex justify-content-end">
+      <LanguageSwitcher v-model="selectedLang" />
     </header>
 
     <main class="flex-grow container mx-auto p-4">
@@ -15,7 +15,19 @@
 </template>
 
 <script setup>
-</script>
+import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 
-<style scoped>
-</style>
+const { locale } = useI18n()
+
+const selectedLang = ref(new URLSearchParams(window.location.search).get('lang') || 'en')
+locale.value = selectedLang.value
+
+watch(selectedLang, (newLang) => {
+  locale.value = newLang
+  const url = new URL(window.location.href)
+  url.searchParams.set('lang', newLang)
+  window.history.replaceState(null, '', url.toString())
+})
+</script>
