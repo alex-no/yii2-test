@@ -1,7 +1,5 @@
 <template>
   <div class="container py-5">
-    <LanguageSwitcher v-model="selectedLang" />
-
     <h1 class="mb-4">{{ $t('pageTitle') }}</h1>
 
     <div v-if="loading" class="text-center">
@@ -42,9 +40,8 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import LanguageSwitcher from './components/LanguageSwitcher.vue'
 import { useI18n } from 'vue-i18n'
-import Pagination from './components/Pagination.vue'
+import Pagination from '@/components/Pagination.vue'
 
 const { locale, t } = useI18n()
 const items = ref([])
@@ -53,7 +50,6 @@ const error = ref(null)
 const pagination = ref({ next: null, prev: null })
 const meta = ref({ links: [] })
 
-// Get language and page from URL on startup
 function getQueryParam(name) {
   return new URLSearchParams(window.location.search).get(name)
 }
@@ -125,9 +121,3 @@ function getPageFromUrl(url) {
   }
 }
 </script>
-
-<style>
-body {
-  font-family: system-ui, sans-serif;
-}
-</style>
