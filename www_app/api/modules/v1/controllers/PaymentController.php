@@ -48,9 +48,9 @@ class PaymentController extends ApiController
      *     description="Returns information about New Payment.",
      *     tags={"Payment"},
      *     @OA\RequestBody(
-     *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="amount", type="string", example="100.00"),
+     *             @OA\Property(property="amount", type="string", required=true, example="100.00"),
+     *             @OA\Property(property="pay_system", type="string", example="lyqpay")
      *             @OA\Property(property="order_id", type="string", example="ORD-20250529-045325-abcd1234")
      *         )
      *     ),
@@ -175,6 +175,7 @@ Yii::error("Handle - Order not found.", __METHOD__);
         }
 
         $order->payment_status = $status;
+        $order->paid_at = $status === 'success' ? date('Y-m-d H:i:s') : null;
         $order->save(false); // disable validation, can be replaced with a transaction
 
         Yii::info("Payment callback received for order #$orderId with status: $status", __METHOD__);
