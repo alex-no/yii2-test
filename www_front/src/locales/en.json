@@ -14,5 +14,11 @@
     "previous": "Previous",
     "first": "First page",
     "last": "Last page"
+  },
+  "form": {
+    "login": "Login",
+    "username": "Name of user",
+    "password": "Password",
+    "sign_in": "Sign In"
   }
 }
