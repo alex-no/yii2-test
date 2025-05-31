@@ -60,12 +60,10 @@ const currentPage = ref(Number(getQueryParam('page')) || 1)
 const baseUrl = '/api/development-plan'
 
 onMounted(() => {
-  locale.value = selectedLang.value
-  fetchData(selectedLang.value, currentPage.value)
+  fetchData(locale.value, currentPage.value)
 })
 
-watch(selectedLang, (newLang) => {
-  locale.value = newLang
+watch(locale, (newLang) => {
   currentPage.value = 1 // When changing the language, you can reset to the 1st page or keep the current one — your choice
   updateUrl({ lang: newLang, page: currentPage.value })
   fetchData(newLang, currentPage.value)

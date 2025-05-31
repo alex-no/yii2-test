@@ -1,15 +1,15 @@
 <template>
-  <div>
-    <header class="p-3 bg-light border-bottom d-flex justify-content-end">
+  <div class="layout-wrapper">
+    <header class="bg-light border-bottom d-flex justify-content-end px-3 py-1">
       <LanguageSwitcher v-model="selectedLang" />
     </header>
 
-    <main class="flex-grow container mx-auto p-4">
+    <main class="container">
       <slot />
     </main>
 
-    <footer class="bg-gray-100 text-center p-4 text-sm text-gray-600">
-      &copy; {{ new Date().getFullYear() }} Vue Payment System
+    <footer class="bg-gray-100 text-center text-sm text-gray-600 px-3 py-1">
+      &copy; {{ new Date().getFullYear() }} Oleksandr Nosov’s pet project. All rights reserved.
     </footer>
   </div>
 </template>
@@ -21,7 +21,8 @@ import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 
 const { locale } = useI18n()
 
-const selectedLang = ref(new URLSearchParams(window.location.search).get('lang') || 'en')
+const urlLang = new URLSearchParams(window.location.search).get('lang')
+const selectedLang = ref(urlLang || 'en')
 locale.value = selectedLang.value
 
 watch(selectedLang, (newLang) => {
