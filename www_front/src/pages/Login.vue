@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleLogin" class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md">
+  <form @submit.prevent="handleLogin" class="max-w-md mx-auto bg-white p-6 mt-3 rounded-xl shadow-md">
     <h2 class="text-xl font-bold mb-4">Login</h2>
     <div class="mb-4">
       <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>

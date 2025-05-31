@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-content-end align-items-center mb-3">
+  <div class="d-flex justify-content-end align-items-center mt-2 mb-2">
     <div class="btn-group">
       <button
         type="button"
