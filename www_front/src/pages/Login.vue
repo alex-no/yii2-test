@@ -1,28 +1,25 @@
 <template>
-  <BaseLayout>
-    <form @submit.prevent="handleLogin" class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md">
-      <h2 class="text-xl font-bold mb-4">Login</h2>
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-        <input v-model="username" type="text" class="w-full border border-gray-300 p-2 rounded-md" required />
-      </div>
+  <form @submit.prevent="handleLogin" class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md">
+    <h2 class="text-xl font-bold mb-4">Login</h2>
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+      <input v-model="username" type="text" class="w-full border border-gray-300 p-2 rounded-md" required />
+    </div>
 
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-        <input v-model="password" type="password" class="w-full border border-gray-300 p-2 rounded-md" required />
-      </div>
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+      <input v-model="password" type="password" class="w-full border border-gray-300 p-2 rounded-md" required />
+    </div>
 
-      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md w-full">
-        Sign In
-      </button>
-    </form>
-  </BaseLayout>
+    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md w-full">
+      Sign In
+    </button>
+  </form>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import BaseLayout from '@/layouts/BaseLayout.vue';
 
 const username = ref('');
 const password = ref('');

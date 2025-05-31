@@ -1,30 +1,27 @@
 <template>
-  <BaseLayout>
-    <form @submit.prevent="handleSubmit" class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md">
-      <h2 class="text-xl font-bold mb-4">Make a Payment</h2>
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
-        <input v-model="amount" type="number" step="0.01" min="0.01" class="w-full border border-gray-300 p-2 rounded-md" required />
-      </div>
+  <form @submit.prevent="handleSubmit" class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md">
+    <h2 class="text-xl font-bold mb-4">Make a Payment</h2>
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+      <input v-model="amount" type="number" step="0.01" min="0.01" class="w-full border border-gray-300 p-2 rounded-md" required />
+    </div>
 
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Payment System</label>
-        <select v-model="paySystem" class="w-full border border-gray-300 p-2 rounded-md" readonly>
-          <option value="liqpay">LiqPay</option>
-        </select>
-      </div>
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700 mb-1">Payment System</label>
+      <select v-model="paySystem" class="w-full border border-gray-300 p-2 rounded-md" readonly>
+        <option value="liqpay">LiqPay</option>
+      </select>
+    </div>
 
-      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md w-full">
-        Pay Now
-      </button>
-    </form>
-  </BaseLayout>
+    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md w-full">
+      Pay Now
+    </button>
+  </form>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import BaseLayout from '@/layouts/BaseLayout.vue';
 
 const amount = ref('100.00');
 const paySystem = ref('liqpay');
