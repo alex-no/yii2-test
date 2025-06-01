@@ -29,7 +29,10 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { detectLanguage } from '@/utils/detect_language'
+
+const { locale } = useI18n() // <--- добавлено
 
 const selectedLang = ref(detectLanguage())
 const props = defineProps({ modelValue: String })
@@ -52,6 +55,7 @@ function saveLanguage(code, days = 365) {
 
 function changeLanguage(code) {
   saveLanguage(code)
+  locale.value = code
   emit('update:modelValue', code)
 }
 
@@ -60,6 +64,7 @@ watch(
   (newCode) => {
     if (newCode) {
       saveLanguage(newCode)
+      locale.value = newCode
     }
   }
 )

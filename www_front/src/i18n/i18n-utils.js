@@ -6,7 +6,9 @@ export function applyI18nEffects(i18n, router) {
 
   // Function to update title based on route
   const updateTitle = () => {
-    const titleKey = router.currentRoute.value.meta.title
+    const route = router.currentRoute.value
+    const titleKey = route.meta?.title
+
     if (titleKey) {
       document.title = i18n.global.t(titleKey)
     } else {

@@ -34,8 +34,8 @@ const router = useRouter();
 onMounted(() => {
   const token = localStorage.getItem('access_token');
 console.log('Access Token:', token);  
-  if (!token) {
-    //router.replace('/html/login');
+  if (!token || 1) {
+    router.replace('/html/login?no-auth=1');
   }
 });
 
