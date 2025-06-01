@@ -26,7 +26,7 @@
             <td>{{ item.sort_order }}</td>
             <td>{{ item.feature }}</td>
             <td>{{ item.technology }}</td>
-            <td>{{ item.result }}</td>
+            <td v-html="item.result"></td>
             <td>{{ item.status_adv }}</td>
             <td>{{ item.updated }}</td>
           </tr>
