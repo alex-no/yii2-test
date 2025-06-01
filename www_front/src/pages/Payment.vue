@@ -55,24 +55,38 @@ const handleSubmit = async () => {
     })
   });
 
-  const data = await response.json();
-  if (data && data.redirect_url && data.fields) {
+  const result = await response.json();
+
+  const payment = result?.payment;
+  if (payment?.action && payment?.data && payment?.signature) {
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = data.redirect_url;
+    form.action = payment.action;
+    form.acceptCharset = 'utf-8';
 
-    for (const key in data.fields) {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = data.fields[key];
-      form.appendChild(input);
-    }
+    const dataInput = document.createElement('input');
+    dataInput.type = 'hidden';
+    dataInput.name = 'data';
+    dataInput.value = payment.data;
+    form.appendChild(dataInput);
+
+    const signatureInput = document.createElement('input');
+    signatureInput.type = 'hidden';
+    signatureInput.name = 'signature';
+    signatureInput.value = payment.signature;
+    form.appendChild(signatureInput);
 
     document.body.appendChild(form);
     form.submit();
   } else {
-    alert('Payment initialization failed');
+    let msg = 'Payment initialization failed. ';
+    if (result?.name) {
+      msg += `\n${result.name}: `;
+    }
+    if (result?.message) {
+      msg += result.message;
+    }
+    alert(msg);
   }
 };
 </script>

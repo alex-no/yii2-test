@@ -32,6 +32,12 @@
     "make_payment": "Make a Payment",
     "amount": "Amount",
     "payment_system": "Payment System",
-    "pay_now": "Pay Now"
+    "pay_now": "Pay Now",
+
+    "payment_result": "Payment Result",
+    "payment_successfull": "Your payment was processed successfully.",
+    "payment_failed": "Payment failed. Please try again.",
+    "unknown_status": "Unknown payment status.",
+    "another_payment": "Make another payment"
   }
 }

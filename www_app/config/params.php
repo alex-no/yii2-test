@@ -42,7 +42,7 @@ $params = [
                 'publicKey'  => null, // Set your public key here
                 'privateKey' => null, // Set your private key here
                 'callbackUrl' => 'https://' . $currentDomain . '/api/payments/handle',
-                'resultUrl' => 'https://' . $currentDomain . '/api/payments/success',
+                'resultUrl' => 'https://' . $currentDomain . '/html/payments/success',
             ],
         ],
         // 'paypal' => [...],
