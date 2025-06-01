@@ -33,14 +33,14 @@ const router = useRouter();
 
 onMounted(() => {
   const token = localStorage.getItem('access_token');
-console.log('Access Token:', token);  
-  if (!token || 1) {
-    router.replace('/html/login?no-auth=1');
+  if (!token) {
+    router.replace('/login?no-auth=1');
   }
 });
 
 const handleSubmit = async () => {
-  const orderId = `ORD-${new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)}-${Math.random().toString(36).slice(2, 10)}`;
+  //const orderId = `ORD-${new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)}-${Math.random().toString(36).slice(2, 10)}`;
+  const orderId = null;
 
   const response = await fetch('/api/payments', {
     method: 'POST',
