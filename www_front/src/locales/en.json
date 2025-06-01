@@ -33,6 +33,7 @@
     "amount": "Amount",
     "payment_system": "Payment System",
     "pay_now": "Pay Now",
+    "to_authorize": "To the authorization page",
 
     "payment_result": "Payment Result",
     "payment_successfull": "Your payment was processed successfully.",

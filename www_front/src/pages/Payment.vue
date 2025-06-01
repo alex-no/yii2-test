@@ -20,6 +20,15 @@
     >
       {{ $t('form.pay_now') }}
     </button>
+
+    <div class="mb-4">
+      <a href="/login"
+         class="text-blue-600 hover:text-blue-800 text-sm"
+         style="display: inline-block; margin-top: 10px;">
+        {{ $t('form.to_authorize') }}
+      </a>
+    </div>
+
   </form>
 </template>
 

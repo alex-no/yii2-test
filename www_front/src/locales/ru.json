@@ -33,6 +33,7 @@
     "amount": "Сумма",
     "payment_system": "Платежная система",
     "pay_now": "Оплатить сейчас",
+    "to_authorize": "На страницу авторизации",
 
     "payment_result": "Результат платежа",
     "payment_successfull": "Ваш платеж успешно обработан.",
