@@ -19,9 +19,10 @@ const i18n = createI18n({
   messages
 })
 
-createApp(App)
-  .use(router)
-  .use(i18n)
-  .mount('#app')
+const app = createApp(App)
+app.use(router)
+app.use(i18n)
 
-applyI18nEffects(i18n)
+applyI18nEffects(i18n, router)
+
+app.mount('#app')

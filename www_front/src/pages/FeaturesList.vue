@@ -1,6 +1,6 @@
 <template>
   <div class="container py-5">
-    <h1 class="mb-4">{{ $t('pageTitle') }}</h1>
+    <h1 class="mb-4">{{ $t('featureTitle') }}</h1>
 
     <div v-if="loading" class="text-center">
       <div class="spinner-border" role="status"></div>

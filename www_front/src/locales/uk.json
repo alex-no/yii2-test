@@ -1,5 +1,12 @@
 {
-  "pageTitle": "План розробки",
+  "htmlTitle": "Pet-проєкт",
+  "title": {
+    "features": "План розробки",
+    "login": "Логін",
+    "payment": "Здійснити платіж",
+    "payment_result": "Результат платежу"
+  },
+  "featureTitle": "План розробки",
   "pageLoading": "Завантаження",
   "pageLoadingError": "Не вдалося завантажити дані.",
   "table": {
@@ -19,6 +26,12 @@
     "login": "Логін",
     "username": "Ім'я користувача",
     "password": "Пароль",
-    "sign_in": "Увійти"
+    "sign_in": "Увійти",
+    "auth_required": "Для проведення платежу треба авторизуватися",
+
+    "make_payment": "Здійснити платіж",
+    "amount": "Сума",
+    "payment_system": "Платіжна система",
+    "pay_now": "Оплатити зараз"
   }
 }

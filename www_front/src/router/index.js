@@ -6,11 +6,30 @@ import Payment from '@/pages/Payment.vue'
 import PaymentResult from '@/pages/PaymentResult.vue'
 
 const routes = [
-  { path: '/features', component: FeaturesList },
-  { path: '/login', component: Login },
-  { path: '/payment', component: Payment },
-  { path: '/payment-result', component: PaymentResult },
-  { path: '/', redirect: '/features' },
+  { 
+    path: '/features', 
+    component: FeaturesList, 
+    meta: { title: 'title.features' } 
+  },
+  { 
+    path: '/login', 
+    component: Login, 
+    meta: { title: 'title.login' } 
+  },
+  { 
+    path: '/payment', 
+    component: Payment, 
+    meta: { title: 'title.payment' } 
+  },
+  { 
+    path: '/payment-result', 
+    component: PaymentResult, 
+    meta: { title: 'title.payment_result' } 
+  },
+  { 
+    path: '/', 
+    redirect: '/features' 
+  },
 ]
 
 const router = createRouter({

@@ -1,5 +1,12 @@
 {
-  "pageTitle": "Development Plan",
+  "htmlTitle": "Pet-Project",
+  "title": {
+    "features": "Development Plan",
+    "login": "Login",
+    "payment": "Make a Payment",
+    "payment_result": "Payment Result"
+  },
+  "featureTitle": "Development Plan",
   "pageLoading": "Loading",
   "pageLoadingError": "Failed to load data.",
   "table": {
@@ -19,6 +26,12 @@
     "login": "Login",
     "username": "Name of user",
     "password": "Password",
-    "sign_in": "Sign In"
+    "sign_in": "Sign In",
+    "auth_required": "You need to log in to proceed with the payment",
+
+    "make_payment": "Make a Payment",
+    "amount": "Amount",
+    "payment_system": "Payment System",
+    "pay_now": "Pay Now"
   }
 }
