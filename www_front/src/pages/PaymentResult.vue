@@ -5,7 +5,11 @@
     <p v-else-if="status === 'failure'" class="text-red-600 font-semibold">{{ $t('form.payment_failed') }}</p>
     <p v-else class="text-yellow-600 font-semibold">{{ $t('form.unknown_status') }}</p>
 
-    <button @click="goToPayment" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+    <button
+      type="submit"
+      class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md w-full border border-green-700"
+      style="background-color: #16a34a;"
+    >
       {{ $t('form.another_payment') }}
     </button>
   </div>
