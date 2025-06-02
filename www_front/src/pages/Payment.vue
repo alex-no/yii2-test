@@ -1,6 +1,10 @@
 <template>
   <form @submit.prevent="handleSubmit" class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md">
     <h2 class="text-xl font-bold mb-4">{{ $t('form.make_payment') }}</h2>
+    <div class="mb-4 attention-block">
+      <b>{{ $t('attention') }}</b>
+      {{ $t('site_description') }}
+    </div>
     <div class="mb-4">
       <label class="block text-sm font-medium text-gray-700 mb-2" style="width: 140px; margin-right: 10px;">{{ $t('form.amount') }}</label>
       <input v-model="amount" type="number" step="0.01" min="0.01" class="w-full border border-gray-300 p-2 rounded-md" required />
@@ -36,7 +40,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
-const amount = ref('100.00');
+const amount = ref('1.00');
 const paySystem = ref('liqpay');
 const router = useRouter();
 

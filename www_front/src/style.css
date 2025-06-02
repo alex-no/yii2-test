@@ -91,6 +91,12 @@ button:focus-visible {
   padding: 2em;
 }
 
+.attention-block {
+  max-width: 50%;
+  margin: 0 auto;
+  text-align: left;
+}
+
 #app {
   max-width: 1280px;
   margin: 0 auto;

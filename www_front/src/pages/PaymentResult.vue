@@ -1,6 +1,10 @@
 <template>
   <div class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md text-center">
     <h2 class="text-xl font-bold mb-4">{{ $t('form.payment_result') }}</h2>
+    <div class="mb-4 attention-block">
+      <b>{{ $t('attention') }}</b>
+      {{ $t('site_description') }}
+    </div>
     <p v-if="status === 'success'" class="text-green-600 font-semibold">{{ $t('form.payment_successfull') }}</p>
     <p v-else-if="status === 'failure'" class="text-red-600 font-semibold">{{ $t('form.payment_failed') }}</p>
     <p v-else class="text-yellow-600 font-semibold">{{ $t('form.unknown_status') }}</p>

@@ -9,6 +9,8 @@
   "featureTitle": "Development Plan",
   "pageLoading": "Loading",
   "pageLoadingError": "Failed to load data.",
+  "attention": "Attention!",
+  "site_description": "This is a test website used for developing payment modules for various payment systems. Nothing is being sold here, and all payments are carried out in test mode using test cards only.",
   "table": {
     "columnFeature": "Feature",
     "columnTechnology": "Technology",
