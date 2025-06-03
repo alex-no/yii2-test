@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md">
+  <form @submit.prevent="handleSubmit" class="max-w-md mx-auto bg-white p-6 mt-3 rounded-xl shadow-md">
     <h2 class="text-xl font-bold mb-4">{{ $t('form.make_payment') }}</h2>
     <div class="mb-4 attention-block">
       <b>{{ $t('attention') }}</b>
@@ -72,6 +72,9 @@ const handleSubmit = async () => {
 
   const payment = result?.payment;
   if (payment?.action && payment?.data && payment?.signature) {
+    if (result?.orderId) {
+      localStorage.setItem('order_id', result.orderId);
+    }
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = payment.action;

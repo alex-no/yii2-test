@@ -38,9 +38,14 @@
     "to_authorize": "To the authorization page",
 
     "payment_result": "Payment Result",
-    "payment_successfull": "Your payment was processed successfully.",
-    "payment_failed": "Payment failed. Please try again.",
-    "unknown_status": "Unknown payment status.",
+    "order_id": "Order ID",
+    "status": "Status",
+    "pending": "Pending",
+    "success": "Success",
+    "fail": "Fail",
+    "cancel": "Cancel",
+    "refund": "Refund",
+    "expired": "Expired",
     "another_payment": "Make another payment"
   }
 }

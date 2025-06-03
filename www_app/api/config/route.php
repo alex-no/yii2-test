@@ -55,7 +55,7 @@ return [
 
     'POST payments' => 'v1/payment/create',
     'POST payments/handle' => 'v1/payment/handle',
-    'POST payments/success' => 'v1/payment/success',
+    'GET payments/result' => 'v1/payment/result',
 
     'swagger/json' => 'v1/swagger/json',
     //'swagger/ui' => 'v1/swagger/ui',

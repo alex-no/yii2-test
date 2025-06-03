@@ -21,6 +21,7 @@ class PaymentController extends ApiController
 {
     protected array $authOnly = [
         'create',
+        'result',
     ];
 
     public function behaviors()
@@ -28,11 +29,11 @@ class PaymentController extends ApiController
         return array_merge(parent::behaviors(), [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['create'],
+                'only' => ['create', 'result'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create'],
+                        'actions' => ['create', 'result'],
                         'roles' => ['roleUser'],
                     ],
                 ],
@@ -111,6 +112,7 @@ class PaymentController extends ApiController
         return [
             'success' => true,
             'payment' => $paymentData,
+            'orderId' => $orderId,
         ];
     }
 
@@ -144,17 +146,14 @@ class PaymentController extends ApiController
     public function actionHandle(): array
     {
         $post = Yii::$app->request->post();
-Yii::info('Handle - POST: ' . $post, __METHOD__);
 
         if (empty($post['data']) || empty($post['signature'])) {
-Yii::error('Handle - Missing data or signature.', __METHOD__);
             throw new BadRequestHttpException("Missing data or signature.");
         }
 
         $driver = Yii::$app->payment->getDriver();
 
         if (!$driver->verifySignature($post['data'], $post['signature'])) {
-Yii::error('Handle - Invalid signature.', __METHOD__);
             throw new BadRequestHttpException("Invalid signature.");
         }
 
@@ -164,13 +163,11 @@ Yii::error('Handle - Invalid signature.', __METHOD__);
         $status = $data['status'] ?? null;
 
         if (!$orderId || !$status) {
-Yii::error('Handle - Invalid callback data.', __METHOD__);
             throw new BadRequestHttpException("Invalid callback data.");
         }
 
         $order = Order::findOne(['order_id' => $orderId]);
         if (!$order) {
-Yii::error("Handle - Order not found.", __METHOD__);
             throw new ServerErrorHttpException("Order not found.");
         }
 
@@ -183,7 +180,48 @@ Yii::error("Handle - Order not found.", __METHOD__);
         return ['success' => true];
     }
 
-    public function actionResult()
+    /**
+     * @OA\Get(
+     *     path="/payments/result",
+     *     summary="API Payments Result",
+     *     description="Returns information about Payment Result.",
+     *     tags={"Payment"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="object", example="{data: 'example_data'}"),
+     *             @OA\Property(property="signature", type="string", example="c2lnbmF0dXJlX2V4YW1wbGU=")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Updated",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Validation error"
+     *     )
+     * )
+     */
+    public function actionResult($orderId): array
     {
+        $order = Order::findOne(['order_id' => $orderId]);
+        if (!$order) {
+            throw new ServerErrorHttpException("Order not found.");
+        }
+        return [
+            'success' => $order->payment_status === 'success',
+            'order' => [
+                'order_id' => $order->order_id,
+                'amount'   => $order->amount,
+                'currency' => $order->currency,
+                'status'   => $order->payment_status,
+                'paid_at'  => $order->paid_at,
+            ],
+        ];
     }
 }

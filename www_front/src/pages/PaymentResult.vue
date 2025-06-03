@@ -1,13 +1,16 @@
 <template>
-  <div class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md text-center">
+  <div class="max-w-md mx-auto bg-white p-6 mt-3 rounded-xl shadow-md text-center">
     <h2 class="text-xl font-bold mb-4">{{ $t('form.payment_result') }}</h2>
     <div class="mb-4 attention-block">
       <b>{{ $t('attention') }}</b>
       {{ $t('site_description') }}
     </div>
-    <p v-if="status === 'success'" class="text-green-600 font-semibold">{{ $t('form.payment_successfull') }}</p>
-    <p v-else-if="status === 'failure'" class="text-red-600 font-semibold">{{ $t('form.payment_failed') }}</p>
-    <p v-else class="text-yellow-600 font-semibold">{{ $t('form.unknown_status') }}</p>
+
+    <div v-if="paymentInfo" class="text-left mt-4">
+      <p><b>{{ $t('form.order_id') }}:</b> {{ paymentInfo.order.id }}</p>
+      <p><b>{{ $t('form.amount') }}:</b> {{ paymentInfo.order.amount }} {{ paymentInfo.order.currency }}</p>
+      <p><b>{{ $t('form.status') }}:</b> {{ $t(paymentInfo.order.status) }}</p>
+    </div>
 
     <button
       type="submit"
@@ -22,13 +25,35 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router';
 import { computed } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
 
-const status = computed(() => route.query.status || 'unknown');
+const paymentInfo = ref(null);
+const orderId = localStorage.getItem('order_id');
 
 const goToPayment = () => {
   router.push('/payment');
 };
+
+onMounted(async () => {
+  if (!orderId) return;
+
+  try {
+    const response = await fetch(`/api/payments/result?orderId=${orderId}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+      }
+    });
+    const result = await response.json();
+console.log('Result:', result);
+    paymentInfo.value = result;
+console.log('Payment result:', paymentInfo);
+
+    localStorage.removeItem('order_id');
+  } catch (error) {
+    console.error('Error fetching payment result:', error);
+  }
+});
 </script>
