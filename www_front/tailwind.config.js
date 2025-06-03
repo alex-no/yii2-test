@@ -9,6 +9,14 @@ module.exports = {
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
+  safelist: [
+    'bg-green-600',
+    'hover:bg-green-700',
+    'border-green-700',
+    'bg-red-100',
+    'border-red-400',
+    'text-red-700'
+  ],
   theme: {
     extend: {},
   },

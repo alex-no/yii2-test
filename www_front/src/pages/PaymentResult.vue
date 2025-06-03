@@ -12,14 +12,15 @@
       <p><b>{{ $t('form.status') }}:</b> {{ $t(paymentInfo.order.status) }}</p>
     </div>
 
-    <div v-if="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-left">
+    <div v-if="errorMessage" class="bg-red-100 border border-red-400 text-red-700 text-left px-4 py-3 ps-4 rounded mb-4">
       {{ errorMessage }}
     </div>
 
     <button
       type="submit"
-      class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md w-full border border-green-700"
-      style="background-color: #16a34a;"
+      class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md border border-green-700"
+      style="background-color: #16a34a;" 
+      @click="goToPayment"
     >
       {{ $t('form.another_payment') }}
     </button>

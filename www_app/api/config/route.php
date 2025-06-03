@@ -5,7 +5,7 @@ return [
 
     'POST auth/register' => 'v1/auth/register',
     'POST auth/login' => 'v1/auth/login',
-    'GET auth/confirm-email/<token:\w+>' => 'v1/auth/confirm-email',
+    'GET auth/confirm-email/<token:[\w\-]+>' => 'v1/auth/confirm-email',
     'POST user/logout' => 'v1/user/logout',
 
     //'POST user' => 'v1/user/create',

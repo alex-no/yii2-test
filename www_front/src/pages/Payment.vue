@@ -5,21 +5,42 @@
       <b>{{ $t('attention') }}</b>
       {{ $t('site_description') }}
     </div>
-    <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-700 mb-2" style="width: 140px; margin-right: 10px;">{{ $t('form.amount') }}</label>
-      <input v-model="amount" type="number" step="0.01" min="0.01" class="w-full border border-gray-300 p-2 rounded-md" required />
+    <div class="mb-4 flex items-center">
+      <label
+        class="block text-sm font-medium text-gray-700"
+        style="width: 140px; margin-right: 10px;"
+      >
+        {{ $t('form.amount') }}
+      </label>
+      <input
+        v-model="amount"
+        type="number"
+        step="0.01"
+        min="0.01"
+        class="border border-gray-300 p-2 rounded-md flex-1"
+        required
+      />
     </div>
 
-    <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-700 mb-2" style="width: 140px; margin-right: 10px;">{{ $t('form.payment_system') }}</label>
-      <select v-model="paySystem" class="w-full border border-gray-300 p-2 rounded-md" readonly>
-        <option value="liqpay">LiqPay</option>
-      </select>
+    <div class="mb-4 flex items-center">
+       <label
+          class="block text-sm font-medium text-gray-700"
+          style="width: 140px; margin-right: 10px;"
+        >
+          {{ $t('form.payment_system') }}
+        </label>
+        <select
+          v-model="paySystem"
+          class="border border-gray-300 p-2 rounded-md flex-1"
+          readonly
+        >
+          <option value="liqpay">LiqPay</option>
+        </select>
     </div>
 
     <button
       type="submit"
-      class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md w-full border border-green-700"
+      class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md border border-green-700"
       style="background-color: #16a34a;"
     >
       {{ $t('form.pay_now') }}
