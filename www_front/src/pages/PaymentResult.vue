@@ -12,13 +12,15 @@
       <p><b>{{ $t('form.status') }}:</b> {{ $t(paymentInfo.order.status) }}</p>
     </div>
 
-    <div v-if="errorMessage" class="bg-red-100 border border-red-400 text-red-700 text-left px-4 py-3 ps-4 rounded mb-4">
-      {{ errorMessage }}
+    <div v-if="errorMessage" class="w-[800px] mx-auto mb-4">
+      <div class="border text-left px-4 py-3 ps-4 rounded" style="color: #b91c1c; background-color: #fee2e2; border-color: #b91c1c;">
+        {{ errorMessage }}
+      </div>
     </div>
 
     <button
       type="submit"
-      class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md border border-green-700"
+      class="text-white px-4 py-2 rounded-md border"
       style="background-color: #16a34a;" 
       @click="goToPayment"
     >
@@ -36,8 +38,8 @@ const router = useRouter();
 
 const paymentInfo = ref(null);
 const errorMessage = ref(null);
-// const orderId = localStorage.getItem('order_id');
-const orderId = 'ORD-20250601-134930-LiMgMq';
+const orderId = localStorage.getItem('order_id');
+//const orderId = 'ORD-20250601-134930-LiMgMq';
 
 const goToPayment = () => {
   router.push('/payment');
