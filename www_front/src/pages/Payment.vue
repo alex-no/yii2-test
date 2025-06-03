@@ -1,15 +1,17 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="max-w-md mx-auto bg-white p-6 mt-3 rounded-xl shadow-md">
-    <h2 class="text-xl font-bold mb-4">{{ $t('form.make_payment') }}</h2>
-    <div class="mb-4 attention-block">
+  <form
+    @submit.prevent="handleSubmit"
+    class="w-full max-w-md mx-auto bg-white p-6 mt-3 rounded-xl shadow-md"
+  >
+    <h2 class="text-xl font-bold mb-4 text-center">{{ $t('form.make_payment') }}</h2>
+
+    <div class="mb-4 attention-block text-sm text-gray-700">
       <b>{{ $t('attention') }}</b>
       {{ $t('site_description') }}
     </div>
-    <div class="mb-4 flex items-center">
-      <label
-        class="block text-sm font-medium text-gray-700"
-        style="width: 140px; margin-right: 10px;"
-      >
+
+    <div class="mb-4 flex justify-center items-center">
+      <label class="me-3 text-sm text-right font-medium text-gray-700 w-[160px]">
         {{ $t('form.amount') }}
       </label>
       <input
@@ -17,43 +19,42 @@
         type="number"
         step="0.01"
         min="0.01"
-        class="border border-gray-300 p-2 rounded-md flex-1"
+        class="border border-gray-300 p-2 rounded-md w-[150px]"
         required
       />
     </div>
 
-    <div class="mb-4 flex items-center">
-       <label
-          class="block text-sm font-medium text-gray-700"
-          style="width: 140px; margin-right: 10px;"
-        >
-          {{ $t('form.payment_system') }}
-        </label>
-        <select
-          v-model="paySystem"
-          class="border border-gray-300 p-2 rounded-md flex-1"
-          readonly
-        >
-          <option value="liqpay">LiqPay</option>
-        </select>
+    <div class="mb-4 flex justify-center items-center">
+      <label class="me-3 text-sm text-right font-medium text-gray-700 w-[160px]">
+        {{ $t('form.payment_system') }}
+      </label>
+      <select
+        v-model="paySystem"
+        class="border border-gray-300 p-2 rounded-md w-[150px]"
+        readonly
+      >
+        <option value="liqpay">LiqPay</option>
+      </select>
     </div>
 
-    <button
-      type="submit"
-      class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md border border-green-700"
-      style="background-color: #16a34a;"
-    >
-      {{ $t('form.pay_now') }}
-    </button>
+    <div class="mb-4 text-center">
+      <button
+        type="submit"
+        class="text-white px-4 py-2 rounded-md border border-green-700"
+        style="background-color: #16a34a;"
+      >
+        {{ $t('form.pay_now') }}
+      </button>
+    </div>
 
-    <div class="mb-4">
-      <a href="/html/login"
-         class="text-blue-600 hover:text-blue-800 text-sm"
-         style="display: inline-block; margin-top: 10px;">
+    <div class="text-center mt-4">
+      <a
+        href="/html/login"
+        class="text-blue-600 hover:text-blue-800 text-sm"
+      >
         {{ $t('form.to_authorize') }}
       </a>
     </div>
-
   </form>
 </template>
 
