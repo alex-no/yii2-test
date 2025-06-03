@@ -10,7 +10,10 @@ import messages from './locales'
 import { applyI18nEffects } from './i18n/i18n-utils'
 import { detectLanguage } from '@/utils/detect_language'
 
+import './assets/tailwind.css';
 import './style.css'
+
+import './input.css'
 
 const i18n = createI18n({
   legacy: false,

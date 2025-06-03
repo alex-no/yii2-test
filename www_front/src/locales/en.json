@@ -47,5 +47,9 @@
     "refund": "Refund",
     "expired": "Expired",
     "another_payment": "Make another payment"
+  },
+  "error": {
+    "unexpected_error": "Unexpected server error",
+    "network_error": "Network error or server not responding"
   }
 }

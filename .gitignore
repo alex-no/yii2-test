@@ -14,3 +14,4 @@ bak
 /doc/ssh/*.ppk
 /rebuild.bat
 /www_app/config/*-secure.php
+/www_front/tailwindcss.exe
