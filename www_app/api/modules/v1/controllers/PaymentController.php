@@ -45,19 +45,19 @@ class PaymentController extends ApiController
      * @OA\Post(
      *     path="/api/payments",
      *     security={{"bearerAuth":{}}},
-     *     summary="API Payments",
+     *     summary="API Create New Payment",
      *     description="Returns information about New Payment.",
      *     tags={"Payment"},
      *     @OA\RequestBody(
      *         @OA\JsonContent(
      *             @OA\Property(property="amount", type="string", required=true, example="100.00"),
-     *             @OA\Property(property="pay_system", type="string", example="lyqpay")
+     *             @OA\Property(property="pay_system", type="string", example="lyqpay"),
      *             @OA\Property(property="order_id", type="string", example="ORD-20250529-045325-abcd1234")
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Updated",
+     *         description="Created new payment",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="success", type="boolean", example=true),
@@ -182,23 +182,18 @@ class PaymentController extends ApiController
 
     /**
      * @OA\Get(
-     *     path="/payments/result",
+     *     path="/api/payments/result",
+     *     security={{"bearerAuth":{}}},
      *     summary="API Payments Result",
      *     description="Returns information about Payment Result.",
      *     tags={"Payment"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="data", type="object", example="{data: 'example_data'}"),
-     *             @OA\Property(property="signature", type="string", example="c2lnbmF0dXJlX2V4YW1wbGU=")
-     *         )
-     *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Updated",
+     *         description="Processed payment result",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="success", type="boolean", example=true)
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="order", type="object", example="{order_id: 123456, amount: 100.00, currency: USD}")
      *         )
      *     ),
      *     @OA\Response(
