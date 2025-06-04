@@ -6,10 +6,10 @@
       {{ $t('site_description') }}
     </div>
 
-    <div v-if="paymentInfo" class="text-left mt-4">
-      <p><b>{{ $t('form.order_id') }}:</b> {{ paymentInfo.order.id }}</p>
-      <p><b>{{ $t('form.amount') }}:</b> {{ paymentInfo.order.amount }} {{ paymentInfo.order.currency }}</p>
-      <p><b>{{ $t('form.status') }}:</b> {{ $t(paymentInfo.order.status) }}</p>
+    <div v-if="paymentInfo" class="w-[400px] mx-auto text-left mt-4 mb-4">
+      <p><b>{{ $t('form.order_id') }}:</b> {{ paymentInfo.order_id }}</p>
+      <p><b>{{ $t('form.amount') }}:</b> {{ paymentInfo.amount }} {{ paymentInfo.currency }}</p>
+      <p><b>{{ $t('form.status') }}:</b> {{ $t(`payment_status.${paymentInfo.status}`) }}</p>
     </div>
 
     <div v-if="errorMessage" class="w-[800px] mx-auto mb-4">
@@ -39,7 +39,7 @@ const router = useRouter();
 const paymentInfo = ref(null);
 const errorMessage = ref(null);
 const orderId = localStorage.getItem('order_id');
-//const orderId = 'ORD-20250601-134930-LiMgMq';
+// const orderId = 'ORD-20250604-015012-xxCOhE';
 
 const goToPayment = () => {
   router.push('/payment');

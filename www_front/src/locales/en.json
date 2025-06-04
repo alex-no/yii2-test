@@ -40,13 +40,15 @@
     "payment_result": "Payment Result",
     "order_id": "Order ID",
     "status": "Status",
+    "another_payment": "Make another payment"
+  },
+  "payment_status": {
     "pending": "Pending",
     "success": "Success",
     "fail": "Fail",
     "cancel": "Cancel",
     "refund": "Refund",
-    "expired": "Expired",
-    "another_payment": "Make another payment"
+    "expired": "Expired"
   },
   "error": {
     "unexpected_error": "Unexpected server error",

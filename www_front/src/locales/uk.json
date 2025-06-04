@@ -40,13 +40,15 @@
     "payment_result": "Результат платежу",
     "order_id": "ID замовлення",
     "status": "Статус",
+    "another_payment": "Здійснити інший платіж"
+  },
+  "payment_status": {
     "pending": "Очікується",
     "success": "Успішно",
     "fail": "Не вдалося",
     "cancel": "Скасовано",
     "refund": "Повернення",
-    "expired": "Термін дії закінчився",
-    "another_payment": "Здійснити інший платіж"
+    "expired": "Термін дії закінчився"
   },
   "error": {
     "unexpected_error": "Неочікувана помилка сервера",

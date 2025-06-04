@@ -40,13 +40,15 @@
     "payment_result": "Результат платежа",
     "order_id": "ID заказа",
     "status": "Статус",
+    "another_payment": "Сделать другой платеж"
+  },
+  "payment_status": {
     "pending": "Ожидается",
     "success": "Успешно",
     "fail": "Не удалось",
     "cancel": "Отменено",
     "refund": "Возврат",
-    "expired": "Истек срок действия",
-    "another_payment": "Сделать другой платеж"
+    "expired": "Истек срок действия"
   },
   "error": {
     "unexpected_error": "Неожиданная ошибка сервера",
