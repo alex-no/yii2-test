@@ -4,7 +4,6 @@ namespace app\api\modules\v1\controllers;
 use Yii;
 use app\api\components\ApiController;
 use yii\filters\AccessControl;
-use yii\web\Response;
 use yii\web\BadRequestHttpException;
 use yii\web\ServerErrorHttpException;
 use app\models\Order;
