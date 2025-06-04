@@ -39,7 +39,6 @@ const router = useRouter();
 const paymentInfo = ref(null);
 const errorMessage = ref(null);
 const orderId = localStorage.getItem('order_id');
-// const orderId = 'ORD-20250604-015012-xxCOhE';
 
 const goToPayment = () => {
   router.push('/payment');
