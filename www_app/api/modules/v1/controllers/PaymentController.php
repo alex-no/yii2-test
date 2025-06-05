@@ -49,7 +49,8 @@ class PaymentController extends ApiController
      *     tags={"Payment"},
      *     @OA\RequestBody(
      *         @OA\JsonContent(
-     *             @OA\Property(property="amount", type="string", required=true, example="100.00"),
+     *             required={"amount", "pay_system"},
+     *             @OA\Property(property="amount", type="string", example="100.00"),
      *             @OA\Property(property="pay_system", type="string", example="lyqpay"),
      *             @OA\Property(property="order_id", type="string", example="ORD-20250529-045325-abcd1234")
      *         )
@@ -186,6 +187,13 @@ class PaymentController extends ApiController
      *     summary="API Payments Result",
      *     description="Returns information about Payment Result.",
      *     tags={"Payment"},
+     *     @OA\Parameter(
+     *         name="orderId",
+     *         in="query",
+     *         required=true,
+     *         description="Order ID to get payment result for",
+     *         @OA\Schema(type="string", example="ORD-20250529-045325-abcd1234")
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Processed payment result",
