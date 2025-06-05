@@ -15,9 +15,9 @@ interface PaymentInterface
      * This method should process the callback data,
      * verify the payment, and return the result.
      * @param array $request
-     * @return array
+     * @return array|null
      */
-    public function handleCallback(array $request): array;
+    public function handleCallback(array $request): ?array;
 
     /**
      * Verifies the signature of the payment data.

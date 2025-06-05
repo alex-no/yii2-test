@@ -5,10 +5,10 @@ use app\components\payment\PaymentInterface;
 
 class LiqPayDriver implements PaymentInterface
 {
-    const NAME = 'LiqPay';
-    const VERSION = '1.0.0';
-    const PAYMENT_URL = 'https://www.liqpay.ua/api/3/checkout';
-    //const PAYMENT_CALLBACK_URL = 'https://www.liqpay.ua/api/3/callback';
+    public const NAME = 'LiqPay';
+    public const VERSION = '1.0.0';
+    public const PAYMENT_URL = 'https://www.liqpay.ua/api/3/checkout';
+    // public const PAYMENT_CALLBACK_URL = 'https://www.liqpay.ua/api/3/callback';
 
     /**
      * LiqPayDriver constructor.
@@ -43,12 +43,11 @@ class LiqPayDriver implements PaymentInterface
         ];
 
         $json = base64_encode(json_encode($data));
-        $signature = base64_encode(sha1($this->privateKey . $json . $this->privateKey, true));
 
         return [
             'action'    => self::PAYMENT_URL,
             'data'      => $json,
-            'signature' => $signature,
+            'signature' => $this->generateSignature($json),
         ];
     }
 
@@ -57,24 +56,37 @@ class LiqPayDriver implements PaymentInterface
      * This method should process the callback data,
      * verify the payment, and return the result.
      * @param array $request
-     * @return array
+     * @return array|null
      */
-    public function handleCallback(array $request): array
+    public function handleCallback(array $request): ?array
     {
-        $data = json_decode(base64_decode($request['data']), true);
-        return $data;
+        if (!isset($request['data'])) {
+            return null;
+        }
+
+        return json_decode(base64_decode($request['data']), true);
     }
 
     /**
      * Verifies the signature of the payment data.
      * This method should check if the signature matches the expected value.
-     * @param string $data
+     * @param string $json
      * @param string $signature
      * @return bool
      */
-    public function verifySignature(string $data, string $signature): bool
+    public function verifySignature(string $json, string $signature): bool
     {
-        $expected = base64_encode(sha1($this->privateKey . $data . $this->privateKey, true));
-        return hash_equals($expected, $signature);
+        return hash_equals($this->generateSignature($json), $signature);
+    }
+
+    /**
+     * Generates LiqPay signature.
+     *
+     * @param string $json
+     * @return string
+     */
+    protected function generateSignature(string $json): string
+    {
+        return base64_encode(sha1($this->privateKey . $json . $this->privateKey, true));
     }
 }
