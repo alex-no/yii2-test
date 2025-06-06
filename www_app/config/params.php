@@ -1,8 +1,6 @@
 <?php
-$hostName = !empty(\Yii::$app->request) ? Yii::$app->request->getHostName() : $_SERVER['SERVER_NAME'];
-$currentDomain = $hostName ?? 'localhost';
 
-$params = [
+return [
     'adminEmail' => 'admin@4n.com.ua',
     'senderEmail' => 'admin@4n.com.ua',
     'senderName' => 'Alex mailer',
@@ -39,18 +37,13 @@ $params = [
         'liqpay' => [
             'class' => \app\components\payment\drivers\LiqPayDriver::class,
             'config' => [
-                'publicKey'  => null, // Set your public key here
-                'privateKey' => null, // Set your private key here
-                'callbackUrl' => 'https://' . $currentDomain . '/api/payments/handle',
-                'resultUrl' => 'https://' . $currentDomain . '/html/payment-result',
+                'publicKey'  => $_ENV['LIQPAY_PUBLIC_KEY'], // Set your public key here
+                'privateKey' => $_ENV['LIQPAY_PRIVATE_KEY'], // Set your private key here
+                'callbackUrl' => $_ENV['CURRENT_URL'] . '/api/payments/handle',
+                'resultUrl' => $_ENV['CURRENT_URL'] . '/html/payment-result',
             ],
         ],
         // 'paypal' => [...],
         // 'stripe' => [...],
     ],
 ];
-
-return yii\helpers\ArrayHelper::merge(
-    $params,
-    is_file(__DIR__ . '/params-secure.php') ? require __DIR__ . '/params-secure.php' : []
-);
