@@ -18,11 +18,17 @@ use app\models\Order;
  */
 class PaymentController extends ApiController
 {
+    /**
+     * @var array List of actions that require authentication.
+     */
     protected array $authOnly = [
         'create',
         'result',
     ];
 
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return array_merge(parent::behaviors(), [
@@ -38,6 +44,24 @@ class PaymentController extends ApiController
                 ],
             ],
         ]);
+    }
+
+    /**
+     * Returns the list of available payment drivers and the default one.
+     *
+     * GET /api/v1/payment/drivers
+     *
+     * @return array
+     */
+    public function actionDrivers(): array
+    {
+        $drivers = Yii::$app->params['payment.drivers'] ?? [];
+        $default = Yii::$app->params['payment.default'] ?? null;
+
+        return [
+            'drivers' => array_keys($drivers),
+            'default' => $default,
+        ];
     }
 
     /**

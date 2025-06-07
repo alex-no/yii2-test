@@ -6,7 +6,7 @@ use app\components\payment\PaymentInterface;
 class LiqPayDriver implements PaymentInterface
 {
     public const NAME = 'LiqPay';
-    public const VERSION = '1.0.0';
+    public const VERSION = '1.0.1';
     public const PAYMENT_URL = 'https://www.liqpay.ua/api/3/checkout';
     // public const PAYMENT_CALLBACK_URL = 'https://www.liqpay.ua/api/3/callback';
 

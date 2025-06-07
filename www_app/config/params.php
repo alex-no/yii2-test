@@ -31,9 +31,19 @@ return [
         // ],
     ],
 
-    'payment.driver' => 'liqpay',
-    // List of available payment systems
+    'payment.default' => 'paypal',
+    // List of available drivers for payment systems
     'payment.drivers' => [
+        'paypal' => [
+            'class' => \app\components\payment\drivers\PayPalDriver::class,
+            'config' => [
+                'clientId'    => 'your_paypal_business_email@example.com',
+                'secret'      => 'your_paypal_secret_if_needed',
+                'callbackUrl' => $_ENV['CURRENT_URL'] . '/api/payments/handle',
+                'returnUrl'   => $_ENV['CURRENT_URL'] . '/html/payment-success',
+                'cancelUrl'   => $_ENV['CURRENT_URL'] . '/html/payment-cancel',
+            ],
+        ],
         'liqpay' => [
             'class' => \app\components\payment\drivers\LiqPayDriver::class,
             'config' => [
@@ -43,7 +53,6 @@ return [
                 'resultUrl' => $_ENV['CURRENT_URL'] . '/html/payment-result',
             ],
         ],
-        // 'paypal' => [...],
         // 'stripe' => [...],
     ],
 ];
