@@ -41,7 +41,7 @@ const errorMessage = ref(null);
 const orderId = localStorage.getItem('order_id');
 
 const goToPayment = () => {
-  router.push('/payment');
+  router.push('/payment-create');
 };
 
 onMounted(async () => {
