@@ -77,7 +77,7 @@ const handleSubmit = async () => {
   //const orderId = `ORD-${new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)}-${Math.random().toString(36).slice(2, 10)}`;
   const orderId = null;
 
-  const response = await fetch('/api/payments', {
+  const response = await fetch('/api/payments/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

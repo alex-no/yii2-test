@@ -17,8 +17,8 @@ const routes = [
     meta: { title: 'title.login' } 
   },
   { 
-    path: '/payment', 
-    component: Payment, 
+    path: '/payment-create', 
+    component: PaymentCreate, 
     meta: { title: 'title.payment' } 
   },
   { 

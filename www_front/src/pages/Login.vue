@@ -74,7 +74,7 @@ const handleLogin = async () => {
   const data = await response.json();
   if (data.access_token) {
     localStorage.setItem('access_token', data.access_token);
-    router.push('/payment');
+    router.push('/payment-create');
   } else {
     alert('Login failed');
   }

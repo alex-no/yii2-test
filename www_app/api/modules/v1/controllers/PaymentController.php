@@ -49,7 +49,29 @@ class PaymentController extends ApiController
     /**
      * Returns the list of available payment drivers and the default one.
      *
-     * GET /api/v1/payment/drivers
+     * @OA\Get(
+     *     path="/api/payments",
+     *     summary="Get list of available payment drivers and default one",
+     *     tags={"Payment"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of available drivers and default driver",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="drivers",
+     *                 type="array",
+     *                 @OA\Items(type="string", example="paypal"),
+     *                 @OA\Items(type="string", example="liqpay")
+     *             ),
+     *             @OA\Property(
+     *                 property="default",
+     *                 type="string",
+     *                 example="paypal"
+     *             )
+     *         )
+     *     )
+     * )
      *
      * @return array
      */
@@ -66,7 +88,7 @@ class PaymentController extends ApiController
 
     /**
      * @OA\Post(
-     *     path="/api/payments",
+     *     path="/api/payments/create",
      *     security={{"bearerAuth":{}}},
      *     summary="API Create New Payment",
      *     description="Returns information about New Payment.",
