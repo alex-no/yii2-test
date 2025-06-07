@@ -56,9 +56,8 @@ return yii\helpers\ArrayHelper::merge(
             ],
             'mailer' => [
                 'class' => \app\components\SymfonyMailer::class,
-                'dsn' => 'stream://' . Yii::getAlias('@runtime/mails'),
-                //'dsn' => 'smtp://user:pass@smtp.example.com:587',
-                'from' => 'admin@4n.com.ua',
+                'dsn' => $_ENV['MAILER_PROTOCOL'] . '://' . ($_ENV['MAILER_PROTOCOL'] == 'stream' ? Yii::getAlias($_ENV['MAILER_DSN']) : $_ENV['MAILER_DSN']),
+                'from' => $_ENV['MAILER_USER'],
             ],
             'payment' => [
                 'class' => \app\components\payment\PaymentManager::class,
