@@ -31,9 +31,14 @@
       <select
         v-model="paySystem"
         class="border border-gray-300 p-2 rounded-md w-[150px]"
-        readonly
       >
-        <option value="liqpay">LiqPay</option>
+        <option
+          v-for="driver in drivers"
+          :key="driver"
+          :value="driver"
+        >
+          {{ driver }}
+        </option>
       </select>
     </div>
 
@@ -63,13 +68,24 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const amount = ref('1.00');
-const paySystem = ref('liqpay');
+const paySystem = ref('');
+const drivers = ref([]);
 const router = useRouter();
 
-onMounted(() => {
+onMounted(async () => {
   const token = localStorage.getItem('access_token');
   if (!token) {
     router.replace('/login?no-auth=1');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/payments');
+    const data = await res.json();
+    drivers.value = data.drivers || [];
+    paySystem.value = data.default || '';
+  } catch (e) {
+    console.error('Failed to load payment drivers', e);
   }
 });
 

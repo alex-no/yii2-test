@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import FeaturesList from '@/pages/FeaturesList.vue'
 import Login from '@/pages/Login.vue'
-import Payment from '@/pages/Payment.vue'
+import PaymentCreate from '@/pages/PaymentCreate.vue'
 import PaymentResult from '@/pages/PaymentResult.vue'
 
 const routes = [
