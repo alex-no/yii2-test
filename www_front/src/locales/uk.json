@@ -31,6 +31,9 @@
     "sign_in": "Увійти",
     "auth_required": "Для проведення платежу треба авторизуватися",
 
+    "paypal": "PayPal",
+    "liqpay": "LiqPay",
+
     "make_payment": "Здійснити платіж",
     "amount": "Сума",
     "payment_system": "Платіжна система",

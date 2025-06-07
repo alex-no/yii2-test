@@ -32,8 +32,15 @@ class PaymentManager extends Component
     public function init(): void
     {
         parent::init();
+    }
 
-        $driverName = Yii::$app->params['payment.driver'] ?? null;
+    /**
+     * Returns the payment driver instance.
+     * This method provides access to the payment driver that has been initialized.
+     * @return PaymentInterface The payment driver instance.
+     */
+    public function getDriver($driverName): PaymentInterface
+    {
         $drivers = Yii::$app->params['payment.drivers'] ?? [];
 
         if (!$driverName || !isset($drivers[$driverName])) {
@@ -42,16 +49,7 @@ class PaymentManager extends Component
 
         $driverClass = $drivers[$driverName]['class'];
         $driverConfig = $drivers[$driverName]['config'] ?? [];
-        $this->driver = new $driverClass(...$driverConfig);
-    }
-
-    /**
-     * Returns the payment driver instance.
-     * This method provides access to the payment driver that has been initialized.
-     * @return PaymentInterface The payment driver instance.
-     */
-    public function getDriver(): PaymentInterface
-    {
-        return $this->driver;
+        $driver = new $driverClass(...$driverConfig);
+        return $driver;
     }
 }

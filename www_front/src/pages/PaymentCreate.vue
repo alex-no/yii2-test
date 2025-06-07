@@ -37,7 +37,7 @@
           :key="driver"
           :value="driver"
         >
-          {{ driver }}
+          {{ $t(`form.${driver}`) }}
         </option>
       </select>
     </div>

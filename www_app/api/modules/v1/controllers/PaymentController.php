@@ -124,6 +124,11 @@ class PaymentController extends ApiController
             throw new BadRequestHttpException("Amount is required.");
         }
 
+        $driverName = $post['pay_system'] ?? null;
+        if (empty($driverName)) {
+            throw new BadRequestHttpException("Driver Name is required.");
+        }
+
         if (empty($post['order_id'])) {
             $orderId = 'ORD-' . date('Ymd-His') . '-' . Yii::$app->security->generateRandomString(6);
             $order = new Order();
@@ -142,12 +147,14 @@ class PaymentController extends ApiController
             $orderId = $order->order_id;
         }
         $order->amount = $post['amount'];   // Update provided amount
+        $order->pay_system = $post['pay_system'];   // Update pay_system
+
         if (!$order->save()) {
             throw new ServerErrorHttpException("Failed to create order: " . implode(', ', $order->getFirstErrors()));
         }
 
         // Creating a payment via PaymentManager
-        $paymentData = Yii::$app->payment->getDriver()->createPayment([
+        $paymentData = Yii::$app->payment->getDriver($driverName)->createPayment([
             'order_id'    => $orderId,
             'amount'      => $post['amount'],
             'currency'    => $order->currency,

@@ -31,6 +31,9 @@
     "sign_in": "Sign In",
     "auth_required": "You need to log in to proceed with the payment",
 
+    "paypal": "PayPal",
+    "liqpay": "LiqPay",
+
     "make_payment": "Make a Payment",
     "amount": "Amount",
     "payment_system": "Payment System",
