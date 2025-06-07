@@ -147,7 +147,7 @@ class PaymentController extends ApiController
             $orderId = $order->order_id;
         }
         $order->amount = $post['amount'];   // Update provided amount
-        $order->pay_system = $post['pay_system'];   // Update pay_system
+        $order->pay_system = $driverName;   // Update pay_system
 
         if (!$order->save()) {
             throw new ServerErrorHttpException("Failed to create order: " . implode(', ', $order->getFirstErrors()));

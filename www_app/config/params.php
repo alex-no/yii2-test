@@ -37,8 +37,8 @@ return [
         'paypal' => [
             'class' => \app\components\payment\drivers\PayPalDriver::class,
             'config' => [
-                'clientId'    => 'your_paypal_business_email@example.com',
-                'secret'      => 'your_paypal_secret_if_needed',
+                'clientId'    => $_ENV['PAYPAL_CLIENT_ID'],
+                'secret'      => $_ENV['PAYPAL_SECRET'],
                 'callbackUrl' => $_ENV['CURRENT_URL'] . '/api/payments/handle',
                 'returnUrl'   => $_ENV['CURRENT_URL'] . '/html/payment-success',
                 'cancelUrl'   => $_ENV['CURRENT_URL'] . '/html/payment-cancel',
