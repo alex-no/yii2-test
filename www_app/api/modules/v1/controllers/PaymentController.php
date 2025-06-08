@@ -134,8 +134,6 @@ class PaymentController extends ApiController
             $order = new Order();
             $order->user_id = Yii::$app->user->id; // Assuming user is authenticated
             $order->order_id = $orderId;
-            $order->currency = $post['currency'] ?? 'USD';
-            $order->description = 'Payment for Order #' . $orderId;
         } else {
             $order = Order::findOne(['order_id' => $post['order_id']]);
             if (!$order) {
@@ -147,7 +145,9 @@ class PaymentController extends ApiController
             $orderId = $order->order_id;
         }
         $order->amount = $post['amount'];   // Update provided amount
+        $order->currency = $post['currency'] ?? 'USD';
         $order->pay_system = $driverName;   // Update pay_system
+        $order->description = 'Payment for Order #' . $orderId;
 
         if (!$order->save()) {
             throw new ServerErrorHttpException("Failed to create order: " . implode(', ', $order->getFirstErrors()));
@@ -156,10 +156,9 @@ class PaymentController extends ApiController
         // Creating a payment via PaymentManager
         $paymentData = Yii::$app->payment->getDriver($driverName)->createPayment([
             'order_id'    => $orderId,
-            'amount'      => $post['amount'],
+            'amount'      => $order->amount,
             'currency'    => $order->currency,
-            'description' => 'Payment for Order #' . $orderId,
-            'result_url'  => Yii::$app->request->hostInfo . '/api/payments/success',
+            'description' => $order->description,
         ]);
 
         return [

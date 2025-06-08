@@ -24,17 +24,6 @@ class PaymentManager extends Component
     }
 
     /**
-     * Initializes the payment manager by loading the configured payment driver.
-     * This method checks the application parameters for the payment driver name
-     * and retrieves the corresponding driver class and configuration.
-     * @throws InvalidConfigException if the payment driver is not configured properly.
-     */
-    public function init(): void
-    {
-        parent::init();
-    }
-
-    /**
      * Returns the payment driver instance.
      * This method provides access to the payment driver that has been initialized.
      * @return PaymentInterface The payment driver instance.
