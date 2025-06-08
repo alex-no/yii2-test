@@ -109,36 +109,33 @@ const handleSubmit = async () => {
   const result = await response.json();
 
   const payment = result?.payment;
-  if (payment?.action && payment?.data && payment?.signature) {
+  if (payment?.action && payment?.method && typeof payment?.data === 'object') {
     if (result?.orderId) {
       localStorage.setItem('order_id', result.orderId);
     }
+
     const form = document.createElement('form');
-    form.method = 'POST';
+    form.method = payment.method || 'POST';
     form.action = payment.action;
     form.acceptCharset = 'utf-8';
 
-    const dataInput = document.createElement('input');
-    dataInput.type = 'hidden';
-    dataInput.name = 'data';
-    dataInput.value = payment.data;
-    form.appendChild(dataInput);
-
-    const signatureInput = document.createElement('input');
-    signatureInput.type = 'hidden';
-    signatureInput.name = 'signature';
-    signatureInput.value = payment.signature;
-    form.appendChild(signatureInput);
+    for (const [key, value] of Object.entries(payment.data)) {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = value;
+      form.appendChild(input);
+    }
 
     document.body.appendChild(form);
     form.submit();
   } else {
-    let msg = 'Payment initialization failed. ';
+    let msg = 'Payment initialization failed.';
     if (result?.name) {
-      msg += `\n${result.name}: `;
+      msg += `\n${result.name}:`;
     }
     if (result?.message) {
-      msg += result.message;
+      msg += ` ${result.message}`;
     }
     alert(msg);
   }
