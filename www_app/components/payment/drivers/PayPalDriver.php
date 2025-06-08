@@ -41,8 +41,7 @@ class PayPalDriver implements PaymentInterface
     {
         $data = [
             'cmd'           => '_xclick',
-            //'business'      => $this->clientId,
-            'business'      => 'sb-yppsq43510514@business.example.com',
+            'business'      => $this->clientId,
             'item_name'     => $params['description'],
             'amount'        => $params['amount'],
             'currency_code' => $params['currency'] ?? 'USD',
