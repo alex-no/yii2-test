@@ -24,9 +24,15 @@ class LiqPayDriver implements PaymentInterface
     ) {}
 
     /**
-     * Creates a payment request with the given parameters.
-     * @param array $params
-     * @return array
+     * Creates a LiqPay payment form data.
+     * Returns a URL or HTML form that can be used to initiate payment.
+     *
+     * @param array $params Payment parameters: amount, currency, description, order_id, etc.
+     * @return array{
+     *     action: string,         // Form action URL
+     *     method: 'POST'|'GET',   // Form method
+     *     data: array<string, string> // Key-value pairs for form inputs
+     * }
      */
     public function createPayment(array $params): array
     {
@@ -43,11 +49,15 @@ class LiqPayDriver implements PaymentInterface
         ];
 
         $json = base64_encode(json_encode($data));
+        $signature = $this->generateSignature($json);
 
         return [
-            'action'    => self::PAYMENT_URL,
-            'data'      => $json,
-            'signature' => $this->generateSignature($json),
+            'action' => self::PAYMENT_URL,
+            'method' => 'POST',
+            'data'   => [
+                'data'      => $json,
+                'signature' => $signature,
+            ],
         ];
     }
 

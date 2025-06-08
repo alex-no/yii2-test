@@ -4,9 +4,14 @@ namespace app\components\payment;
 interface PaymentInterface
 {
     /**
-     * Creates a payment request with the given parameters.
-     * @param array $params
-     * @return array
+     * Returns a URL or HTML form that can be used to initiate payment.
+     *
+     * @param array $params Payment parameters: amount, currency, description, order_id, etc.
+     * @return array{
+     *     action: string,         // Form action URL
+     *     method: 'POST'|'GET',   // Form method
+     *     data: array<string, string> // Key-value pairs for form inputs
+     * }
      */
     public function createPayment(array $params): array;
 

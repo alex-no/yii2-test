@@ -26,10 +26,15 @@ class PayPalDriver implements PaymentInterface
     ) {}
 
     /**
-     * Creates a PayPal payment request.
+     * Creates a PayPal payment form data.
      * Returns a URL or HTML form that can be used to initiate payment.
-     * @param array $params
-     * @return array
+     *
+     * @param array $params Payment parameters: amount, currency, description, order_id, etc.
+     * @return array{
+     *     action: string,         // Form action URL
+     *     method: 'POST'|'GET',   // Form method
+     *     data: array<string, string> // Key-value pairs for form inputs
+     * }
      */
     public function createPayment(array $params): array
     {
