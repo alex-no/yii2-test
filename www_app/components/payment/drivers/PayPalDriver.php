@@ -7,7 +7,8 @@ class PayPalDriver implements PaymentInterface
 {
     public const NAME = 'PayPal';
     public const VERSION = '1.0.0';
-    public const PAYMENT_URL = 'https://www.paypal.com/cgi-bin/webscr';
+    // public const PAYMENT_URL = 'https://www.paypal.com/cgi-bin/webscr';
+    public const PAYMENT_URL = 'https://sandbox.paypal.com/cgi-bin/webscr';
 
     /**
      * PayPalDriver constructor.
@@ -40,10 +41,12 @@ class PayPalDriver implements PaymentInterface
     {
         $data = [
             'cmd'           => '_xclick',
-            'business'      => $this->clientId,
+            //'business'      => $this->clientId,
+            'business'      => 'sb-yppsq43510514@business.example.com',
             'item_name'     => $params['description'],
             'amount'        => $params['amount'],
-            'currency_code' => $params['currency'] ?? 'USD',
+            //'currency_code' => $params['currency'] ?? 'USD',
+            'currency_code' => 'USD',
             'notify_url'    => $this->callbackUrl,
             'return'        => $this->returnUrl,
             'cancel_return' => $this->cancelUrl,
