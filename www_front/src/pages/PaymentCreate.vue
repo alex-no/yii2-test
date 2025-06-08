@@ -128,6 +128,8 @@ const handleSubmit = async () => {
     }
 
     document.body.appendChild(form);
+console.log(form.outerHTML);
+alert('Redirecting to payment system...');
     form.submit();
   } else {
     let msg = 'Payment initialization failed.';
