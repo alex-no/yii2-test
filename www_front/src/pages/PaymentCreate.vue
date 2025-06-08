@@ -100,7 +100,7 @@ onMounted(async () => {
 });
 
 watch(paySystem, (val) => {
-  currency.value = (val === 'liqpay') ? 'UAG' : 'USD';
+  currency.value = (val === 'liqpay') ? 'UAH' : 'USD';
 }, { immediate: true });
 
 const handleSubmit = async () => {
