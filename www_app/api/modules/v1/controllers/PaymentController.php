@@ -134,7 +134,7 @@ class PaymentController extends ApiController
             $order = new Order();
             $order->user_id = Yii::$app->user->id; // Assuming user is authenticated
             $order->order_id = $orderId;
-            $order->currency = 'UAH';
+            $order->currency = $post['currency'] ?? 'USD';
             $order->description = 'Payment for Order #' . $orderId;
         } else {
             $order = Order::findOne(['order_id' => $post['order_id']]);

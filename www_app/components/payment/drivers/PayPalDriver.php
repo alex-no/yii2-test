@@ -46,7 +46,6 @@ class PayPalDriver implements PaymentInterface
             'item_name'     => $params['description'],
             'amount'        => $params['amount'],
             'currency_code' => $params['currency'] ?? 'USD',
-            //'currency_code' => 'USD',
             'notify_url'    => $this->callbackUrl,
             'return'        => $this->returnUrl,
             'cancel_return' => $this->cancelUrl,

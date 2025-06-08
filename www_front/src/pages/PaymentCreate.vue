@@ -14,14 +14,23 @@
       <label class="me-3 text-sm text-right font-medium text-gray-700 w-[160px]">
         {{ $t('form.amount') }}
       </label>
-      <input
-        v-model="amount"
-        type="number"
-        step="0.01"
-        min="0.01"
-        class="border border-gray-300 p-2 rounded-md w-[150px]"
-        required
-      />
+      <div class="flex items-center gap-2">
+        <input
+          v-model="amount"
+          type="number"
+          step="0.01"
+          min="0.01"
+          class="border border-gray-300 p-2 rounded-md w-[150px]"
+          required
+        />
+        <input
+          type="text"
+          :value="currency"
+          name="currency"
+          readonly
+          class="border border-gray-300 p-2 rounded-md w-[70px] text-center bg-gray-100"
+        />
+      </div>
     </div>
 
     <div class="mb-4 flex justify-center items-center">
@@ -30,7 +39,7 @@
       </label>
       <select
         v-model="paySystem"
-        class="border border-gray-300 p-2 rounded-md w-[150px]"
+        class="border border-gray-300 p-2 rounded-md w-[220px]"
       >
         <option
           v-for="driver in drivers"
@@ -64,11 +73,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const amount = ref('1.00');
 const paySystem = ref('');
+const currency = ref('USD');
 const drivers = ref([]);
 const router = useRouter();
 
@@ -89,6 +99,10 @@ onMounted(async () => {
   }
 });
 
+watch(paySystem, (val) => {
+  currency.value = (val === 'liqpay') ? 'UAG' : 'USD';
+}, { immediate: true });
+
 const handleSubmit = async () => {
   //const orderId = `ORD-${new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)}-${Math.random().toString(36).slice(2, 10)}`;
   const orderId = null;
@@ -102,6 +116,7 @@ const handleSubmit = async () => {
     body: JSON.stringify({
       amount: amount.value,
       pay_system: paySystem.value,
+      currency: currency.value,
       order_id: orderId
     })
   });
@@ -141,3 +156,4 @@ const handleSubmit = async () => {
   }
 };
 </script>
+
