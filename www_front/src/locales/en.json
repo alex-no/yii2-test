@@ -27,6 +27,7 @@
   "form": {
     "login": "Login",
     "username": "Name of user",
+    "email": "E-mail",
     "password": "Password",
     "sign_in": "Sign In",
     "auth_required": "You need to log in to proceed with the payment",

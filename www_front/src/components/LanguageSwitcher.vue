@@ -32,7 +32,7 @@ import { ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { detectLanguage } from '@/utils/detect_language'
 
-const { locale } = useI18n() // <--- добавлено
+const { locale } = useI18n()
 
 const selectedLang = ref(detectLanguage())
 const props = defineProps({ modelValue: String })
