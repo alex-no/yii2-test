@@ -8,7 +8,7 @@ class PayPalDriver implements PaymentInterface
     public const NAME = 'PayPal';
     public const VERSION = '1.0.0';
     // public const PAYMENT_URL = 'https://www.paypal.com/cgi-bin/webscr';
-    public const PAYMENT_URL = 'https://sandbox.paypal.com/cgi-bin/webscr';
+    public const PAYMENT_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
 
     /**
      * PayPalDriver constructor.
