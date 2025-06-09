@@ -2,6 +2,8 @@
 namespace app\components\payment\drivers;
 
 use app\components\payment\PaymentInterface;
+use app\models\Order;
+use yii\web\BadRequestHttpException;
 
 class PayPalDriver implements PaymentInterface
 {
@@ -60,22 +62,32 @@ class PayPalDriver implements PaymentInterface
 
     /**
      * Handles PayPal IPN callback.
-     * @param array $request
-     * @return array|null
+     * @param array $post
+     * @return Order|null
      */
-    public function handleCallback(array $request): ?array
+    public function handleCallback(array $post): ?Order
     {
         if (!isset($request['txn_id'])) {
             return null;
         }
 
-        return [
-            'transaction_id' => $request['txn_id'],
-            'status'         => $request['payment_status'] ?? null,
-            'amount'         => $request['mc_gross'] ?? null,
-            'currency'       => $request['mc_currency'] ?? null,
-            'order_id'       => $request['custom'] ?? null,
-        ];
+        $orderId = $post['custom'] ?? null;
+        $status = $post['payment_status'] ?? null;
+        //     'transaction_id' => $post['txn_id'],
+        //     'amount'         => $post['mc_gross'] ?? null,
+        //     'currency'       => $post['mc_currency'] ?? null,
+
+        if (!$orderId || !$status) {
+            throw new BadRequestHttpException("Invalid callback data.");
+        }
+
+        $order = Order::findOne(['order_id' => $orderId]);
+        if (!$order) {
+            return null; // Order not found
+        }
+        $order->payment_status = $status;
+
+        return $order;
     }
 
     /**

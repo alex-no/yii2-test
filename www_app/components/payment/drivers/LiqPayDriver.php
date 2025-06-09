@@ -2,6 +2,8 @@
 namespace app\components\payment\drivers;
 
 use app\components\payment\PaymentInterface;
+use app\models\Order;
+use yii\web\BadRequestHttpException;
 
 class LiqPayDriver implements PaymentInterface
 {
@@ -65,16 +67,34 @@ class LiqPayDriver implements PaymentInterface
      * Handles the payment callback from the payment gateway.
      * This method should process the callback data,
      * verify the payment, and return the result.
-     * @param array $request
-     * @return array|null
+     * @param array $post
+     * @return \app\models\Order
      */
-    public function handleCallback(array $request): ?array
+    public function handleCallback(array $post): ?Order
     {
-        if (!isset($request['data'])) {
-            return null;
+        if (empty($post['data']) || empty($post['signature'])) {
+            throw new BadRequestHttpException("Missing data or signature.");
+        }
+        if (!$this->verifySignature($post['data'], $post['signature'])) {
+            throw new BadRequestHttpException("Invalid signature.");
         }
 
-        return json_decode(base64_decode($request['data']), true);
+        $data = json_decode(base64_decode($post['data']), true);
+
+        $orderId = $data['order_id'] ?? null;
+        $status = $data['status'] ?? null;
+
+        if (!$orderId || !$status) {
+            throw new BadRequestHttpException("Invalid callback data.");
+        }
+
+        $order = Order::findOne(['order_id' => $orderId]);
+        if (!$order) {
+            return null; // Order not found
+        }
+        $order->payment_status = $status;
+
+        return $order;
     }
 
     /**

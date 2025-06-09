@@ -39,7 +39,7 @@ return [
             'config' => [
                 'clientId'    => $_ENV['PAYPAL_CLIENT_ID'],
                 'secret'      => $_ENV['PAYPAL_SECRET'],
-                'callbackUrl' => $_ENV['CURRENT_URL'] . '/api/payments/handle',
+                'callbackUrl' => $_ENV['CURRENT_URL'] . '/api/payments/handle/paypal',
                 'returnUrl'   => $_ENV['CURRENT_URL'] . '/html/payment-success',
                 'cancelUrl'   => $_ENV['CURRENT_URL'] . '/html/payment-cancel',
             ],
@@ -49,7 +49,7 @@ return [
             'config' => [
                 'publicKey'  => $_ENV['LIQPAY_PUBLIC_KEY'], // Set your public key here
                 'privateKey' => $_ENV['LIQPAY_PRIVATE_KEY'], // Set your private key here
-                'callbackUrl' => $_ENV['CURRENT_URL'] . '/api/payments/handle',
+                'callbackUrl' => $_ENV['CURRENT_URL'] . '/api/payments/handle/liqpay',
                 'resultUrl' => $_ENV['CURRENT_URL'] . '/html/payment-result',
             ],
         ],

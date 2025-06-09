@@ -195,39 +195,22 @@ class PaymentController extends ApiController
      *     )
      * )
      */
-    public function actionHandle(): array
+    public function actionHandle($driverName): array
     {
         $post = Yii::$app->request->post();
-
-        if (empty($post['data']) || empty($post['signature'])) {
-            throw new BadRequestHttpException("Missing data or signature.");
+        if (empty($post)) {
+            throw new BadRequestHttpException("Missing POST-data.");
         }
+        $driver = Yii::$app->payment->getDriver($driverName);
 
-        $driver = Yii::$app->payment->getDriver('liqpay');
-
-        if (!$driver->verifySignature($post['data'], $post['signature'])) {
-            throw new BadRequestHttpException("Invalid signature.");
-        }
-
-        $data = $driver->handleCallback($post);
-
-        $orderId = $data['order_id'] ?? null;
-        $status = $data['status'] ?? null;
-
-        if (!$orderId || !$status) {
-            throw new BadRequestHttpException("Invalid callback data.");
-        }
-
-        $order = Order::findOne(['order_id' => $orderId]);
+        $order = $driver->handleCallback($post);
         if (!$order) {
             throw new ServerErrorHttpException("Order not found.");
         }
-
-        $order->payment_status = $status;
-        $order->paid_at = $status === 'success' ? date('Y-m-d H:i:s') : null;
+        $order->paid_at = $order->payment_status === 'success' ? date('Y-m-d H:i:s') : null;
         $order->save(false); // disable validation, can be replaced with a transaction
 
-        Yii::info("Payment callback received for order #$orderId with status: $status", __METHOD__);
+        Yii::info("Payment callback received for order #$order->order_id with status: $order->payment_status", __METHOD__);
 
         return ['success' => true];
     }

@@ -55,7 +55,7 @@ return [
 
     'GET payments' => 'v1/payment/drivers',
     'POST payments/create' => 'v1/payment/create',
-    'POST payments/handle' => 'v1/payment/handle',
+    'POST payments/handle/<driverName:[\w\-]+>' => 'v1/payment/handle',
     'GET payments/result' => 'v1/payment/result',
 
     'swagger/json' => 'v1/swagger/json',
