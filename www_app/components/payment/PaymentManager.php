@@ -8,25 +8,12 @@ use yii\base\InvalidConfigException;
 class PaymentManager extends Component
 {
     /**
-     * @var PaymentInterface The payment driver instance.
-     */
-    private PaymentInterface $driver;
-
-    /**
-     * PaymentManager constructor.
-     * Initializes the payment manager with the configured driver.
-     * @param array $config the configuration for the payment manager.
-     */
-    public function __construct($config = [])
-    {
-        parent::__construct($config);
-        $this->init();
-    }
-
-    /**
      * Returns the payment driver instance.
      * This method provides access to the payment driver that has been initialized.
+     * @param string $driverName
      * @return PaymentInterface The payment driver instance.
+     *
+     * @throws yii\base\InvalidConfigException
      */
     public function getDriver($driverName): PaymentInterface
     {
