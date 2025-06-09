@@ -57,6 +57,7 @@ class LiqPayDriver implements PaymentInterface
             'data'   => [
                 'data'      => $json,
                 'signature' => $signature,
+                'xxx' => json_encode($data),
             ],
         ];
     }

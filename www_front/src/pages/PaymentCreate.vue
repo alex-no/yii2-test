@@ -143,6 +143,7 @@ const handleSubmit = async () => {
     }
 
     document.body.appendChild(form);
+alert(form.outerHTML);    
     form.submit();
   } else {
     let msg = 'Payment initialization failed.';
