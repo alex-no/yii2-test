@@ -203,7 +203,7 @@ class PaymentController extends ApiController
             throw new BadRequestHttpException("Missing data or signature.");
         }
 
-        $driver = Yii::$app->payment->getDriver();
+        $driver = Yii::$app->payment->getDriver('liqpay');
 
         if (!$driver->verifySignature($post['data'], $post['signature'])) {
             throw new BadRequestHttpException("Invalid signature.");
