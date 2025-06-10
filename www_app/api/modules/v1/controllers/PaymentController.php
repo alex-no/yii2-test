@@ -183,9 +183,13 @@ class PaymentController extends ApiController
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="data", type="object", example="{data: 'example_data'}"),
-     *             @OA\Property(property="signature", type="string", example="c2lnbmF0dXJlX2V4YW1wbGU=")
+     *         description="Raw POST data, varies depending on payment driver",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 additionalProperties=true
+     *             )
      *         )
      *     ),
      *     @OA\Response(
