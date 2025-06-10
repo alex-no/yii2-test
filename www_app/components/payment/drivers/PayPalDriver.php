@@ -11,6 +11,17 @@ class PayPalDriver implements PaymentInterface
     public const VERSION = '1.0.0';
     // public const PAYMENT_URL = 'https://www.paypal.com/cgi-bin/webscr';
     public const PAYMENT_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+    public const STATUS_MAP = [
+        'completed' => 'success',
+        'pending' => 'pending',
+        'failed' => 'fail',
+        'denied' => 'cancel',
+        'refunded' => 'refund',
+        'reversed' => 'reverse',
+        'canceled_reversal' => 'reverse',
+        'processed' => 'unknown',
+        'voided' => 'unknown',
+    ];
 
     /**
      * PayPalDriver constructor.
@@ -67,12 +78,12 @@ class PayPalDriver implements PaymentInterface
      */
     public function handleCallback(array $post): ?Order
     {
-        if (!isset($request['txn_id'])) {
+        if (!isset($post['txn_id'])) {
             return null;
         }
 
         $orderId = $post['custom'] ?? null;
-        $status = $post['payment_status'] ?? null;
+        $status = strtolower($post['payment_status']) ?? null;
         //     'transaction_id' => $post['txn_id'],
         //     'amount'         => $post['mc_gross'] ?? null,
         //     'currency'       => $post['mc_currency'] ?? null,
@@ -85,7 +96,8 @@ class PayPalDriver implements PaymentInterface
         if (!$order) {
             return null; // Order not found
         }
-        $order->payment_status = $status;
+
+        $order->payment_status = array_key_exists($status, self::STATUS_MAP) ? self::STATUS_MAP[$status] : 'unknown';
 
         return $order;
     }

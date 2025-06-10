@@ -19,7 +19,7 @@ class m250527_232212_create_order_table extends Migration
             'order_id' => $this->string(64)->notNull()->unique()->comment('Public order ID for external use'),
             'amount' => $this->decimal(10, 2)->notNull()->comment('Payment amount'),
             'currency' => $this->string(3)->notNull()->defaultValue('UAH')->comment('Currency code'),
-            'payment_status' => "ENUM('pending', 'success', 'fail', 'cancel', 'refund', 'expired') NOT NULL DEFAULT 'pending' COMMENT 'Payment status'",
+            'payment_status' => "ENUM('pending', 'success', 'fail', 'cancel', 'refund', 'expired', 'reverse', 'unknown') NOT NULL DEFAULT 'pending' COMMENT 'Payment status'",
             'description' => $this->string(255)->null()->comment('Order description'),
 
             'paid_at' => $this->timestamp()->defaultValue(null)->comment('Payment timestamp'),
