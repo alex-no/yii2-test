@@ -27,6 +27,16 @@ const routes = [
     meta: { title: 'title.payment_result' } 
   },
   { 
+    path: '/payment-success', 
+    component: PaymentResult, 
+    meta: { title: 'title.payment_result' } 
+  },
+  { 
+    path: '/payment-cancel', 
+    component: PaymentResult, 
+    meta: { title: 'title.payment_result' } 
+  },
+  { 
     path: '/', 
     redirect: '/features' 
   },
