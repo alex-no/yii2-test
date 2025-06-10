@@ -18,9 +18,9 @@ class PayPalDriver implements PaymentInterface
         'denied' => 'cancel',
         'refunded' => 'refund',
         'reversed' => 'reverse',
-        'canceled_reversal' => 'reverse',
-        'processed' => 'unknown',
-        'voided' => 'unknown',
+        'canceled_reversal' => 'cancel',
+        'processed' => 'success',
+        'voided' => 'cancel',
     ];
 
     /**
