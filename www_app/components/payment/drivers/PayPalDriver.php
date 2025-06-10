@@ -74,7 +74,7 @@ class PayPalDriver implements PaymentInterface
     /**
      * Handles PayPal IPN callback.
      * @param array $post
-     * @return App\Models\Order|null
+     * @return Order|null
      */
     public function handleCallback(array $post): ?Order
     {
