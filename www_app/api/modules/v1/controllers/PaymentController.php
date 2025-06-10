@@ -170,10 +170,17 @@ class PaymentController extends ApiController
 
     /**
      * @OA\Post(
-     *     path="/api/payments/handle",
+     *     path="/api/payments/handle{driverName}",
      *     summary="API Payments Handle",
      *     description="Returns information about Handle Payments.",
      *     tags={"Payment"},
+     *     @OA\Parameter(
+     *         name="driverName",
+     *         in="path",
+     *         description="Payment driver name",
+     *         required=true,
+     *         @OA\Schema(type="string", example="paypal")
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
