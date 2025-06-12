@@ -35,7 +35,21 @@
 
       <Pagination :pagination="pagination" :meta="meta" @load="loadPage" />
     </div>
-  </div>
+    <hr class="mt-5" />
+    
+    <div class="mb-2">
+      {{ $t('goto_swagger') }}
+      <a href="/api/documentation/#" target="_blank" class="link-primary ms-1">
+        {{ $t('here') }}
+      </a>.
+    </div>
+    <div class="mb-2">
+      {{ $t('goto_github') }}
+      <a href="https://github.com/alex-no/yii2-test" target="_blank" class="link-primary ms-1">
+        {{ $t('here') }}
+      </a>.
+    </div>
+    </div>
 </template>
 
 <script setup>

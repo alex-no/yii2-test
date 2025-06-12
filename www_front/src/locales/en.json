@@ -1,5 +1,8 @@
 {
   "htmlTitle": "Pet-Project",
+  "here": "here",
+  "goto_swagger": "To go to the Swagger documentation page, click",
+  "goto_github": "To go to the project repository on GitHub, click",
   "title": {
     "features": "Development Plan",
     "login": "Login",
