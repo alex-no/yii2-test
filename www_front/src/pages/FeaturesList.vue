@@ -49,7 +49,7 @@
         {{ $t('here') }}
       </a>.
     </div>
-    </div>
+  </div>
 </template>
 
 <script setup>
