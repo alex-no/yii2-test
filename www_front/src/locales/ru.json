@@ -7,7 +7,9 @@
     "features": "План разработки",
     "login": "Логин",
     "payment": "Совершить платеж",
-    "payment_result": "Результат платежа"
+    "payment_result": "Результат платежа",
+    "chat_demo": "Демонстрационный чат",
+    "chat_demo_note": "для проверки работы WebSocket"
   },
   "featureTitle": "План разработки",
   "pageLoading": "Загрузка",
@@ -47,7 +49,10 @@
     "payment_result": "Результат платежа",
     "order_id": "ID заказа",
     "status": "Статус",
-    "another_payment": "Сделать другой платеж"
+    "another_payment": "Сделать другой платеж",
+
+    "send": "Отправить",
+    "type_message": "Напишите ваше сообщение здесь"
   },
   "payment_status": {
     "pending": "Ожидается",

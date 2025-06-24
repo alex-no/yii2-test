@@ -7,7 +7,9 @@
     "features": "Development Plan",
     "login": "Login",
     "payment": "Make a Payment",
-    "payment_result": "Payment Result"
+    "payment_result": "Payment Result",
+    "chat_demo": "Chat Demo",
+    "chat_demo_note": "for testing WebSocket functionality"
   },
   "featureTitle": "Development Plan",
   "pageLoading": "Loading",
@@ -47,7 +49,10 @@
     "payment_result": "Payment Result",
     "order_id": "Order ID",
     "status": "Status",
-    "another_payment": "Make another payment"
+    "another_payment": "Make another payment",
+
+    "send": "Send",
+    "type_message": "Type your message here"
   },
   "payment_status": {
     "pending": "Pending",

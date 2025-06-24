@@ -15,3 +15,4 @@ bak
 /rebuild.bat
 /www_app/config/*-secure.php
 /www_front/tailwindcss.exe
+/doc/chat-vue.txt
