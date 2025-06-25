@@ -39,8 +39,9 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { io } from 'socket.io-client'
+import socketUrl from '@/config/socket.js';
 
-const socket = io('http://localhost:3000') // заменим позже, если нужно
+const socket = io(socketUrl)
 
 const messages = ref([])
 const message = ref('')

@@ -55,4 +55,10 @@ return [
         ],
         // 'stripe' => [...],
     ],
+    // WebSocket server configuration
+    'websocket' => [
+        'protocol' => 'websocket', // or 'webs' if using SSL via stunnel/nginx
+        'host' => '0.0.0.0',
+        'port' => 3000,
+    ],
 ];
