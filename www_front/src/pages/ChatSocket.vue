@@ -5,23 +5,28 @@
 
     <div class="text-sm text-gray-700 mb-2">
       <strong>{{ $t('label.users') }}: </strong>
-      <span v-for="(user, index) in users" :key="user" class="mr-2">
+      <template v-for="(user, index) in users" :key="user">
         <span
-          :class="{
-            'text-red-600 font-bold': user === username,
-            'text-black font-normal': user !== username
-          }"
+          :style="user === username ? 'color: darkred; font-weight: bold;' : 'color: black;'"
         >
           {{ user }}
         </span>
-        <span v-if="index !== users.length - 1">, </span>
-      </span>
+        <span v-if="index < users.length - 1">, </span>
+      </template>
     </div>
 
-    <div class="border rounded-md p-3 h-64 overflow-y-auto bg-white shadow mb-3" style="min-height: 500px;" ref="chatContainer">
-      <div v-for="(msg, index) in messages" :key="index" class="mb-2">
-        <strong :class="{ 'text-red-600': msg.user === username }">{{ msg.user }}:</strong>
-        <div class="ml-4 whitespace-pre-wrap">{{ msg.text }}</div>
+    <div
+      class="border rounded-md p-3 h-64 overflow-y-auto bg-white shadow mb-3"
+      style="min-height: 400px; text-align: left;"
+      ref="chatContainer"
+    >
+      <div v-for="(msg, index) in messages" :key="index" style="margin-bottom: 1em;">
+        <div :style="msg.user === username ? 'color: darkred; font-weight: bold;' : 'font-weight: 600;'">
+          {{ msg.user }}:
+        </div>
+        <div style="margin-left: 1em; white-space: pre-wrap; color: #333;">
+          {{ msg.text }}
+        </div>
       </div>
     </div>
 
@@ -80,7 +85,9 @@ onMounted(() => {
           username.value = data.name
           break
         case 'users_update':
-          users.value = data.users
+          users.value = Array.isArray(data.users)
+            ? data.users
+            : Object.values(data.users)
           break
         case 'message':
           messages.value.push({ user: data.user, text: data.text })
