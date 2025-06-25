@@ -11,6 +11,9 @@
     "chat_demo": "Демонстрационный чат",
     "chat_demo_note": "для проверки работы WebSocket"
   },
+  "label": {
+    "users": "Пользователи"
+  },
   "featureTitle": "План разработки",
   "pageLoading": "Загрузка",
   "pageLoadingError": "Не удалось загрузить данные.",

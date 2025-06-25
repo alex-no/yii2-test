@@ -16,11 +16,13 @@ class WebSocketServerController extends Controller
      * This array stores connections indexed by their IDs.
      */
     private array $clients = [];
+
     /**
      * @var array Available user names for the chat.
      * This array contains names from A to Z, which are assigned to users when they connect
      */
     private array $availableNames = [];
+
     /**
      * @var string Language for messages.
      * This can be set via environment variable APP_LANG, default is 'en'.
@@ -68,29 +70,45 @@ class WebSocketServerController extends Controller
 
         // User names: A, B, C, ..., Z
         $this->availableNames = range('A', 'Z');
+        $this->clients = [];
 
-        // $worker = new Worker('websocket://0.0.0.0:3000');
         $cfg = \Yii::$app->params['websocket'];
         $worker = new Worker("{$cfg['protocol']}://{$cfg['host']}:{$cfg['port']}");
 
-        $worker->count = 1; // Simplified for compatibility
+        // @mkdir(\Yii::getAlias('@runtime') . '/socket', 0777, true);
+        // @mkdir(\Yii::getAlias('@runtime') . '/logs', 0777, true);
+        Worker::$pidFile = \Yii::getAlias('@runtime') . '/socket/workerman.yii.pid';
+        Worker::$logFile = \Yii::getAlias('@runtime') . '/logs/workerman.log';
 
-        $worker->onConnect = function ($connection) {
-            $name = array_shift($this->availableNames) ?? 'X';
+        $worker->count = 1;
+
+        // To use $this inside closures, pass a reference to the object
+        $that = $this;
+
+        /**
+         * Handles new connections to the WebSocket server.
+         * Assigns a user name from the available names list and sends it to the client.
+         */
+        $worker->onConnect = function ($connection) use ($that) {
+            $name = array_shift($that->availableNames) ?? 'X';
             $connection->user = $name;
-            $this->clients[$connection->id] = $connection;
+            $that->clients[$connection->id] = $connection;
 
             $connection->send(json_encode([
                 'type' => 'assign_name',
                 'name' => $name,
             ]));
 
-            $this->broadcastUsers();
+            $that->broadcastUsers();
 
-            $this->stdout($this->t('connected', ['name' => $name]) . "\n", Console::FG_YELLOW);
+            echo $that->t('connected', ['name' => $name]) . "\n";
         };
 
-        $worker->onMessage = function ($connection, $data) {
+        /**
+         * Handles incoming messages from clients.
+         * Broadcasts the message to all connected clients.
+         */
+        $worker->onMessage = function ($connection, $data) use ($that) {
             $message = trim($data);
             if ($message === '') {
                 return;
@@ -102,22 +120,24 @@ class WebSocketServerController extends Controller
                 'text' => $message,
             ];
 
-            foreach ($this->clients as $client) {
+            foreach ($that->clients as $client) {
                 $client->send(json_encode($payload));
             }
 
-            $this->stdout($this->t('message', [
-                'name' => $connection->user,
-                'message' => $message
-            ]) . "\n", Console::FG_CYAN);
+            echo $that->t('message', ['name' => $connection->user, 'message' => $message]) . "\n";
         };
 
-        $worker->onClose = function ($connection) {
-            unset($this->clients[$connection->id]);
-            $this->availableNames[] = $connection->user;
-            $this->broadcastUsers();
+        /**
+         * Handles disconnections from the WebSocket server.
+         * Removes the client from the list and adds their name back to the available names.
+         */
+        $worker->onClose = function ($connection) use ($that) {
+            unset($that->clients[$connection->id]);
+            $that->availableNames[] = $connection->user;
 
-            $this->stdout($this->t('disconnected', ['name' => $connection->user]) . "\n", Console::FG_RED);
+            $that->broadcastUsers();
+
+            echo $that->t('disconnected', ['name' => $connection->user]) . "\n";
         };
 
         Worker::runAll();

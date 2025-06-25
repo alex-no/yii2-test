@@ -11,6 +11,9 @@
     "chat_demo": "Chat Demo",
     "chat_demo_note": "for testing WebSocket functionality"
   },
+  "label": {
+    "users": "Users"
+  },
   "featureTitle": "Development Plan",
   "pageLoading": "Loading",
   "pageLoadingError": "Failed to load data.",
