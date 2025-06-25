@@ -12,6 +12,12 @@ use yii\helpers\Console;
 class WebSocketServerController extends Controller
 {
     /**
+     * @var bool Whether to run the server as a daemon.
+     * If true, the server will run in the background and not block the terminal.
+     */
+    public bool $daemon = false;
+
+    /**
      * @var array Clients connected to the WebSocket server.
      * This array stores connections indexed by their IDs.
      */
@@ -57,14 +63,30 @@ class WebSocketServerController extends Controller
     ];
 
     /**
+     * Returns the options for the WebSocket server command.
+     * This method allows the command to run as a daemon.
+     *
+     * @param string $actionID The action ID.
+     * @return array The options for the WebSocket server command.
+     */
+    public function options($actionID)
+    {
+        return array_merge(parent::options($actionID), ['daemon']);
+    }
+
+    /**
      * Starts the WebSocket server.
      * This method initializes the server, handles connections, messages, and disconnections.
      * It also assigns user names from A to Z and broadcasts user updates.
+     *
+     * Usage:
+     *     php yii web-socket-server start --daemon=1
+     *
      * @return void
      */
     public function actionIndex(): void
     {
-        $this->lang = getenv('APP_LANG') ?: 'ru';
+        $this->lang = getenv('APP_LANG') ?: 'en';
 
         $this->stdout($this->t('starting') . "\n", Console::FG_GREEN);
 
@@ -79,6 +101,11 @@ class WebSocketServerController extends Controller
         // @mkdir(\Yii::getAlias('@runtime') . '/logs', 0777, true);
         Worker::$pidFile = \Yii::getAlias('@runtime') . '/socket/workerman.yii.pid';
         Worker::$logFile = \Yii::getAlias('@runtime') . '/logs/workerman.log';
+        if ($this->daemon) {
+            Worker::$daemonize = true; // Run as a daemon
+            $this->stdout("Running as a daemon...\n", Console::FG_YELLOW);
+            $this->stdout("To stop the daemon, run: php yii web-socket-server/stop\n", Console::FG_BLUE);
+        }
 
         $worker->count = 1;
 
@@ -151,6 +178,38 @@ class WebSocketServerController extends Controller
         };
 
         Worker::runAll();
+    }
+
+    /**
+     * Stops the WebSocket server.
+     * This method sends a SIGTERM signal to the process running the server.
+     * It reads the PID from a file and attempts to terminate the process gracefully.
+     *
+     * Usage:
+     *    php yii web-socket-server/stop
+     *
+     * @return void
+     */
+    public function actionStop(): void
+    {
+        $pidFile = \Yii::getAlias('@runtime') . '/socket/workerman.yii.pid';
+        if (!file_exists($pidFile)) {
+            $this->stdout("PID file not found: $pidFile\n");
+            return;
+        }
+
+        $pid = (int)file_get_contents($pidFile);
+        if ($pid <= 0) {
+            $this->stdout("Invalid PID in file: $pidFile\n");
+            return;
+        }
+
+        if (posix_kill($pid, SIGTERM)) {
+            $this->stdout("Sent SIGTERM to process $pid\n");
+            @unlink($pidFile);
+        } else {
+            $this->stdout("Failed to send SIGTERM to process $pid\n");
+        }
     }
 
     /**
