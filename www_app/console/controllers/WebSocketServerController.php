@@ -90,7 +90,18 @@ class WebSocketServerController extends Controller
          * Assigns a user name from the available names list and sends it to the client.
          */
         $worker->onConnect = function ($connection) use ($that) {
-            $name = array_shift($that->availableNames) ?? 'X';
+            // Determine used names
+            $usedNames = array_map(fn($c) => $c->user, $that->clients);
+
+            // Find the first available letter
+            $name = 'X'; // fallback
+            foreach ($that->availableNames as $candidate) {
+                if (!in_array($candidate, $usedNames, true)) {
+                    $name = $candidate;
+                    break;
+                }
+            }
+
             $connection->user = $name;
             $that->clients[$connection->id] = $connection;
 
@@ -133,7 +144,6 @@ class WebSocketServerController extends Controller
          */
         $worker->onClose = function ($connection) use ($that) {
             unset($that->clients[$connection->id]);
-            $that->availableNames[] = $connection->user;
 
             $that->broadcastUsers();
 
