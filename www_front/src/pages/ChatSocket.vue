@@ -38,46 +38,14 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
-import { io } from 'socket.io-client'
 import socketUrl from '@/config/socket.js';
 
-const socket = io(socketUrl)
-
+const socket = ref(null)
 const messages = ref([])
 const message = ref('')
 const users = ref([])
 const username = ref(null)
 const chatContainer = ref(null)
-
-onMounted(() => {
-  socket.on('connect', () => {
-    console.log('Connected to server')
-  })
-
-  socket.on('assign_name', (name) => {
-    username.value = name
-  })
-
-  socket.on('users_update', (names) => {
-    users.value = names
-  })
-
-  socket.on('message', (msg) => {
-    messages.value.push(msg)
-    scrollToBottom()
-  })
-})
-
-onUnmounted(() => {
-  socket.disconnect()
-})
-
-function sendMessage() {
-  if (message.value.trim()) {
-    socket.emit('message', message.value.trim())
-    message.value = ''
-  }
-}
 
 function scrollToBottom() {
   nextTick(() => {
@@ -87,6 +55,57 @@ function scrollToBottom() {
     }
   })
 }
+
+function sendMessage() {
+  if (message.value.trim() && socket.value && socket.value.readyState === WebSocket.OPEN) {
+    socket.value.send(message.value.trim())
+    message.value = ''
+  }
+}
+
+onMounted(() => {
+  socket.value = new WebSocket(socketUrl)
+
+  socket.value.addEventListener('open', () => {
+    console.log('Connected to server')
+  })
+
+  socket.value.addEventListener('message', (event) => {
+    try {
+      const data = JSON.parse(event.data)
+
+      switch (data.type) {
+        case 'assign_name':
+          username.value = data.name
+          break
+        case 'users_update':
+          users.value = data.users
+          break
+        case 'message':
+          messages.value.push({ user: data.user, text: data.text })
+          scrollToBottom()
+          break
+      }
+    } catch (e) {
+      console.error('Invalid message format', e)
+    }
+  })
+
+  socket.value.addEventListener('close', () => {
+    console.log('Disconnected from server')
+  })
+
+  socket.value.addEventListener('error', (error) => {
+    console.error('WebSocket error:', error)
+  })
+})
+
+onUnmounted(() => {
+  if (socket.value) {
+    socket.value.close()
+    socket.value = null
+  }
+})
 </script>
 
 <style scoped>

@@ -16,3 +16,5 @@ bak
 /www_app/config/*-secure.php
 /www_front/tailwindcss.exe
 /doc/chat-vue.txt
+/doc/websocket-entry.php
+/www_app/workerman.yii.pid
