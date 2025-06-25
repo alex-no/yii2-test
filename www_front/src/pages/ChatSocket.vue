@@ -30,15 +30,22 @@
       </div>
     </div>
 
-    <textarea v-model="message" rows="2" class="w-full border rounded p-2 mb-2" :placeholder="$t('form.type_message') + '...'"></textarea>
-
-    <button
-      @click="sendMessage"
-      class="text-white px-4 py-2 rounded-md border bg-blue-600 hover:bg-blue-700"
-      style="background-color: #16a34a;"
-    >
-      {{ $t('form.send') }}
-    </button>
+    <div class="message-input mb-2" style="display: flex; gap: 0.5em;">
+      <textarea
+        v-model="message"
+        rows="2"
+        class="border rounded p-2"
+        style="flex: 1; resize: none;"
+        :placeholder="$t('form.type_message') + '...'"
+      ></textarea>
+      <button
+        @click="sendMessage"
+        class="text-white border rounded"
+        style="width: 115px; background-color: #16a34a;"
+      >
+        {{ $t('form.send') }}
+      </button>
+    </div>
   </div>
 </template>
 
