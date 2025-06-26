@@ -57,8 +57,10 @@ return [
     ],
     // WebSocket server configuration
     'websocket' => [
-        'protocol' => 'websocket', // or 'webs' if using SSL via stunnel/nginx
-        'host' => '0.0.0.0',
-        'port' => 3000,
+        'protocol'   => getenv('WS_PROTOCOL') ?: 'websocket', // 'websocket' or 'webs' for SSL
+        'host'       => getenv('WS_HOST') ?: '0.0.0.0',
+        'port'       => (int)(getenv('WS_PORT') ?: 3000),
+        'ssl_cert'   => getenv('WS_SSL_CERT_PATH') ?: null, // Path to SSL certificate file
+        'ssl_key'    => getenv('WS_SSL_KEY_PATH') ?: null, // Path to SSL key file
     ],
 ];

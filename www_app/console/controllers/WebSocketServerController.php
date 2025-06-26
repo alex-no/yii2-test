@@ -95,12 +95,26 @@ class WebSocketServerController extends Controller
         $this->clients = [];
 
         $cfg = \Yii::$app->params['websocket'];
-        $worker = new Worker("{$cfg['protocol']}://{$cfg['host']}:{$cfg['port']}");
 
-        // @mkdir(\Yii::getAlias('@runtime') . '/socket', 0777, true);
-        // @mkdir(\Yii::getAlias('@runtime') . '/logs', 0777, true);
-        Worker::$pidFile = \Yii::getAlias('@runtime') . '/socket/workerman.yii.pid';
-        Worker::$logFile = \Yii::getAlias('@runtime') . '/logs/workerman.log';
+        if ($cfg['protocol'] === 'wss') {
+            $context = [
+                'ssl' => [
+                    'local_cert'  => $cfg['ssl_cert'],
+                    'local_pk'    => $cfg['ssl_key'],
+                    'verify_peer' => false,
+                ],
+            ];
+
+            $worker = new Worker("{$cfg['protocol']}://{$cfg['host']}:{$cfg['port']}", $context);
+            $worker->transport = 'ssl';
+        } else {
+            $worker = new Worker("{$cfg['protocol']}://{$cfg['host']}:{$cfg['port']}");
+        }
+
+        // @mkdir($this->getFilePath('socket'), 0777, true);
+        // @mkdir($this->getFilePath('logs'), 0777, true);
+        Worker::$pidFile = $this->getFilePath('socket/workerman.yii.pid');
+        Worker::$logFile = $this->getFilePath('logs/workerman.log');
         if ($this->daemon) {
             Worker::$daemonize = true; // Run as a daemon
             $this->stdout("Running as a daemon...\n", Console::FG_YELLOW);
@@ -192,7 +206,7 @@ class WebSocketServerController extends Controller
      */
     public function actionStop(): void
     {
-        $pidFile = \Yii::getAlias('@runtime') . '/socket/workerman.yii.pid';
+        $pidFile = $this->getFilePath('socket/workerman.yii.pid');
         if (!file_exists($pidFile)) {
             $this->stdout("PID file not found: $pidFile\n");
             return;
@@ -243,5 +257,18 @@ class WebSocketServerController extends Controller
             $template = str_replace('{' . $k . '}', $v, $template);
         }
         return $template;
+    }
+
+    /**
+     * Get the file path for the WebSocket server files.
+     * This method constructs the file path based on the runtime directory.
+     *
+     * @param string $filePart The part of the file path to construct.
+     * @return string The file path for the WebSocket server files.
+     */
+    private function getFilePath(string $filePart): string
+    {
+        return \Yii::getAlias('@runtime') . '/' . $filePart;
+
     }
 }
