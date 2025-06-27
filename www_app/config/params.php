@@ -57,6 +57,7 @@ return [
     ],
     // WebSocket server configuration
     'websocket' => [
+        'is_ssl'   => $_ENV['IS_SSL'] ?: false, // 'websocket' or 'webs' for SSL
         'protocol'   => $_ENV['WS_PROTOCOL'] ?: 'websocket', // 'websocket' or 'webs' for SSL
         'host'       => $_ENV['WS_HOST'] ?: '0.0.0.0',
         'port'       => (int)($_ENV['WS_PORT'] ?: 3000),

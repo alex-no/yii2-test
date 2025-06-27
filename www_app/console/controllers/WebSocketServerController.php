@@ -95,8 +95,8 @@ class WebSocketServerController extends Controller
         $this->clients = [];
 
         $cfg = \Yii::$app->params['websocket'];
-
-        if ($cfg['protocol'] === 'wss') {
+var_dump($cfg);
+        if ($cfg['is_ssl']) {
             $context = [
                 'ssl' => [
                     'local_cert'  => $cfg['ssl_cert'],
