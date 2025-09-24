@@ -5,7 +5,6 @@ use app\components\payment\PaymentInterface;
 use app\models\Order;
 use yii\web\BadRequestHttpException;
 use Stripe\Stripe;
-use Stripe\PaymentIntent;
 use Stripe\Webhook;
 use Stripe\Checkout\Session;
 use Stripe\Exception\SignatureVerificationException;
@@ -13,21 +12,23 @@ use Stripe\Exception\SignatureVerificationException;
 /**
  * Stripe payment driver implementing PaymentInterface.
  *
- * This driver uses Stripe Payment Intents API for processing payments.
- * It supports automatic payment methods and webhook handling for confirmation.
+ * This driver uses Stripe Checkout Session API for processing payments.
+ * It supports automatic webhook handling for confirmation.
  */
 class StripeDriver implements PaymentInterface
 {
     public const NAME = 'Stripe';
     public const VERSION = '1.0.0';
-    public const PAYMENT_URL = ''; // Stripe does not require a direct form action URL
+    public const PAYMENT_URL = ''; // Stripe does not use direct form submit
 
     /**
+     * StripeDriver constructor.
+     *
      * @param string $apiKey Stripe API key
-     * @param string $webhookSecret Stripe webhook signing secret for signature verification
-     * @param string $callbackUrl Webhook URL where Stripe sends events
-     * @param string $returnUrl URL for redirect after successful payment
-     * @param string $cancelUrl URL for redirect if the user cancels
+     * @param string $webhookSecret Stripe webhook signing secret
+     * @param string $callbackUrl Webhook URL for Stripe
+     * @param string $returnUrl Redirect URL after successful payment
+     * @param string $cancelUrl Redirect URL after the user cancels
      */
     public function __construct(
         private string $apiKey,
@@ -40,7 +41,7 @@ class StripeDriver implements PaymentInterface
     }
 
     /**
-     * Creates a Stripe PaymentIntent and returns its client secret and metadata.
+     * Creates a Stripe Checkout Session and returns redirect information.
      *
      * @param array $params Payment parameters: amount, currency, description, order_id, etc.
      * @return array{
@@ -72,7 +73,7 @@ class StripeDriver implements PaymentInterface
             return [
                 'action' => $session->url,  // URL for redirect to Stripe Checkout
                 'method' => 'REDIRECT',
-                'data' => [],
+                'data'   => [],
             ];
         } catch (\Exception $e) {
             throw new BadRequestHttpException("Failed to create Stripe checkout session: " . $e->getMessage());
@@ -80,9 +81,9 @@ class StripeDriver implements PaymentInterface
     }
 
     /**
-     * Handles a Stripe webhook callback and updates order status if payment succeeded.
+     * Handles a Stripe webhook callback and updates order status.
      *
-     * @param array $post ['payload' => string, 'signature' => string]
+     * @param array $post Must contain ['payload' => string, 'signature' => string]
      * @return Order|null The corresponding order if found, null otherwise
      * @throws BadRequestHttpException
      */
@@ -96,11 +97,7 @@ class StripeDriver implements PaymentInterface
         }
 
         try {
-            $event = Webhook::constructEvent(
-                $payload,
-                $signature,
-                $this->webhookSecret
-            );
+            $event = Webhook::constructEvent($payload, $signature, $this->webhookSecret);
 
             if ($event->type === 'payment_intent.succeeded' || $event->type === 'checkout.session.completed') {
                 $object  = $event->data->object;
