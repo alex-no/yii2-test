@@ -208,13 +208,20 @@ class PaymentController extends ApiController
      */
     public function actionHandle($driverName): array
     {
-        $post = Yii::$app->request->post();
-        if (empty($post)) {
-            throw new BadRequestHttpException("Missing POST-data.");
+        $data = [
+            'payload'   => Yii::$app->request->rawBody,
+            'signature' => Yii::$app->request->headers->get('Stripe-Signature'),
+        ];
+        if (empty($data['payload'])) {
+            throw new BadRequestHttpException("Missing payload.");
         }
+        if (empty($data['signature'])) {
+            throw new BadRequestHttpException("Missing signature.");
+        }
+
         $driver = Yii::$app->payment->getDriver($driverName);
 
-        $order = $driver->handleCallback($post);
+        $order = $driver->handleCallback($data);
         if (!$order) {
             throw new ServerErrorHttpException("Order not found.");
         }

@@ -124,6 +124,8 @@ const handleSubmit = async () => {
   const result = await response.json();
 
   const payment = result?.payment;
+  console.log(payment);
+
   if (payment?.method === 'REDIRECT' && payment?.action) {
       // Stripe flow
       if (result?.orderId) {
