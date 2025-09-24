@@ -169,17 +169,19 @@ class PaymentController extends ApiController
     }
 
     /**
+     * Handles the callback from payment providers.
+     *
      * @OA\Post(
-     *     path="/api/payments/handle{driverName}",
-     *     summary="API Payments Handle",
-     *     description="Returns information about Handle Payments.",
+     *     path="/api/payments/handle/{driverName}",
+     *     summary="Handle payment provider callback",
+     *     description="Processes the callback sent by a payment provider (e.g., Stripe, PayPal, LiqPay).",
      *     tags={"Payment"},
      *     @OA\Parameter(
      *         name="driverName",
      *         in="path",
      *         description="Payment driver name",
      *         required=true,
-     *         @OA\Schema(type="string", example="paypal")
+     *         @OA\Schema(type="string", example="stripe")
      *     ),
      *     @OA\RequestBody(
      *         required=true,
@@ -194,7 +196,7 @@ class PaymentController extends ApiController
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Updated",
+     *         description="Callback processed successfully",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="success", type="boolean", example=true)
@@ -202,33 +204,43 @@ class PaymentController extends ApiController
      *     ),
      *     @OA\Response(
      *         response=400,
-     *         description="Validation error"
+     *         description="Invalid request"
      *     )
      * )
+     *
+     * @param string $driverName
+     * @return array<string,mixed>
+     * @throws BadRequestHttpException
+     * @throws ServerErrorHttpException
      */
-    public function actionHandle($driverName): array
+    public function actionHandle(string $driverName): array
     {
-        $data = [
-            'payload'   => Yii::$app->request->rawBody,
-            'signature' => Yii::$app->request->headers->get('Stripe-Signature'),
-        ];
-        if (empty($data['payload'])) {
-            throw new BadRequestHttpException("Missing payload.");
-        }
-        if (empty($data['signature'])) {
-            throw new BadRequestHttpException("Missing signature.");
+        // Collect callback data depending on the driver
+        if ($driverName === 'stripe') {
+            $data = [
+                'payload'   => Yii::$app->request->rawBody,
+                'signature' => Yii::$app->request->headers->get('Stripe-Signature'),
+            ];
+
+            if (empty($data['payload']) || empty($data['signature'])) {
+                throw new BadRequestHttpException("Invalid Stripe callback: missing payload or signature.");
+            }
+        } else {
+            $data = Yii::$app->request->post();
+            if (empty($data)) {
+                throw new BadRequestHttpException("Empty callback data for driver: {$driverName}.");
+            }
         }
 
         $driver = Yii::$app->payment->getDriver($driverName);
-
         $order = $driver->handleCallback($data);
         if (!$order) {
-            throw new ServerErrorHttpException("Order not found.");
+            throw new ServerErrorHttpException("Order not found or callback processing failed.");
         }
         $order->paid_at = $order->payment_status === 'success' ? date('Y-m-d H:i:s') : null;
         $order->save(false); // disable validation, can be replaced with a transaction
 
-        Yii::info("Payment callback received for order #$order->order_id with status: $order->payment_status", __METHOD__);
+        Yii::info("Payment callback received for order #{$order->order_id} with status: {$order->payment_status}", __METHOD__);
 
         return ['success' => true];
     }
