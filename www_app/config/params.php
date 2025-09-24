@@ -53,7 +53,17 @@ return [
                 'resultUrl' => $_ENV['CURRENT_URL'] . '/html/payment-result',
             ],
         ],
-        // 'stripe' => [...],
+        'stripe' => [
+            'class' => \app\components\payment\drivers\StripeDriver::class,
+            'config' => [
+                'secretKey' => $_ENV['STRIPE_SECRET_KEY'], // Set your secret key here
+                'publicKey' => $_ENV['STRIPE_PUBLIC_KEY'], // Set your public key here
+                'webhookSecret' => $_ENV['STRIPE_WEBHOOK_SECRET'], // Set your webhook secret here
+                'callbackUrl' => $_ENV['CURRENT_URL'] . '/api/payments/handle/stripe',
+                'successUrl' => $_ENV['CURRENT_URL'] . '/html/payment-success',
+                'cancelUrl' => $_ENV['CURRENT_URL'] . '/html/payment-cancel',
+            ],
+        ],
     ],
     // WebSocket server configuration
     'websocket' => [

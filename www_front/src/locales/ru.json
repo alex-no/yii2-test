@@ -42,6 +42,7 @@
 
     "paypal": "PayPal",
     "liqpay": "LiqPay",
+    "stripe": "Stripe",
 
     "make_payment": "Сделать платеж",
     "amount": "Сумма",
