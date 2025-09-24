@@ -87,6 +87,8 @@ class PaymentController extends ApiController
     }
 
     /**
+     * Creates a payment for the given order and driver.
+     *
      * @OA\Post(
      *     path="/api/payments/create",
      *     security={{"bearerAuth":{}}},
@@ -94,16 +96,17 @@ class PaymentController extends ApiController
      *     description="Returns information about New Payment.",
      *     tags={"Payment"},
      *     @OA\RequestBody(
+     *         required=true,
      *         @OA\JsonContent(
-     *             required={"amount", "pay_system"},
+     *             required={"amount", "driver", "orderId"},
      *             @OA\Property(property="amount", type="string", example="100.00"),
-     *             @OA\Property(property="pay_system", type="string", example="lyqpay"),
-     *             @OA\Property(property="order_id", type="string", example="ORD-20250529-045325-abcd1234")
+     *             @OA\Property(property="driver", type="string", example="stripe"),
+     *             @OA\Property(property="orderId", type="string", example="ORD-12345")
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Created new payment",
+     *         description="Payment created successfully",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="success", type="boolean", example=true),
@@ -112,30 +115,34 @@ class PaymentController extends ApiController
      *     ),
      *     @OA\Response(
      *         response=400,
-     *         description="Validation error"
+     *         description="Invalid request"
      *     )
      * )
+     *
+     * @return array<string,mixed>
+     * @throws BadRequestHttpException
      */
     public function actionCreate(): array
     {
-        $post = Yii::$app->request->post();
+        $body = Yii::$app->request->bodyParams;
 
-        if (empty($post['amount'])) {
+        $amount = $body['amount'] ?? null;
+        if (empty($amount)) {
             throw new BadRequestHttpException("Amount is required.");
         }
 
-        $driverName = $post['pay_system'] ?? null;
+        $driverName = $body['pay_system'] ?? null;
         if (empty($driverName)) {
             throw new BadRequestHttpException("Driver Name is required.");
         }
 
-        if (empty($post['order_id'])) {
+        if (empty($body['order_id'])) {
             $orderId = 'ORD-' . date('Ymd-His') . '-' . Yii::$app->security->generateRandomString(6);
             $order = new Order();
             $order->user_id = Yii::$app->user->id; // Assuming user is authenticated
             $order->order_id = $orderId;
         } else {
-            $order = Order::findOne(['order_id' => $post['order_id']]);
+            $order = Order::findOne(['order_id' => $body['order_id']]);
             if (!$order) {
                 throw new BadRequestHttpException("Order not found.");
             }
@@ -144,28 +151,38 @@ class PaymentController extends ApiController
             }
             $orderId = $order->order_id;
         }
-        $order->amount = $post['amount'];   // Update provided amount
-        $order->currency = $post['currency'] ?? 'USD';
-        $order->pay_system = $driverName;   // Update pay_system
+        $order->amount      = $amount;     // Update provided amount
+        $order->currency    = $body['currency'] ?? 'USD';
+        $order->pay_system  = $driverName; // Update pay_system
         $order->description = 'Payment for Order #' . $orderId;
 
         if (!$order->save()) {
             throw new ServerErrorHttpException("Failed to create order: " . implode(', ', $order->getFirstErrors()));
         }
 
-        // Creating a payment via PaymentManager
-        $paymentData = Yii::$app->payment->getDriver($driverName)->createPayment([
-            'order_id'    => $orderId,
-            'amount'      => $order->amount,
-            'currency'    => $order->currency,
-            'description' => $order->description,
-        ]);
+        try {
+            // Creating a payment via PaymentManager
+            $driver = Yii::$app->payment->getDriver($driverName);
 
-        return [
-            'success' => true,
-            'payment' => $paymentData,
-            'orderId' => $orderId,
-        ];
+            $paymentData = $driver->createPayment([
+                'order_id'    => $orderId,
+                'amount'      => $order->amount,
+                'currency'    => $order->currency,
+                'description' => $order->description,
+            ]);
+
+            return [
+                'success' => true,
+                'payment' => $paymentData,
+                'orderId' => $orderId,
+            ];
+        } catch (\Throwable $e) {
+            Yii::error("Failed to create payment: {$e->getMessage()}", __METHOD__);
+            return [
+                'success' => false,
+                'message' => 'Payment creation failed. Please try again later.',
+            ];
+        }
     }
 
     /**
