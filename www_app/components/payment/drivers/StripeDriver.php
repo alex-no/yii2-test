@@ -88,7 +88,7 @@ class StripeDriver implements PaymentInterface
      */
     public function handleCallback(array $post): ?Order
     {
-        $payload = $post['payload'] ?? null;
+        $payload   = $post['payload']   ?? null;
         $signature = $post['signature'] ?? null;
 
         if (!$payload || !$signature) {
@@ -102,9 +102,9 @@ class StripeDriver implements PaymentInterface
                 $this->webhookSecret
             );
 
-            if ($event->type === 'payment_intent.succeeded') {
-                $paymentIntent = $event->data->object;
-                $orderId = $paymentIntent->metadata->order_id ?? null;
+            if ($event->type === 'payment_intent.succeeded' || $event->type === 'checkout.session.completed') {
+                $object  = $event->data->object;
+                $orderId = $object->metadata->order_id ?? null;
 
                 if (!$orderId) {
                     throw new BadRequestHttpException("Invalid webhook data: missing order_id.");
@@ -118,11 +118,10 @@ class StripeDriver implements PaymentInterface
                 $order->payment_status = 'success';
                 return $order;
             }
-
-            return null;
+            return null; // unsupported event
         } catch (SignatureVerificationException $e) {
             throw new BadRequestHttpException("Invalid signature: " . $e->getMessage());
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new BadRequestHttpException("Webhook handling error: " . $e->getMessage());
         }
     }
