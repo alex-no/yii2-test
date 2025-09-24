@@ -7,6 +7,7 @@ use yii\web\BadRequestHttpException;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 use Stripe\Webhook;
+use Stripe\Checkout\Session;
 use Stripe\Exception\SignatureVerificationException;
 
 /**
@@ -52,28 +53,29 @@ class StripeDriver implements PaymentInterface
     public function createPayment(array $params): array
     {
         try {
-            $paymentIntent = PaymentIntent::create([
-                'amount'   => (int) round($params['amount'] * 100), // Stripe expects the amount in cents
-                'currency' => strtolower($params['currency'] ?? 'USD'),
-                'description' => $params['description'] ?? '',
-                'metadata' => [
-                    'order_id' => $params['order_id'] ?? '',
-                ],
-                'automatic_payment_methods' => ['enabled' => true],
+            $session = Session::create([
+                'payment_method_types' => ['card'],
+                'mode' => 'payment',
+                'line_items' => [[
+                    'price_data' => [
+                        'currency' => strtolower($params['currency'] ?? 'USD'),
+                        'product_data' => ['name' => $params['description'] ?? 'Payment'],
+                        'unit_amount' => (int) round($params['amount'] * 100),
+                    ],
+                    'quantity' => 1,
+                ]],
+                'metadata' => ['order_id' => $params['order_id'] ?? ''],
+                'success_url' => $this->returnUrl . '?orderId=' . ($params['order_id'] ?? ''),
+                'cancel_url'  => $this->cancelUrl . '?orderId=' . ($params['order_id'] ?? ''),
             ]);
 
             return [
-                'action' => self::PAYMENT_URL,
-                'method' => 'POST', // kept for interface compatibility
-                'data' => [
-                    'client_secret' => $paymentIntent->client_secret,
-                    'payment_intent_id' => $paymentIntent->id,
-                    'return_url' => $this->returnUrl,
-                    'cancel_url' => $this->cancelUrl,
-                ],
+                'action' => $session->url,  // URL for redirect to Stripe Checkout
+                'method' => 'REDIRECT',
+                'data' => [],
             ];
         } catch (\Exception $e) {
-            throw new BadRequestHttpException("Failed to create Stripe payment: " . $e->getMessage());
+            throw new BadRequestHttpException("Failed to create Stripe checkout session: " . $e->getMessage());
         }
     }
 

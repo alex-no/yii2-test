@@ -124,7 +124,15 @@ const handleSubmit = async () => {
   const result = await response.json();
 
   const payment = result?.payment;
-  if (payment?.action && payment?.method && typeof payment?.data === 'object') {
+  if (payment?.method === 'REDIRECT' && payment?.action) {
+      // Stripe flow
+      if (result?.orderId) {
+        localStorage.setItem('order_id', result.orderId);
+      }
+      window.location.href = payment.action;
+    }
+  else if (payment?.action && payment?.method && typeof payment?.data === 'object') {
+    // LiqPay / PayPal flow
     if (result?.orderId) {
       localStorage.setItem('order_id', result.orderId);
     }
