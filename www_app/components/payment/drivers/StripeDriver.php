@@ -59,9 +59,9 @@ class StripeDriver implements PaymentInterface
                 'mode' => 'payment',
                 'line_items' => [[
                     'price_data' => [
-                        'currency' => strtolower($params['currency'] ?? 'USD'),
+                        'currency'     => strtolower($params['currency'] ?? 'USD'),
                         'product_data' => ['name' => $params['description'] ?? 'Payment'],
-                        'unit_amount' => (int) round($params['amount'] * 100),
+                        'unit_amount'  => (int) round($params['amount'] * 100),
                     ],
                     'quantity' => 1,
                 ]],

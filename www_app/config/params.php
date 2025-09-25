@@ -56,8 +56,8 @@ return [
         'stripe' => [
             'class' => \app\components\payment\drivers\StripeDriver::class,
             'config' => [
-                'apiKey' => $_ENV['STRIPE_SECRET_KEY'],
-                'webhookSecret' => $_ENV['STRIPE_WEBHOOK_SECRET'],
+                'apiKey' => $_ENV['STRIPE_SECRET_KEY'], // Secret API key
+                'webhookSecret' => $_ENV['STRIPE_WEBHOOK_SECRET'],  // Webhook signing secret
                 'callbackUrl' => $_ENV['CURRENT_URL'] . '/api/payments/handle/stripe',
                 'returnUrl' => $_ENV['CURRENT_URL'] . '/html/payment-success',
                 'cancelUrl' => $_ENV['CURRENT_URL'] . '/html/payment-cancel',
