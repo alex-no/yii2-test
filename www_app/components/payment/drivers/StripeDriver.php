@@ -54,21 +54,32 @@ class StripeDriver implements PaymentInterface
      */
     public function createPayment(array $params): array
     {
+        $amount      = $params['amount'] ?? null;
+        $currency    = strtolower($params['currency'] ?? 'USD');
+        $description = $params['description'] ?? 'Payment';
+        $orderId     = $params['order_id'] ?? null;
+
+        if (!$amount || !$orderId) {
+            throw new BadRequestHttpException("Missing required parameters: amount or order_id.");
+        }
+
         try {
             $session = Session::create([
                 'payment_method_types' => ['card'],
                 'mode' => 'payment',
                 'line_items' => [[
                     'price_data' => [
-                        'currency'     => strtolower($params['currency'] ?? 'USD'),
-                        'product_data' => ['name' => $params['description'] ?? 'Payment'],
-                        'unit_amount'  => (int) round($params['amount'] * 100),
+                        'currency'     => $currency,
+                        'product_data' => ['name' => $description],
+                        'unit_amount'  => (int) round($amount * 100),
                     ],
                     'quantity' => 1,
                 ]],
-                'metadata' => ['order_id' => $params['order_id'] ?? ''],
-                'success_url' => $this->returnUrl . '?orderId=' . ($params['order_id'] ?? ''),
-                'cancel_url'  => $this->cancelUrl . '?orderId=' . ($params['order_id'] ?? ''),
+                'metadata' => [
+                    'order_id' => (string)$orderId,
+                ],
+                'success_url' => $this->returnUrl . '?orderId=' . $orderId,
+                'cancel_url'  => $this->cancelUrl . '?orderId=' . $orderId,
             ]);
 
             return [
