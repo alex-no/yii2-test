@@ -90,7 +90,7 @@ class StripeDriver implements PaymentInterface
      */
     public function handleCallback(array $post): ?Order
     {
-        Yii::debug("Post data: " . $post);
+        Yii::info("Post data: " . $post);
         $payload   = $post['payload']   ?? null;
         $signature = $post['signature'] ?? null;
 
