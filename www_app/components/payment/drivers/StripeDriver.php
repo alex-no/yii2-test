@@ -1,6 +1,7 @@
 <?php
 namespace app\components\payment\drivers;
 
+use Yii;
 use app\components\payment\PaymentInterface;
 use app\models\Order;
 use yii\web\BadRequestHttpException;
