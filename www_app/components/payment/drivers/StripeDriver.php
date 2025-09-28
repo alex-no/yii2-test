@@ -82,6 +82,8 @@ class StripeDriver implements PaymentInterface
                 'cancel_url'  => $this->cancelUrl . '?orderId=' . $orderId,
             ]);
 
+            Yii::info("Session data: " . var_export($session, true));
+
             return [
                 'action' => $session->url,  // URL for redirect to Stripe Checkout
                 'method' => 'REDIRECT',
