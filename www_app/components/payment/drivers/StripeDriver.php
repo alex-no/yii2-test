@@ -98,6 +98,7 @@ class StripeDriver implements PaymentInterface
 
         try {
             $event = Webhook::constructEvent($payload, $signature, $this->webhookSecret);
+            Yii::info("Stripe webhook event: " . $event->type);
 
             if ($event->type === 'payment_intent.succeeded' || $event->type === 'checkout.session.completed') {
                 $object  = $event->data->object;

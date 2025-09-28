@@ -107,63 +107,67 @@ const handleSubmit = async () => {
   //const orderId = `ORD-${new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)}-${Math.random().toString(36).slice(2, 10)}`;
   const orderId = null;
 
-  const response = await fetch('/api/payments/create', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem('access_token')}`
-    },
-    body: JSON.stringify({
-      amount: amount.value,
-      pay_system: paySystem.value,
-      currency: currency.value,
-      order_id: orderId
-    })
-  });
+  try {
+    const response = await fetch('/api/payments/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`
+      },
+      body: JSON.stringify({
+        amount: amount.value,
+        pay_system: paySystem.value,
+        currency: currency.value,
+        order_id: orderId
+      })
+    });
 
-  const result = await response.json();
+    const result = await response.json();
+    const payment = result?.payment;
 
-  const payment = result?.payment;
-  console.log(payment);
+    if (!payment) {
+      throw new Error('Payment initialization failed.');
+    }
+    console.log(payment);
 
-  if (payment?.method === 'REDIRECT' && payment?.action) {
-      // Stripe flow
+    // === Stripe Checkout flow ===
+    if (payment?.method === 'REDIRECT' && payment?.action) {
       if (result?.orderId) {
         localStorage.setItem('order_id', result.orderId);
       }
       window.location.href = payment.action;
-    }
-  else if (payment?.action && payment?.method && typeof payment?.data === 'object') {
-    // LiqPay / PayPal flow
-    if (result?.orderId) {
-      localStorage.setItem('order_id', result.orderId);
+      return;
     }
 
-    const form = document.createElement('form');
-    form.method = payment.method || 'POST';
-    form.action = payment.action;
-    form.acceptCharset = 'utf-8';
+    // === LiqPay / PayPal flow (POST form submission) ===
+    if (payment.action && payment.method && typeof payment.data === 'object') {
+      if (result?.orderId) {
+        localStorage.setItem('order_id', result.orderId);
+      }
 
-    for (const [key, value] of Object.entries(payment.data)) {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = value;
-      form.appendChild(input);
+      const form = document.createElement('form');
+      form.method = payment.method;
+      form.action = payment.action;
+      form.acceptCharset = 'utf-8';
+
+      Object.entries(payment.data).forEach(([key, value]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+//alert(form.outerHTML);
+      form.submit();
+      return;
     }
 
-    document.body.appendChild(form);
-//alert(form.outerHTML);    
-    form.submit();
-  } else {
-    let msg = 'Payment initialization failed.';
-    if (result?.name) {
-      msg += `\n${result.name}:`;
-    }
-    if (result?.message) {
-      msg += ` ${result.message}`;
-    }
-    alert(msg);
+    throw new Error(result?.message || 'Unknown payment error.');
+  } catch (err) {
+    alert(`Payment failed: ${err.message}`);
+    console.error('Payment error:', err);
   }
 };
 </script>
