@@ -25,7 +25,8 @@ class PaymentManager extends Component
 
         $driverClass = $drivers[$driverName]['class'];
         $driverConfig = $drivers[$driverName]['config'] ?? [];
-        $driver = new $driverClass(...$driverConfig);
+        $driver = new $driverClass(...array_values($driverConfig));
+        //$driver = new $driverClass(...$driverConfig);
         return $driver;
     }
 }
