@@ -125,6 +125,7 @@ class PaymentController extends ApiController
     public function actionCreate(): array
     {
         $body = Yii::$app->request->bodyParams;
+        Yii::info("Create payment request body: " . var_export($body, true), __METHOD__);
 
         $amount = $body['amount'] ?? null;
         if (empty($amount)) {
@@ -155,6 +156,8 @@ class PaymentController extends ApiController
         $order->currency    = $body['currency'] ?? 'USD';
         $order->pay_system  = $driverName; // Update pay_system
         $order->description = 'Payment for Order #' . $orderId;
+
+        Yii::info("Creating order: " . var_export($order->attributes, true), __METHOD__);
 
         if (!$order->save()) {
             throw new ServerErrorHttpException("Failed to create order: " . implode(', ', $order->getFirstErrors()));
