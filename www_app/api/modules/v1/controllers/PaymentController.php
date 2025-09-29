@@ -125,7 +125,7 @@ class PaymentController extends ApiController
     public function actionCreate(): array
     {
         $body = Yii::$app->request->bodyParams;
-        Yii::info("(!!!) Create payment request body: " . var_export($body, true), __METHOD__);
+        Yii::info("(!!!)Controller - Create payment request body: " . var_export($body, true), __METHOD__);
 
         $amount = $body['amount'] ?? null;
         if (empty($amount)) {
@@ -157,7 +157,7 @@ class PaymentController extends ApiController
         $order->pay_system  = $driverName; // Update pay_system
         $order->description = 'Payment for Order #' . $orderId;
 
-        Yii::info("(!!!) Creating order: " . var_export($order->attributes, true), __METHOD__);
+        Yii::info("(!!!)Controller - Creating order model: " . var_export($order->attributes, true), __METHOD__);
 
         if (!$order->save()) {
             throw new ServerErrorHttpException("Failed to create order: " . implode(', ', $order->getFirstErrors()));
@@ -260,7 +260,7 @@ class PaymentController extends ApiController
         $order->paid_at = $order->payment_status === 'success' ? date('Y-m-d H:i:s') : null;
         $order->save(false); // disable validation, can be replaced with a transaction
 
-        Yii::info("(!!!) Payment callback received for order #{$order->order_id} with status: {$order->payment_status}", __METHOD__);
+        Yii::info("(!!!?)Controller - Payment callback received for order #{$order->order_id} with status: {$order->payment_status}", __METHOD__);
 
         return ['success' => true];
     }
