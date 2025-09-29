@@ -108,6 +108,7 @@ const handleSubmit = async () => {
   const orderId = null;
 
   try {
+    console.log('Before fetch /api/payments/create');
     const response = await fetch('/api/payments/create', {
       method: 'POST',
       headers: {
