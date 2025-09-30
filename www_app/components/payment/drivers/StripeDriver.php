@@ -82,8 +82,6 @@ class StripeDriver implements PaymentInterface
                 'cancel_url'  => $this->cancelUrl . '?orderId=' . $orderId,
             ]);
 
-            Yii::info("(!!!)Driver - Create Payment Session data: " . var_export($session, true));
-
             return [
                 'action' => $session->url,  // URL for redirect to Stripe Checkout
                 'method' => 'REDIRECT',
@@ -133,7 +131,6 @@ class StripeDriver implements PaymentInterface
 
         try {
             $event = Webhook::constructEvent($payload, $signature, $this->webhookSecret);
-            Yii::info("(!!!)Driver - Stripe webhook event: " . $event->type);
 
             switch ($event->type) {
                 case 'checkout.session.completed':
