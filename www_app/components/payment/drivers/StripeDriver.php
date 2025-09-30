@@ -136,33 +136,47 @@ class StripeDriver implements PaymentInterface
             Yii::info("(!!!)Driver - Stripe webhook event: " . $event->type);
 
             switch ($event->type) {
-                case 'payment_intent.succeeded':
                 case 'checkout.session.completed':
-                    $object  = $event->data->object;
-                    Yii::info('(!!!)Driver - object class: ' . get_class($object));
-                    Yii::info('(!!!)Driver - object metadata: ' . var_export($object->metadata, true));
-                    $orderId = $object->metadata->order_id ?? null;
+                    $orderId = $this->getOrderId($event);
+                    break;
 
+                case 'payment_intent.succeeded':
+                    $orderId = $this->getOrderId($event);
                     if (!$orderId) {
-                        throw new BadRequestHttpException('Invalid webhook data: missing order_id.');
+                        Yii::info("PaymentIntent succeeded, but no order_id in metadata - possibly not from Checkout or test event.");
+                        return ['status' => 'ignored'];
                     }
-
-                    $order = Order::findOne(['order_id' => $orderId]);
-                    if (!$order) {
-                        return ['status' => 'not_found'];
-                    }
-
-                    $order->payment_status = 'success';
-                    return ['status' => 'processed', 'order' => $order];
+                    break;
 
                 default:
                     return ['status' => 'ignored'];
             }
+
+            $order = Order::findOne(['order_id' => $orderId]);
+            if (!$order) {
+                Yii::warning("Order with ID {$orderId} not found for Stripe webhook.");
+                return ['status' => 'not_found'];
+            }
+
+            $order->payment_status = 'success';
+            return ['status' => 'processed', 'order' => $order];
+
         } catch (SignatureVerificationException $e) {
             throw new BadRequestHttpException("Invalid signature: " . $e->getMessage());
         } catch (\Throwable $e) {
             throw new BadRequestHttpException("Webhook handling error: " . $e->getMessage());
         }
+    }
+
+    /**
+     * Extracts order ID from the Stripe event object.
+     * @param \Stripe\Event $event
+     * @return string|null
+     */
+    public function getOrderId($event): ?string
+    {
+        $object = $event->data->object; // PaymentIntent
+        return $object->metadata->order_id ?? null;
     }
 
     /**
