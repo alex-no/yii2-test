@@ -1,6 +1,7 @@
 <?php
 namespace app\components\payment\drivers;
 
+use Yii;
 use app\components\payment\PaymentInterface;
 use app\models\Order;
 use yii\web\BadRequestHttpException;
@@ -64,37 +65,50 @@ class LiqPayDriver implements PaymentInterface
     }
 
     /**
-     * Handles the payment callback from the payment gateway.
-     * This method should process the callback data,
-     * verify the payment, and return the result.
-     * @param array $post
-     * @return Order|null
+     * Collects callback data from Yii request for LiqPay.
+     *
+     * @return array
+     * @throws BadRequestHttpException
      */
-    public function handleCallback(array $post): ?Order
+    public function getCallbackData(): array
     {
+        $post = Yii::$app->request->post();
         if (empty($post['data']) || empty($post['signature'])) {
-            throw new BadRequestHttpException("Missing data or signature.");
+            throw new BadRequestHttpException("Missing LiqPay callback data or signature.");
         }
+        return $post;
+    }
+
+    /**
+     * Handles LiqPay payment callback.
+     *
+     * @param array $post
+     * @return array ['status' => string, 'order' => ?Order]
+     * @throws BadRequestHttpException
+     */
+    public function handleCallback(array $post): array
+    {
         if (!$this->verifySignature($post['data'], $post['signature'])) {
-            throw new BadRequestHttpException("Invalid signature.");
+            throw new BadRequestHttpException("Invalid LiqPay signature.");
         }
 
         $data = json_decode(base64_decode($post['data']), true);
 
         $orderId = $data['order_id'] ?? null;
-        $status = $data['status'] ?? null;
+        $status  = $data['status'] ?? null;
 
         if (!$orderId || !$status) {
-            throw new BadRequestHttpException("Invalid callback data.");
+            throw new BadRequestHttpException("Invalid LiqPay callback data.");
         }
 
         $order = Order::findOne(['order_id' => $orderId]);
         if (!$order) {
-            return null; // Order not found
+            return ['status' => 'not_found', 'order' => null];
         }
+
         $order->payment_status = $status;
 
-        return $order;
+        return ['status' => 'processed', 'order' => $order];
     }
 
     /**

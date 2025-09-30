@@ -95,17 +95,37 @@ class StripeDriver implements PaymentInterface
     }
 
     /**
-     * Handles a Stripe webhook callback and updates order status.
+     * Collects callback data from Yii request for Stripe webhook.
      *
-     * @param array $post Must contain ['payload' => string, 'signature' => string]
-     * @return Order|null The corresponding order if found, null otherwise
+     * @return array ['payload' => string, 'signature' => string]
      * @throws BadRequestHttpException
      */
-    public function handleCallback(array $post): ?Order
+    public function getCallbackData(): array
     {
-        Yii::info("(!!!)Driver - Handle Callback Post data: " . var_export($post, true));
-        $payload   = $post['payload']   ?? null;
-        $signature = $post['signature'] ?? null;
+        $payload   = Yii::$app->request->rawBody;
+        $signature = Yii::$app->request->headers->get('Stripe-Signature');
+
+        if (empty($payload) || empty($signature)) {
+            throw new BadRequestHttpException("Invalid Stripe callback: missing payload or signature.");
+        }
+
+        return [
+            'payload'   => $payload,
+            'signature' => $signature,
+        ];
+    }
+
+    /**
+     * Handles a Stripe webhook callback and updates order status.
+     *
+     * @param array $data Must contain ['payload' => string, 'signature' => string]
+     * @return array The corresponding order if found, null otherwise
+     * @throws BadRequestHttpException
+     */
+    public function handleCallback(array $data): array
+    {
+        $payload   = $data['payload']   ?? null;
+        $signature = $data['signature'] ?? null;
 
         if (!$payload || !$signature) {
             throw new BadRequestHttpException("Missing webhook payload or signature.");
@@ -115,23 +135,29 @@ class StripeDriver implements PaymentInterface
             $event = Webhook::constructEvent($payload, $signature, $this->webhookSecret);
             Yii::info("(!!!)Driver - Stripe webhook event: " . $event->type);
 
-            if ($event->type === 'payment_intent.succeeded' || $event->type === 'checkout.session.completed') {
-                $object  = $event->data->object;
-                $orderId = $object->metadata->order_id ?? null;
+            switch ($event->type) {
+                case 'payment_intent.succeeded':
+                case 'checkout.session.completed':
+                    $object  = $event->data->object;
+                    Yii::info('(!!!)Driver - object class: ' . get_class($object));
+                    Yii::info('(!!!)Driver - object metadata: ' . var_export($object->metadata, true));
+                    $orderId = $object->metadata->order_id ?? null;
 
-                if (!$orderId) {
-                    throw new BadRequestHttpException("Invalid webhook data: missing order_id.");
-                }
+                    if (!$orderId) {
+                        throw new BadRequestHttpException('Invalid webhook data: missing order_id.');
+                    }
 
-                $order = Order::findOne(['order_id' => $orderId]);
-                if (!$order) {
-                    return null; // Order not found
-                }
+                    $order = Order::findOne(['order_id' => $orderId]);
+                    if (!$order) {
+                        return ['status' => 'not_found'];
+                    }
 
-                $order->payment_status = 'success';
-                return $order;
+                    $order->payment_status = 'success';
+                    return ['status' => 'processed', 'order' => $order];
+
+                default:
+                    return ['status' => 'ignored'];
             }
-            return null; // unsupported event
         } catch (SignatureVerificationException $e) {
             throw new BadRequestHttpException("Invalid signature: " . $e->getMessage());
         } catch (\Throwable $e) {

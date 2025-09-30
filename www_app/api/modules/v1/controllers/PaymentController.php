@@ -125,7 +125,6 @@ class PaymentController extends ApiController
     public function actionCreate(): array
     {
         $body = Yii::$app->request->bodyParams;
-        Yii::info("(!!!)Controller - Create payment request body: " . var_export($body, true), __METHOD__);
 
         $amount = $body['amount'] ?? null;
         if (empty($amount)) {
@@ -156,8 +155,6 @@ class PaymentController extends ApiController
         $order->currency    = $body['currency'] ?? 'USD';
         $order->pay_system  = $driverName; // Update pay_system
         $order->description = 'Payment for Order #' . $orderId;
-
-        Yii::info("(!!!)Controller - Creating order model: " . var_export($order->attributes, true), __METHOD__);
 
         if (!$order->save()) {
             throw new ServerErrorHttpException("Failed to create order: " . implode(', ', $order->getFirstErrors()));
@@ -235,34 +232,33 @@ class PaymentController extends ApiController
      */
     public function actionHandle(string $driverName): array
     {
-        // Collect callback data depending on the driver
-        if ($driverName === 'stripe') {
-            $data = [
-                'payload'   => Yii::$app->request->rawBody,
-                'signature' => Yii::$app->request->headers->get('Stripe-Signature'),
-            ];
-
-            if (empty($data['payload']) || empty($data['signature'])) {
-                throw new BadRequestHttpException("Invalid Stripe callback: missing payload or signature.");
-            }
-        } else {
-            $data = Yii::$app->request->post();
-            if (empty($data)) {
-                throw new BadRequestHttpException("Empty callback data for driver: {$driverName}.");
-            }
-        }
-
         $driver = Yii::$app->payment->getDriver($driverName);
-        $order = $driver->handleCallback($data);
-        if (!$order) {
-            throw new ServerErrorHttpException("Order not found or callback processing failed.");
+        $data   = $driver->getCallbackData();
+
+        $result = $driver->handleCallback($data);
+
+        switch ($result['status']) {
+            case 'processed':
+                /** @var \app\models\Order $order */
+                $order = $result['order'];
+                $order->paid_at = $order->payment_status === 'success' ? date('Y-m-d H:i:s') : null;
+                $order->save(false); // disable validation, can be replaced with a transaction
+
+                Yii::info("Payment callback processed for order #{$order->order_id} with status: {$order->payment_status}", __METHOD__);
+                return ['success' => true];
+
+            case 'ignored':
+                Yii::info("Payment callback ignored (event type not relevant)", __METHOD__);
+                return ['success' => true, 'message' => 'Event ignored'];
+
+            case 'not_found':
+                Yii::warning("Payment callback: order not found", __METHOD__);
+                return ['success' => false, 'message' => 'Order not found'];
+
+            default:
+                Yii::warning("Payment callback returned unexpected status: {$result['status']}", __METHOD__);
+                return ['success' => false, 'message' => 'Unexpected status'];
         }
-        $order->paid_at = $order->payment_status === 'success' ? date('Y-m-d H:i:s') : null;
-        $order->save(false); // disable validation, can be replaced with a transaction
-
-        Yii::info("(!!!?)Controller - Payment callback received for order #{$order->order_id} with status: {$order->payment_status}", __METHOD__);
-
-        return ['success' => true];
     }
 
     /**
