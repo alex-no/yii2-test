@@ -21,7 +21,7 @@ interface PaymentInterface
      * This method should process the callback data,
      * verify the payment, and return the result.
      * @param array $post
-     * @return array
+     * @return array ['status' => string, 'order' => ?Order]
      */
     public function handleCallback(array $post): array;
 

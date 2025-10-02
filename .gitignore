@@ -19,3 +19,4 @@ bak
 /doc/websocket-entry.php
 /www_app/workerman.yii.pid
 /doc/stripe/psw.txt
+/*.bat
