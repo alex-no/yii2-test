@@ -72,27 +72,27 @@ class LiqPayDriver implements PaymentInterface
      */
     public function getCallbackData(): array
     {
-        $post = Yii::$app->request->post();
-        if (empty($post['data']) || empty($post['signature'])) {
+        $data = Yii::$app->request->post();
+        if (empty($data['data']) || empty($data['signature'])) {
             throw new BadRequestHttpException("Missing LiqPay callback data or signature.");
         }
-        return $post;
+        return $data;
     }
 
     /**
      * Handles LiqPay payment callback.
      *
-     * @param array $post
+     * @param array $data
      * @return array ['status' => string, 'order' => ?Order]
      * @throws BadRequestHttpException
      */
-    public function handleCallback(array $post): array
+    public function handleCallback(array $data): array
     {
-        if (!$this->verifySignature($post['data'], $post['signature'])) {
+        if (!$this->verifySignature($data['data'], $data['signature'])) {
             throw new BadRequestHttpException("Invalid LiqPay signature.");
         }
 
-        $data = json_decode(base64_decode($post['data']), true);
+        $data = json_decode(base64_decode($data['data']), true);
 
         $orderId = $data['order_id'] ?? null;
         $status  = $data['status'] ?? null;
