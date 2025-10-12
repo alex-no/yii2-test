@@ -38,6 +38,41 @@ trait CsvSeedTrait
     {
         $cfg = $this->getCsvConfig();
 
+        $prep = $this->prepareFileHandle($cfg);
+        $fh = $prep['fh'];
+        $needConvertForRow = $prep['needConvert'];
+        $sourceEncoding = $prep['sourceEncoding'];
+
+        $columns = $this->detectColumns($fh, $cfg, $needConvertForRow, $sourceEncoding);
+
+        if ($cfg['validateColumns']) {
+            $this->validateColumnsAgainstDb($columns, $cfg['tableName']);
+        }
+
+        $inserted = $this->processRows($fh, $cfg, $columns, $needConvertForRow, $sourceEncoding);
+
+        fclose($fh);
+
+        if ($cfg['verbose']) {
+            echo "CSV import completed: {$inserted} rows inserted into {$cfg['tableName']}, CSV read.\n";
+        }
+
+        return $inserted;
+    }
+
+    /**
+     * Open CSV file, handle BOM, apply encoding conversion if needed.
+     * Throws if file not readable or cannot be opened.
+     * @param array $cfg
+     * @return array with keys:
+     *   - fh: resource file handle
+     *   - needConvert: bool, whether per-row conversion is needed
+     *   - sourceEncoding: string|null, original encoding if set
+     * @throws \RuntimeException
+     * @throws InvalidConfigException
+     */
+    protected function prepareFileHandle(array $cfg): array
+    {
         $path = $this->resolveCsvPath($cfg['csvFile']);
         if (!is_readable($path)) {
             throw new \RuntimeException("CSV file not readable: {$path}");
@@ -48,18 +83,17 @@ trait CsvSeedTrait
             throw new \RuntimeException("Unable to open CSV file: {$path}");
         }
 
-        // Try to apply on-the-fly conversion from source encoding -> UTF-8 using stream filter.
-        // If not possible, we'll mark $needConvertForRow = true and do per-cell mb_convert_encoding().
+        // default
         $needConvertForRow = false;
         $sourceEncoding = $cfg['csvEncoding'] ?? null;
+
         if ($sourceEncoding !== null) {
             // Normalize common names (allow 'CP1251' or 'WINDOWS-1251')
             $sourceEncoding = strtoupper($sourceEncoding);
             // If encoding is already UTF-8, no conversion required
             if ($sourceEncoding !== 'UTF-8' && $sourceEncoding !== 'UTF8') {
                 $filterName = "convert.iconv.{$sourceEncoding}/UTF-8";
-                // Try to attach stream filter (preferred, efficient)
-                set_error_handler(function ($errno, $errstr) { /* silence filter warnings */ });
+                set_error_handler(fn() => null);
                 $filter = @stream_filter_append($fh, $filterName, STREAM_FILTER_READ);
                 restore_error_handler();
                 if ($filter === false) {
@@ -67,7 +101,7 @@ trait CsvSeedTrait
                     $needConvertForRow = true;
                     if (!function_exists('mb_convert_encoding')) {
                         fclose($fh);
-                        throw new \RuntimeException("CSV encoding conversion requested ({$sourceEncoding}) but neither iconv stream filter nor mbstring (mb_convert_encoding) are available.");
+                        throw new \RuntimeException("CSV encoding conversion requested ({$sourceEncoding}) but neither iconv stream filter nor mbstring available.");
                     }
                 }
             }
@@ -78,26 +112,43 @@ trait CsvSeedTrait
             $this->skipBom($fh);
         }
 
-        $rowCount = 0;
-        $inserted = 0;
-        $buffer = [];
+        return [
+            'fh' => $fh,
+            'needConvert' => $needConvertForRow,
+            'sourceEncoding' => $sourceEncoding,
+        ];
+    }
 
-        // determine columns (header or explicit mapping)
-        // If header-driven mapping — read header first
+    /**
+     * Detect columns either from header row or explicit mapping.
+     * Throws if header expected but missing, or if no mapping provided.
+     * @param resource $fh
+     * @param array $cfg
+     * @return array list of column names in order
+     * @throws \RuntimeException
+     * @throws InvalidConfigException
+     */
+    protected function detectColumns($fh, array $cfg, bool $needConvertForRow = false, $sourceEncoding = null): array
+    {
         $columns = null;
+
         if ($cfg['hasHeader']) {
             $header = $this->fgetcsv_safe($fh, $cfg['length'], $cfg['delimiter'], $cfg['enclosure']);
             if ($header === false) {
                 fclose($fh);
                 throw new \RuntimeException('CSV header expected but file seems empty or invalid.');
             }
-            // If stream filter wasn't available and we must convert, convert header fields
-            if (!empty($needConvertForRow) && !empty($sourceEncoding)) {
+
+            if ($needConvertForRow && !empty($sourceEncoding)) {
                 foreach ($header as $i => $val) {
                     $header[$i] = $val === null ? null : mb_convert_encoding($val, 'UTF-8', $sourceEncoding);
                 }
             }
+
             $columns = $this->normalizeHeader($header);
+            if ($cfg['verbose']) {
+                echo "Header columns detected: " . implode(', ', $columns) . "\n";
+            }
         } elseif (!empty($cfg['csvColumns'])) {
             // explicit mapping provided by migration
             $columns = array_values($cfg['csvColumns']);
@@ -106,108 +157,144 @@ trait CsvSeedTrait
             throw new InvalidConfigException('CSV mapping not provided: set hasHeader = true or csvColumns');
         }
 
-        // Validate columns vs DB table: optional - user may skip this check
-        if ($cfg['validateColumns']) {
-            // attempt to get table schema and compare column names
-            try {
-                $schema = \Yii::$app->db->schema->getTableSchema($cfg['tableName']);
-                if ($schema === null) {
-                    fclose($fh);
-                    throw new InvalidConfigException("Table not found: {$cfg['tableName']}");
-                }
-                // check each column exists
-                foreach ($columns as $colName) {
-                    if (!isset($schema->columns[$colName])) {
-                        fclose($fh);
-                        throw new InvalidConfigException("Column '{$colName}' not found in table {$cfg['tableName']}");
-                    }
-                }
-            } catch (\Throwable $e) {
-                fclose($fh);
-                throw $e;
-            }
+        return $columns;
+    }
+
+    /**
+     * Validate columns against table schema.
+     *
+     * Accepts table names in Yii format: 'table', '{{table}}' or '{{%table}}'.
+     *
+     * @param array $columns
+     * @param string $tableName
+     * @throws InvalidConfigException
+     */
+    protected function validateColumnsAgainstDb(array $columns, string $tableName): void
+    {
+        // Resolve Yii-style table names: {{%table}} -> prefix + table, {{table}} -> table
+        $db = \Yii::$app->db;
+        $resolvedName = $tableName;
+
+        // {{%name}} -> prefix + name
+        if (preg_match('/^\{\{\%(.*?)\}\}$/', $tableName, $m)) {
+            $resolvedName = ($db->tablePrefix ?? '') . $m[1];
+        }
+        // {{name}} -> name
+        elseif (preg_match('/^\{\{(.*?)\}\}$/', $tableName, $m)) {
+            $resolvedName = $m[1];
+        }
+        // else keep as-is (could be absolute name)
+
+        // Try to get table schema for resolved name
+        $schema = $db->schema->getTableSchema($resolvedName);
+        if ($schema === null) {
+            // more informative error — show both original and resolved names
+            throw new InvalidConfigException("Table not found: {$tableName} (resolved to: {$resolvedName})");
         }
 
-        // Read rows
+        // check each column exists
+        foreach ($columns as $colName) {
+            if (!isset($schema->columns[$colName])) {
+                throw new InvalidConfigException("Column '{$colName}' not found in table {$tableName}");
+            }
+        }
+    }
+
+    /**
+     * Read CSV rows, map to DB columns, batchInsert.
+     * Returns number of rows inserted.
+     * Handles empty rows if configured.
+     * Handles encoding conversion if needed.
+     * Provides progress output if verbose.
+     * @param resource $fh
+     * @param array $cfg
+     * @param array $columns
+     * @return int number of rows inserted
+     * @throws \RuntimeException on IO or parsing errors
+     */
+    protected function processRows($fh, array $cfg, array $columns, bool $needConvertForRow = false, $sourceEncoding = null): int
+    {
+        $rowCount = 0;
+        $inserted = 0;
+        $buffer = [];
+
         while (($data = $this->fgetcsv_safe($fh, $cfg['length'], $cfg['delimiter'], $cfg['enclosure'])) !== false) {
             $rowCount++;
+
+            // If stream filter unavailable, convert each field from source encoding -> UTF-8
+            if ($needConvertForRow && !empty($sourceEncoding) && is_array($data)) {
+                foreach ($data as $i => $val) {
+                    $data[$i] = $val === null ? null : mb_convert_encoding($val, 'UTF-8', $sourceEncoding);
+                }
+            }
+
             // Skip empty rows if configured
             if ($cfg['skipEmpty'] && $this->isRowEmpty($data)) {
                 continue;
             }
 
-            // If explicit mapping uses associative csvColumns mapping: ['db_col' => 0 or 'csv_name']
-            if (!empty($cfg['csvColumns']) && !$cfg['hasHeader']) {
-                // csvColumns may be list of db column names in order OR associative mapping
-                if ($this->isAssoc($cfg['csvColumns'])) {
-                    // mapping: 'db_col' => csv_index_or_name
-                    $row = [];
-                    foreach ($cfg['csvColumns'] as $dbCol => $csvKey) {
-                        if (is_int($csvKey)) {
-                            $row[$dbCol] = $data[$csvKey] ?? null;
-                        } else {
-                            // if named, attempt to find header index (not available here) -> null
-                            $row[$dbCol] = null;
-                        }
-                    }
-                    $buffer[] = $row;
-                } else {
-                    // simple indexed list of db columns in CSV order
-                    $mapped = [];
-                    foreach ($cfg['csvColumns'] as $i => $dbCol) {
-                        $mapped[$dbCol] = $data[$i] ?? null;
-                    }
-                    $buffer[] = $mapped;
-                }
-            } else {
-                // header-driven: $columns contains CSV header names that should map to DB column names
-                // We expect the migration to provide csvHeaderToDb mapping optionally
-                if (!empty($cfg['csvHeaderToDb']) && is_array($cfg['csvHeaderToDb'])) {
-                    $assoc = [];
-                    foreach ($columns as $i => $csvName) {
-                        $dbCol = $cfg['csvHeaderToDb'][$csvName] ?? null;
-                        if ($dbCol !== null) {
-                            $assoc[$dbCol] = $data[$i] ?? null;
-                        }
-                    }
-                    $buffer[] = $assoc;
-                } else {
-                    // Default: treat header names as DB columns directly
-                    $assoc = [];
-                    foreach ($columns as $i => $csvName) {
-                        $assoc[$csvName] = $data[$i] ?? null;
-                    }
-                    $buffer[] = $assoc;
-                }
-            }
+            $row = $this->mapRowToColumns($data, $cfg, $columns);
+            $buffer[] = $row;
 
-            // Flush buffer when reaches batch size
             if (count($buffer) >= $cfg['batchSize']) {
                 $this->flushBuffer($cfg['tableName'], $buffer);
                 $inserted += count($buffer);
+                if ($cfg['verbose']) {
+                    echo "Inserted {$inserted} rows so far (processed {$rowCount} CSV rows)\n";
+                }
                 $buffer = [];
             }
         }
-        // If stream filter unavailable, convert each field from source encoding -> UTF-8
-        if (!empty($needConvertForRow) && !empty($sourceEncoding) && is_array($data)) {
-            foreach ($data as $i => $val) {
-                $data[$i] = $val === null ? null : mb_convert_encoding($val, 'UTF-8', $sourceEncoding);
-            }
-        }
 
-        // final flush
         if (!empty($buffer)) {
             $this->flushBuffer($cfg['tableName'], $buffer);
             $inserted += count($buffer);
-        }
-
-        fclose($fh);
-
-        if ($cfg['verbose']) {
-            echo "Imported {$inserted} rows into {$cfg['tableName']} (read {$rowCount} CSV rows)\n";
+            if ($cfg['verbose']) {
+                echo "Inserted final batch. Total inserted: {$inserted}\n";
+            }
         }
 
         return $inserted;
+    }
+
+    /**
+     * Map CSV row to DB columns according to config (header or csvColumns mapping).
+     */
+    protected function mapRowToColumns(array $data, array $cfg, array $columns): array
+    {
+        // If explicit mapping uses associative csvColumns mapping: ['db_col' => 0 or 'csv_name']
+        if (!empty($cfg['csvColumns']) && !$cfg['hasHeader']) {
+            if ($this->isAssoc($cfg['csvColumns'])) {
+                $row = [];
+                foreach ($cfg['csvColumns'] as $dbCol => $csvKey) {
+                    $row[$dbCol] = is_int($csvKey) ? ($data[$csvKey] ?? null) : null;
+                }
+                return $row;
+            } else {
+                $mapped = [];
+                foreach ($cfg['csvColumns'] as $i => $dbCol) {
+                    $mapped[$dbCol] = $data[$i] ?? null;
+                }
+                return $mapped;
+            }
+        }
+
+        // Header-driven
+        $assoc = [];
+        if (!empty($cfg['csvHeaderToDb']) && is_array($cfg['csvHeaderToDb'])) {
+            foreach ($columns as $i => $csvName) {
+                $dbCol = $cfg['csvHeaderToDb'][$csvName] ?? null;
+                if ($dbCol !== null) {
+                    $assoc[$dbCol] = $data[$i] ?? null;
+                }
+            }
+        } else {
+            foreach ($columns as $i => $csvName) {
+                $assoc[$csvName] = $data[$i] ?? null;
+            }
+        }
+
+        return $assoc;
     }
 
     /**
@@ -328,6 +415,11 @@ trait CsvSeedTrait
         return getcwd() . DIRECTORY_SEPARATOR . $csvFile;
     }
 
+    /**
+     * Skip UTF-8 BOM if present.
+     * @param resource $fh
+     * @return void
+     */
     protected function skipBom($fh): void
     {
         $firstBytes = fread($fh, 3);
@@ -338,12 +430,29 @@ trait CsvSeedTrait
         }
     }
 
+    /**
+     * Safe fgetcsv wrapper to handle various edge cases.
+     * @param resource $handle
+     * @param int $length
+     * @param string $delimiter
+     * @param string $enclosure
+     * @return array|false
+     */
     protected function fgetcsv_safe($handle, $length = 0, $delimiter = ',', $enclosure = '"')
     {
         // Use native fgetcsv which handles escaping; return false on EOF
         return fgetcsv($handle, $length, $delimiter, $enclosure);
     }
 
+    /**
+     * Normalize header names: trim, remove invisible chars.
+     * @param array $header
+     * @return array
+     * @see https://stackoverflow.com/questions/834303/strip-non-printable-characters-in-php
+     * @see https://stackoverflow.com/questions/1077068/how-to-detect-and-remove-bom-in-utf-8-files
+     * @see https://stackoverflow.com/questions/2021624/remove-non-printable-characters-in-a-string-in-php
+     * @see https://stackoverflow.com/questions/1401317/remove-invisible-characters-in-php
+     */
     protected function normalizeHeader(array $header): array
     {
         return array_map(function ($h) {
@@ -352,6 +461,11 @@ trait CsvSeedTrait
         }, $header);
     }
 
+    /**
+     * Check if a CSV row is empty (all cells null or empty string).
+     * @param array $row
+     * @return bool
+     */
     protected function isRowEmpty(array $row): bool
     {
         foreach ($row as $cell) {
@@ -362,6 +476,11 @@ trait CsvSeedTrait
         return true;
     }
 
+    /**
+     * Check if array is associative.
+     * @param array $arr
+     * @return bool
+     */
     protected function isAssoc(array $arr): bool
     {
         if (array() === $arr) return false;
