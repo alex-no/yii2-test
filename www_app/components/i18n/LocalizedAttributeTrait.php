@@ -20,7 +20,12 @@ trait LocalizedAttributeTrait
 
     public string $defaultLanguage = 'en';
 
-    public function init()
+    /**
+     * Initialize localized settings from global configuration.
+     * @return void
+     * @throws MissingLocalizedAttributeException
+     */
+    public function init(): void
     {
         if (is_callable('parent::init')) {
             parent::init();
@@ -43,6 +48,12 @@ trait LocalizedAttributeTrait
         }
     }
 
+    /**
+     * Get the localized attribute name based on the current application language.
+     * @param string $name The base attribute name.
+     * @return string The localized attribute name.
+     * @throws MissingLocalizedAttributeException If the localized attribute does not exist and isStrict is true.
+     */
     protected function getLocalizedAttributeName(string $name): string
     {
         if (!str_starts_with($name, $this->localizedPrefixes)) {
@@ -66,6 +77,8 @@ trait LocalizedAttributeTrait
 
     /**
      * Returns localized settings for external usage (e.g., in DataProvider).
+     * @return array
+     * @throws MissingLocalizedAttributeException
      */
     public function getLocalizedSettings(): array
     {
