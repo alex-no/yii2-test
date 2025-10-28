@@ -193,4 +193,18 @@ class TestController extends ApiController
             return ['success' => false, 'message' => 'Failed to send email'];
         }
     }
+
+    public function actionLangDebug(): string
+    {
+        // Если вы регистрировали адаптер как компонент (languageSelector)
+        if (Yii::$app->has('languageSelector')) {
+            $lang = Yii::$app->languageSelector->detect(false);
+            return "languageSelector detect(): $lang (Yii::app->language = " . Yii::$app->language . ")";
+        }
+
+        // или если ваш bootstrap создаёт ядро напрямую, можно прочитать Yii::$app->language
+        return "Yii::\$app->language = " . Yii::$app->language;
+    }
+
+
 }

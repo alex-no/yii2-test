@@ -23,17 +23,6 @@ return [
     'components' => [
         'db' => $db,
         'log' => $log,
-        'languageSelector' => [
-            'class' => 'app\components\LanguageSelector',
-            'paramName' => 'lang',
-            'userAttribute' => 'language_code',
-            'default' => 'en',
-            // DB structure
-            'tableName' => 'language',
-            'codeField' => 'code',
-            'enabledField' => 'is_enabled',
-            'orderField' => 'order',
-        ],
         'authManager' => [
             'class' => \yii\rbac\DbManager::class,
         ],

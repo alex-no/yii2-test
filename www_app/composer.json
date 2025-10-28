@@ -14,14 +14,13 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "php": ">=7.4.0",
+        "php": ">=8.0.0",
         "yiisoft/yii2": "~2.0.45",
         "yiisoft/yii2-bootstrap5": "~2.0.2",
         "yiisoft/yii2-symfonymailer": "~2.0.3",
         "bower-asset/jquery": "^3.6",
         "bower-asset/bootstrap": "^5.2.3",
         "zircote/swagger-php": "^5.0",
-        "doctrine/annotations": "^2.0",
         "firebase/php-jwt": "^6.11",
         "symfony/mailer": "^6.4",
         "symfony/mime": "^6.4",
@@ -29,7 +28,8 @@
         "alex-no/server-time-clock": "^1.0",
         "vlucas/phpdotenv": "^5.6",
         "stripe/stripe-php": "^17.3",
-        "workerman/workerman": "^5.1"
+        "workerman/workerman": "^5.1",
+        "alex-no/language-detector": "^0.1.0"
         },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
