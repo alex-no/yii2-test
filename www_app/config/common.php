@@ -19,10 +19,22 @@ return [
     'basePath' => dirname(__DIR__),
     'vendorPath' => dirname(__DIR__) . '/vendor',
     'params' => $params,
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        'languageBootstrap',
+    ],
     'components' => [
         'db' => $db,
         'log' => $log,
+        'languageBootstrap' => [
+            'class' => \LanguageDetector\Adapters\Yii2\Bootstrap::class,
+            'paramName' => 'lang',
+            'default' => 'en',
+            'userAttribute' => 'language_code',
+            'tableName' => 'language',
+            'codeField' => 'code',
+            'enabledField' => 'is_enabled',
+        ],
         'authManager' => [
             'class' => \yii\rbac\DbManager::class,
         ],

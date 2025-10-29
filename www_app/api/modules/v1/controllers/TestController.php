@@ -220,6 +220,7 @@ class TestController extends ApiController
         $lang = $detector->detect(false);
 
         return "Lang: $lang (app: " . Yii::$app->language . ")";
+        // return "Lang: " . Yii::$app->language . "";
     }
 
 

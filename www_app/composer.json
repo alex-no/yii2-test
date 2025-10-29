@@ -12,7 +12,8 @@
         "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": ">=8.0.0",
         "yiisoft/yii2": "~2.0.45",
@@ -29,7 +30,7 @@
         "vlucas/phpdotenv": "^5.6",
         "stripe/stripe-php": "^17.3",
         "workerman/workerman": "^5.1",
-        "alex-no/language-detector": "^0.1.3"
+        "alex-no/language-detector": "^0.1.10"
         },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

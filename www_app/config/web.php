@@ -9,23 +9,7 @@ $config = yii\helpers\ArrayHelper::merge(
         'id' => 'web-app',
         'controllerNamespace' => 'app\web\controllers',
         'viewPath' => '@webmain/views',
-        'bootstrap' => [
-            'log',
-            'languageBootstrap'
-            // \LanguageDetector\Adapters\Yii2\Bootstrap::class, // Or 'languageBootstrap' + component in components
-        ],
         'components' => [
-            // If you want to pass config to Bootstrap constructor, register it as a component:
-            'languageBootstrap' => [
-                'class' => \LanguageDetector\Adapters\Yii2\Bootstrap::class,
-                'paramName' => 'lang',
-                'default' => 'en',
-                'userAttribute' => 'language_code',
-                'tableName' => 'language',
-                'codeField' => 'code',
-                'enabledField' => 'is_enabled',
-                'orderField' => 'order',
-            ],
             // 'assetManager' => [
             //     'basePath' => '@webroot',
             //     'baseUrl' => '@web',

@@ -19,13 +19,7 @@ return yii\helpers\ArrayHelper::merge(
 
         'components' => [
             'languageBootstrap' => [
-                'class' => \LanguageDetector\Adapters\Yii2\Bootstrap::class,
-                'paramName' => 'lang',
-                'default' => 'en',
-                'userAttribute' => 'language_code',
-                'tableName' => 'language',
-                'codeField' => 'code',
-                'enabledField' => 'is_enabled',
+                'pathSegmentIndex' => 1,
             ],
             'request' => [
                 'parsers' => [
