@@ -194,16 +194,32 @@ class TestController extends ApiController
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/lang-debug",
+     *     summary="Language Debug",
+     *     tags={"Test"},
+     *     description="Returns the detected language and application language",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Language information",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="langInfo",
+     *                 type="string",
+     *                 example="Lang: en-US (app: en-US)"
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function actionLangDebug(): string
     {
-        // Если вы регистрировали адаптер как компонент (languageSelector)
-        if (Yii::$app->has('languageSelector')) {
-            $lang = Yii::$app->languageSelector->detect(false);
-            return "languageSelector detect(): $lang (Yii::app->language = " . Yii::$app->language . ")";
-        }
+        $detector = Yii::$app->languageDetector;
+        $lang = $detector->detect(false);
 
-        // или если ваш bootstrap создаёт ядро напрямую, можно прочитать Yii::$app->language
-        return "Yii::\$app->language = " . Yii::$app->language;
+        return "Lang: $lang (app: " . Yii::$app->language . ")";
     }
 
 

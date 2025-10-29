@@ -12,14 +12,21 @@ return yii\helpers\ArrayHelper::merge(
                 'class' => app\api\modules\v1\Module::class,
             ],
         ],
-        // 'bootstrap' => [
-        //     'setLanguage',
-        // ],
+        'bootstrap' => [
+            'log',
+            'languageBootstrap',
+        ],
+
         'components' => [
-            // 'setLanguage' => [
-            //     'class' => 'app\components\SetLanguageBootstrap',
-            //     'isApi' => true,
-            // ],
+            'languageBootstrap' => [
+                'class' => \LanguageDetector\Adapters\Yii2\Bootstrap::class,
+                'paramName' => 'lang',
+                'default' => 'en',
+                'userAttribute' => 'language_code',
+                'tableName' => 'language',
+                'codeField' => 'code',
+                'enabledField' => 'is_enabled',
+            ],
             'request' => [
                 'parsers' => [
                     'application/json' => 'yii\web\JsonParser',
