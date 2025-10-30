@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ab65f11ca26cbf6a8cb9c94df3c249ff",
+    "content-hash": "39de8681adf5647d020cc3ac4d961c84",
     "packages": [
         {
             "name": "alex-no/language-detector",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alex-no/language-detector.git",
-                "reference": "92ed3baca0b446a0ec9e6341e25c70911c60e5f5"
+                "reference": "deb341b4824189fee54652e0afc6b24f93210089"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alex-no/language-detector/zipball/92ed3baca0b446a0ec9e6341e25c70911c60e5f5",
-                "reference": "92ed3baca0b446a0ec9e6341e25c70911c60e5f5",
+                "url": "https://api.github.com/repos/alex-no/language-detector/zipball/deb341b4824189fee54652e0afc6b24f93210089",
+                "reference": "deb341b4824189fee54652e0afc6b24f93210089",
                 "shasum": ""
             },
             "require": {
@@ -49,7 +49,7 @@
                 "issues": "https://github.com/alex-no/language-detector/issues",
                 "source": "https://github.com/alex-no/language-detector/tree/main"
             },
-            "time": "2025-10-29T13:50:17+00:00"
+            "time": "2025-10-29T22:17:34+00:00"
         },
         {
             "name": "alex-no/server-time-clock",
