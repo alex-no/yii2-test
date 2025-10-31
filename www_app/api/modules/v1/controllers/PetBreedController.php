@@ -6,7 +6,7 @@ use app\models\PetBreed;
 use app\api\components\ApiController;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
-use app\components\i18n\AdvActiveDataProvider;
+use AlexNo\FieldLingo\Adapters\Yii2\LingoActiveDataProvider;
 
 /**
  * PetBreedController implements the CRUD actions for PetBreed model.
@@ -122,7 +122,7 @@ class PetBreedController extends ApiController
             ->where(['pet_type_id' => $petTypeId])
             ->asArray();
 
-        $dataProvider = new AdvActiveDataProvider([
+        $dataProvider = new LingoActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSize' => 10

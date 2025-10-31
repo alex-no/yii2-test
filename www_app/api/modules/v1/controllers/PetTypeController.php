@@ -7,7 +7,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 use app\api\components\ApiController;
 use app\models\PetType;
-use app\components\i18n\AdvActiveDataProvider;
+use AlexNo\FieldLingo\Adapters\Yii2\LingoActiveDataProvider;
 
 /**
  * PetTypeController implements the CRUD actions for PetType model.
@@ -114,7 +114,7 @@ class PetTypeController extends ApiController
             // ->orderBy('@@name DESC')
             ->asArray();
 
-        $dataProvider = new AdvActiveDataProvider([
+        $dataProvider = new LingoActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSize' => 5

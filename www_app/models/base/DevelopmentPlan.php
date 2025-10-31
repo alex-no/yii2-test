@@ -3,8 +3,8 @@
 namespace app\models\base;
 
 use Yii;
-use app\components\i18n\AdvActiveRecord;
-use app\components\i18n\AdvActiveQuery;
+use AlexNo\FieldLingo\Adapters\Yii2\LingoActiveRecord;
+use AlexNo\FieldLingo\Adapters\Yii2\LingoActiveQuery;
 
 /**
  * This is the base model class for table "development_plan".
@@ -23,7 +23,7 @@ use app\components\i18n\AdvActiveQuery;
  * @property int $created_at
  * @property int $updated_at
  */
-class DevelopmentPlan extends AdvActiveRecord
+class DevelopmentPlan extends LingoActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -36,9 +36,9 @@ class DevelopmentPlan extends AdvActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function find(): AdvActiveQuery
+    public static function find(): LingoActiveQuery
     {
-        return new AdvActiveQuery(static::class);
+        return new LingoActiveQuery(static::class);
     }
 
     /**

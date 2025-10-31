@@ -15,14 +15,14 @@ return [
         //     'password',
         // ],
     ],
-    'advActive' => [
-        // Common AdvActiveRecord config
-        \app\components\i18n\AdvActiveRecord::class => [
+    'lingoActive' => [
+        // Common LingoActiveRecord config
+        \AlexNo\FieldLingo\Adapters\Yii2\LingoActiveRecord::class => [
             'localizedPrefixes' => '@@',
             'isStrict' => true,
         ],
-        // Common AdvActiveQuery config
-        \app\components\i18n\AdvActiveQuery::class => [
+        // Common LingoActiveQuery config
+        \AlexNo\FieldLingo\Adapters\Yii2\LingoActiveQuery::class => [
             'localizedPrefixes' => '@@',
         ],
         // Personal Model PetType config

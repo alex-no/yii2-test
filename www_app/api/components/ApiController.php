@@ -7,7 +7,7 @@ use yii\rest\Controller;
 use app\components\JwtAuth;
 use yii\filters\ContentNegotiator;
 use yii\web\Response;
-use app\components\i18n\AdvActiveDataProvider;
+use AlexNo\FieldLingo\Adapters\Yii2\LingoActiveDataProvider;
 
 class ApiController extends Controller
 {
@@ -76,7 +76,7 @@ class ApiController extends Controller
      * @return array
      * @throws \yii\base\InvalidConfigException
      */
-    protected function getListMeta(AdvActiveDataProvider $dataProvider): array
+    protected function getListMeta(LingoActiveDataProvider $dataProvider): array
     {
         $pagination = $dataProvider->pagination;
         $currentPage = $pagination->getPage(); // 0-based

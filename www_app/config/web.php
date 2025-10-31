@@ -85,12 +85,14 @@ if (YII_ENV_DEV) {
                 ],
                 'baseClassOptions' => [
                     'yii\db\ActiveRecord',
-                    'app\components\i18n\AdvActiveRecord',
+                    'AlexNo\FieldLingo\Adapters\Yii2\LingoActiveRecord',
+                    // 'app\components\i18n\AdvActiveRecord',
                     //'app\models\MyCustomActiveRecord',
                 ],
                 'queryBaseClassOptions' => [
                     'yii\db\ActiveQuery',
-                    'app\components\i18n\AdvActiveQuery',
+                    'AlexNo\FieldLingo\Adapters\Yii2\LingoActiveQuery',
+                    // 'app\components\i18n\AdvActiveQuery',
                     //'app\models\MyCustomQuery',
                 ],
             ],

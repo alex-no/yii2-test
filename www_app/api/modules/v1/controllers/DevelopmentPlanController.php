@@ -7,7 +7,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 use app\api\components\ApiController;
 use app\models\DevelopmentPlan;
-use app\components\i18n\AdvActiveDataProvider;
+use AlexNo\FieldLingo\Adapters\Yii2\LingoActiveDataProvider;
 
 /**
  * DevelopmentPlanController implements the CRUD actions for DevelopmentPlan model.
@@ -131,7 +131,7 @@ class DevelopmentPlanController extends ApiController
             ->where($where)
             ->asArray();
 
-        $dataProvider = new AdvActiveDataProvider([
+        $dataProvider = new LingoActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSize' => 14

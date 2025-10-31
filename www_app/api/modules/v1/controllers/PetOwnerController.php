@@ -7,7 +7,7 @@ use app\models\PetOwner;
 use app\api\components\ApiController;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
-use app\components\i18n\AdvActiveDataProvider;
+use AlexNo\FieldLingo\Adapters\Yii2\LingoActiveDataProvider;
 
 /**
  * PetOwnerController implements the CRUD actions for PetOwner model.
@@ -178,7 +178,7 @@ class PetOwnerController extends ApiController
             ->where($where)
             ->asArray();
 
-        $dataProvider = new AdvActiveDataProvider([
+        $dataProvider = new LingoActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSize' => 10
