@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0933c7a827585e6f95995d0e0962fadf",
+    "content-hash": "f3596d7125188c7d6cd7de0af5c6db8f",
     "packages": [
         {
             "name": "alex-no/field-lingo",
@@ -69,16 +69,16 @@
         },
         {
             "name": "alex-no/language-detector",
-            "version": "v0.1.17",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alex-no/language-detector.git",
-                "reference": "3699c3135d3672db414083665be74c74c78b866e"
+                "reference": "d1352a2cc0d87b4cd4e696fe0cd7a43bd1cdfee3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alex-no/language-detector/zipball/3699c3135d3672db414083665be74c74c78b866e",
-                "reference": "3699c3135d3672db414083665be74c74c78b866e",
+                "url": "https://api.github.com/repos/alex-no/language-detector/zipball/d1352a2cc0d87b4cd4e696fe0cd7a43bd1cdfee3",
+                "reference": "d1352a2cc0d87b4cd4e696fe0cd7a43bd1cdfee3",
                 "shasum": ""
             },
             "require": {
@@ -107,15 +107,15 @@
             "authors": [
                 {
                     "name": "Oleksandr Nosov",
-                    "email": "you@example.com"
+                    "email": "alex@4n.com.ua"
                 }
             ],
             "description": "Framework-agnostic language detector with Yii2 and Laravel adapters",
             "support": {
                 "issues": "https://github.com/alex-no/language-detector/issues",
-                "source": "https://github.com/alex-no/language-detector/tree/v0.1.17"
+                "source": "https://github.com/alex-no/language-detector/tree/v1.0.0"
             },
-            "time": "2025-10-31T14:00:58+00:00"
+            "time": "2025-10-31T23:34:17+00:00"
         },
         {
             "name": "alex-no/server-time-clock",
