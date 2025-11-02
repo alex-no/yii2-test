@@ -79,21 +79,17 @@ if (YII_ENV_DEV) {
         'allowedIPs' => ['127.0.0.1', '::1', $_ENV['ALLOWED_IP']],
         'generators' => [
             'model' => [
-                'class' => 'app\gii\extendedModel\ExtendedModelGenerator', // path to the custom generator
+                'class' => \AlexNo\FieldLingoGii\ExtendedModel\ExtendedModelGenerator::class,
                 'templates' => [
-                    'Extended Model' => '@app/app/gii/extendedModel/templates/extended', // path to the template
+                    'extended' => '@vendor/alex-no/field-lingo-gii/templates/extended',
                 ],
                 'baseClassOptions' => [
                     'yii\db\ActiveRecord',
                     'AlexNo\FieldLingo\Adapters\Yii2\LingoActiveRecord',
-                    // 'app\components\i18n\AdvActiveRecord',
-                    //'app\models\MyCustomActiveRecord',
                 ],
                 'queryBaseClassOptions' => [
                     'yii\db\ActiveQuery',
                     'AlexNo\FieldLingo\Adapters\Yii2\LingoActiveQuery',
-                    // 'app\components\i18n\AdvActiveQuery',
-                    //'app\models\MyCustomQuery',
                 ],
             ],
             'route-viewer' => [
@@ -107,11 +103,11 @@ if (YII_ENV_DEV) {
                     'currentUrlManager' => 'web',
                 ]
             ],
-            'addLanguageColumn' => [
-                'class' => \app\gii\addLanguageColumn\AddLanguageColumnGenerator::class,
-                // 'templates' => [
-                //     'Default (SQL Generator)' => '@gii/addLanguageColumn/default/',
-                // ],
+            'field-lingo-add-language' => [
+                'class' => \AlexNo\FieldLingoGii\AddLanguageColumn\AddLanguageColumnGenerator::class,
+                'templates' => [
+                    'default' => '@vendor/alex-no/field-lingo-gii/src/AddLanguageColumn/templates/default/',
+                ],
             ],
         ],
     ];
