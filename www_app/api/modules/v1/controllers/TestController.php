@@ -7,7 +7,7 @@ use app\common\services\EmailService;
 
 class TestController extends ApiController
 {
-    protected array $authOnly = ['db-tables'];
+    protected array $authOnly = ['db-tables', 'lang-debug'];
 
     /**
      * @OA\Get(
@@ -216,10 +216,26 @@ class TestController extends ApiController
      */
     public function actionLangDebug(): string
     {
+        dd(Yii::$app->user);
+        $eventData = [
+            'is' => false,
+            'old' => null,
+            'new' => null,
+            'user' => null,
+        ];
+        $handler = function ($event) use (&$eventData) {
+            $eventData['is'] = true;
+            $eventData['old'] = $event->oldLanguage ?? null;
+            $eventData['new'] = $event->newLanguage ?? null;
+            $eventData['user'] = $event->user ?? null;
+        };
+        Yii::$app->on('language.changed', $handler);
+
         $detector = Yii::$app->languageDetector;
+
         $lang = $detector->detect(false);
 
-        return "Lang: $lang (app: " . Yii::$app->language . ")";
+        return "Lang: $lang (app: " . Yii::$app->language . ")\n" . (Yii::$app->user->isGuest() ? ' Guest ' : ' authorised ') . \var_export($eventData, true);
         // return "Lang: " . Yii::$app->language . "";
     }
 
