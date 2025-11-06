@@ -12,11 +12,6 @@ return yii\helpers\ArrayHelper::merge(
                 'class' => app\api\modules\v1\Module::class,
             ],
         ],
-        'bootstrap' => [
-            'log',
-            'languageBootstrap',
-        ],
-
         'components' => [
             'languageBootstrap' => [
                 'pathSegmentIndex' => 1,
