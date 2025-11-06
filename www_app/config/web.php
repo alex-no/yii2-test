@@ -81,7 +81,7 @@ if (YII_ENV_DEV) {
             'model' => [
                 'class' => \AlexNo\FieldLingoGii\ExtendedModel\ExtendedModelGenerator::class,
                 'templates' => [
-                    'extended' => '@vendor/alex-no/field-lingo-gii/templates/extended',
+                    'extended' => '@vendor/alex-no/field-lingo-gii/src/ExtendedModel/templates/extended',
                 ],
                 'baseClassOptions' => [
                     'yii\db\ActiveRecord',
