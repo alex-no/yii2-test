@@ -20,3 +20,4 @@ bak
 /www_app/workerman.yii.pid
 /doc/stripe/psw.txt
 /*.bat
+/www_app/*.md
