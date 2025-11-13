@@ -21,5 +21,12 @@ return [
             'logVars' => [], // without $_SERVER and other variables
             'maxLogFiles' => 5,
         ],
+        [
+            'class' => yii\log\FileTarget::class,
+            'levels' => ['info'],
+            'categories' => ['debug','debug1','debug2'],
+            'logFile' => '@runtime/logs/debug.log',
+            'logVars' => [],
+        ],
     ],
 ];
