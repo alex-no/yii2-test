@@ -27,7 +27,7 @@ return [
         'db' => $db,
         'log' => $log,
         'languageBootstrap' => [
-            'class' => \LanguageDetector\Adapters\Yii2\Bootstrap::class,
+            'class' => \LanguageDetector\Infrastructure\Adapters\Yii2\Bootstrap::class,
             'paramName' => 'lang',
             'default' => 'en',
             'userAttribute' => 'language_code',

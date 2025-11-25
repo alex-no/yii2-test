@@ -1,4 +1,5 @@
 <?php
+//phpinfo();die();
 /**
  * Yii web bootstrap file.
  *
@@ -9,6 +10,7 @@
 require __DIR__ . '/../../vendor/autoload.php';
 
 // Load Dotenv
+// die('Deprecated: Please use config/bootstrap.php to load environment variables.' . PHP_EOL);
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->safeLoad();
 
